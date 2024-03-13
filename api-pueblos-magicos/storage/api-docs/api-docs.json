@@ -1,0 +1,71 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Pueblos magicos",
+        "description": "Descripción de tu API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/estados": {
+            "get": {
+                "tags": [
+                    "Estados"
+                ],
+                "summary": "Obtener todos los estados",
+                "operationId": "7b201e8603578d2a84da3712479a6718",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/State"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "State": {
+                "title": "State",
+                "description": "Modelo para representar un estado",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "Aguascalientes"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-04-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-04-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}
