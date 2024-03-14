@@ -2,23 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\State;
+use App\Models\CatService;
 use Illuminate\Http\Request;
-/**
- * @OA\Info(
- *      title="Pueblos magicos",
- *      version="1.0.0",
- *      description="Descripción de tu API"
- * )
- */
-class StateController extends Controller
+
+class CatServiciosController extends Controller
 {
-/**
+    /**
+     * Display a listing of the resource.
+     */
+       /**
  * @OA\PathItem(
- *      path="/api/catestados",
+ *      path="/api/catservicios",
  *      @OA\Get(
- *          summary="Obtener todos los estados",
- *          tags={"CatEstadosMex"},
+ *          summary="Obtiene todas las categorias de servicios",
+ *          tags={"CatServicios"},
  *          @OA\Response(
  *              response=200,
  *              description="Operación exitosa",
@@ -26,7 +23,7 @@ class StateController extends Controller
  *                  @OA\Property(
  *                      property="data",
  *                      type="array",
- *                      @OA\Items(ref="#/components/schemas/State")
+ *                      @OA\Items(ref="#/components/schemas/CatService")
  *                  )
  *              )
  *          ),
@@ -39,11 +36,10 @@ class StateController extends Controller
  */
     public function index()
     {
-        
-        $states = State::all();
+        $servicios = CatService::all();
 
    return response()->json([
-       'data' => $states
+       'data' => $servicios
    ]);
     }
 
@@ -66,7 +62,7 @@ class StateController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(State $state)
+    public function show(string $id)
     {
         //
     }
@@ -74,7 +70,7 @@ class StateController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(State $state)
+    public function edit(string $id)
     {
         //
     }
@@ -82,7 +78,7 @@ class StateController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, State $state)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -90,7 +86,7 @@ class StateController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(State $state)
+    public function destroy(string $id)
     {
         //
     }

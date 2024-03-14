@@ -6,10 +6,42 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/estados": {
+        "/api/catservicios": {
             "get": {
                 "tags": [
-                    "Estados"
+                    "CatServicios"
+                ],
+                "summary": "Obtiene todas las categorias de servicios",
+                "operationId": "b7833de64bf7168fbfff3c32e16ff3a7",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CatService"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    }
+                }
+            }
+        },
+        "/api/catestados": {
+            "get": {
+                "tags": [
+                    "CatEstadosMex"
                 ],
                 "summary": "Obtener todos los estados",
                 "operationId": "7b201e8603578d2a84da3712479a6718",
@@ -37,10 +69,57 @@
                     }
                 }
             }
+        },
+        "/api/cattiposUsers": {
+            "get": {
+                "tags": [
+                    "CatTipoUsers"
+                ],
+                "summary": "Obtiene todos los tipos de usuario",
+                "operationId": "ec0ce8c639ac2de2fcd190861de30042",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Tipo_User"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "CatService": {
+                "title": "CatService",
+                "description": "Modelo para representar CatService",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "Hotelero"
+                    }
+                },
+                "type": "object"
+            },
             "State": {
                 "title": "State",
                 "description": "Modelo para representar un estado",
@@ -62,6 +141,21 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2023-04-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Tipo_User": {
+                "title": "Tipo_User",
+                "description": "Modelo para representar Tipo_User",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "Administrador"
                     }
                 },
                 "type": "object"
