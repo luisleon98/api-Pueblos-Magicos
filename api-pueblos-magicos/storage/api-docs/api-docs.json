@@ -101,6 +101,102 @@
                     }
                 }
             }
+        },
+        "/api/users": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Crea un nuevo usuario",
+                "operationId": "1a63883edb751cb640a2f6f516236f49",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "properties": {
+                                            "nombre": {
+                                                "type": "string"
+                                            },
+                                            "apellido": {
+                                                "type": "string"
+                                            },
+                                            "direccion": {
+                                                "type": "string"
+                                            },
+                                            "ciudad": {
+                                                "type": "string"
+                                            },
+                                            "cp": {
+                                                "type": "integer"
+                                            },
+                                            "id_tipo_user": {
+                                                "type": "integer"
+                                            },
+                                            "id_estado": {
+                                                "type": "integer"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "password": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "data": {
+                                        "nombre": "Juan",
+                                        "apellido": "Pérez",
+                                        "direccion": "Calle Falsa 123",
+                                        "ciudad": "Ciudad de Ejemplo",
+                                        "cp": 12345,
+                                        "id_tipo_user": 1,
+                                        "id_estado": 2,
+                                        "email": "juan@ejemplo.com",
+                                        "password": "contraseña123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        {
+                                            "type": "boolean"
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "result": {
+                                        "summary": "An result object.",
+                                        "value": {
+                                            "success": true
+                                        }
+                                    },
+                                    "bool": {
+                                        "summary": "A boolean value.",
+                                        "value": false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -156,6 +252,59 @@
                     "nombre": {
                         "type": "string",
                         "example": "Administrador"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "title": "User",
+                "description": "Modelo para representar un usuario",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "example": "Juan"
+                    },
+                    "apellido": {
+                        "type": "string",
+                        "example": "Pérez"
+                    },
+                    "direccion": {
+                        "type": "string",
+                        "example": "Calle 123"
+                    },
+                    "ciudad": {
+                        "type": "string",
+                        "example": "Ciudad de México"
+                    },
+                    "cp": {
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "id_tipo_user": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_estado": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "juan.perez@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password_seguro"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-04-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-04-01T12:00:00Z"
                     }
                 },
                 "type": "object"

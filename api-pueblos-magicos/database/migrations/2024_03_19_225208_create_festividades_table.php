@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estados', function (Blueprint $table) {
-            $table->id()->autoIncrement();
-            $table->string("nombre");
+        Schema::create('festividades', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_direccion')->constrained('direcciones','id');
+            $table->foreignId('id_usuario')->constrained('usuarios','id');
+            $table->foreignId('id_pueblo')->constrained('pueblos_magicos','id');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estados');
+        Schema::dropIfExists('festividades');
     }
 };

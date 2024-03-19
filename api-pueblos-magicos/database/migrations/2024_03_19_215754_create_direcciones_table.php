@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estados', function (Blueprint $table) {
-            $table->id()->autoIncrement();
-            $table->string("nombre");
+        Schema::create('direcciones', function (Blueprint $table) {
+            $table->id();
+            $table->string("calle");
+            $table->string("municipio");
+            $table->integer("CP");
+            $table->integer("int");
+            $table->integer("ext")->default(0);
+            $table->foreignId("id_estado")->constrained("estados",'id');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -24,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estados');
+        Schema::dropIfExists('direcciones');
     }
 };

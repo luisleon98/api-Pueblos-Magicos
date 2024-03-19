@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estados', function (Blueprint $table) {
-            $table->id()->autoIncrement();
-            $table->string("nombre");
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('usuarios', function (Blueprint $table) {
+            $table->foreignId('id_tipo_usuario')->constrained('tipos_usuarios','id');
         });
     }
 
@@ -24,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estados');
+        Schema::table('usuarios', function (Blueprint $table) {
+            $table->dropForeign("usuarios_id_tipo_usuario_foreign");
+            $table->dropColumn("id_tipo_usuario");
+        });
     }
 };

@@ -11,28 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('pesonas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('email')->unique();
-            $table->string('apellido');
-            $table->string('direccion');
-            $table->string('ciudad');
-            $table->integer('cp');
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('apellido_pat');
+            $table->string('apellido_mat');
+            $table->foreignId("id_usuario")->constrained('usuarios','id');
             $table->timestamps();
+            $table->softDeletes();
         });
-        
     }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
-    
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('pesonas');
     }
 };

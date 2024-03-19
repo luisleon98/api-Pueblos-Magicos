@@ -11,7 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::rename('table_categoria_servicios', 'categoria_servicios');
+        Schema::create('tipos_imagenes', function (Blueprint $table) {
+            $table->id();
+            $table->string('tipo');
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
@@ -19,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::rename('categoria_servicios', 'table_categoria_servicios');
+        Schema::dropIfExists('tipos_imagenes');
     }
 };

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estados', function (Blueprint $table) {
-            $table->id()->autoIncrement();
-            $table->string("nombre");
+        Schema::create('festividades_imagenes', function (Blueprint $table) {
+            $table->foreignId('id_festividad')->constrained('festividades','id');
+            $table->foreignId('id_imagen')->constrained('imagenes','id');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estados');
+        Schema::dropIfExists('festividades_imagenes');
     }
 };
