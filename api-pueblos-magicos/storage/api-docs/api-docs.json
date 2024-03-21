@@ -312,6 +312,25 @@
                 },
                 "type": "object"
             },
+            "Coordenadas": {
+                "title": "Coordenadas",
+                "description": "Modelo para representar Coordenadas",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "longitud": {
+                        "type": "string",
+                        "example": "L-V"
+                    },
+                    "latitud": {
+                        "type": "string",
+                        "example": "9:00-16:00"
+                    }
+                },
+                "type": "object"
+            },
             "Direcciones": {
                 "title": "Direcciones",
                 "description": "Modelo para representar Direcciones",
@@ -347,6 +366,25 @@
                 },
                 "type": "object"
             },
+            "Imagen": {
+                "title": "Imagen",
+                "description": "Modelo para representar Imagenes",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "02b09106-4c68-426a-b8aa-d459ef1df8ed.png"
+                    },
+                    "tipo": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
             "PueblosMagicos": {
                 "title": "PueblosMagicos",
                 "description": "Modelo para representar PueblosMagicos",
@@ -364,6 +402,83 @@
                         "example": "El pueblo de Zacatlan"
                     },
                     "id_direccion": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "ServicioDetalle": {
+                "title": "ServicioDetalle",
+                "description": "Modelo para representar ServicioDetalle",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "dias_servicio": {
+                        "type": "string",
+                        "example": "L-V"
+                    },
+                    "horarios": {
+                        "type": "string",
+                        "example": "9:00-16:00"
+                    },
+                    "titulo": {
+                        "type": "string",
+                        "example": "9:00-16:00"
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "example": "9:00-16:00"
+                    },
+                    "id_coordenadas": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_servicio": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Servicios": {
+                "title": "Servicios",
+                "description": "Modelo para representar Servicios",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_tipo_servicio": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_direccion": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_usuario": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_pueblo": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "ServiciosImagen": {
+                "title": "ServiciosImagen",
+                "description": "Modelo para representar ServiciosImagen",
+                "properties": {
+                    "id_servicio": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_imagen": {
                         "type": "integer",
                         "example": 1
                     }
@@ -395,6 +510,21 @@
                 },
                 "type": "object"
             },
+            "TipoImagen": {
+                "title": "TipoImagen",
+                "description": "Modelo para representar TipoImagen",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "tipo": {
+                        "type": "string",
+                        "example": "Administrador"
+                    }
+                },
+                "type": "object"
+            },
             "Tipo_User": {
                 "title": "Tipo_User",
                 "description": "Modelo para representar Tipo_User",
@@ -422,7 +552,7 @@
                         "type": "string",
                         "example": "Administrador"
                     },
-                    "esttatus": {
+                    "estatus": {
                         "type": "boolean",
                         "example": "true"
                     }

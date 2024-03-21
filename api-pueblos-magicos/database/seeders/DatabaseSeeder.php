@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TiposServicios::class);
         $this->call(DireccionesSeeder::class);
         $this->call(PueblosMagicosSeeder::class);
+        $this->call(TiposImagenesSeeder::class);
     }
 }

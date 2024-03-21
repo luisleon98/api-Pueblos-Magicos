@@ -6,33 +6,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 /**
  * @OA\Schema(
- *     schema="Tipo_Servicios",
- *     title="Tipo_Servicios",
- *     description="Modelo para representar Tipo_Servicios",
+ *     schema="TipoImagen",
+ *     title="TipoImagen",
+ *     description="Modelo para representar TipoImagen",
  *     @OA\Property(
  *         property="id",
  *         type="integer",
  *         example=1
  *     ),
  *     @OA\Property(
- *         property="servicio",
+ *         property="tipo",
  *         type="string",
  *         example="Administrador"
  *     )
- * ,
- *     @OA\Property(
- *         property="estatus",
- *         type="bool",
- *         example="true"
- *     )
  * )
  */
-class TiposServicios extends Model
+class TipoImagen extends Model
 {
     use HasFactory;
-    protected $table = 'tipos_servicios';
+    protected $table = 'tipos_imagenes';
     protected $fillable = [
-        'servicio',
-        'estatus'
+        'tipo',
     ];
 }
