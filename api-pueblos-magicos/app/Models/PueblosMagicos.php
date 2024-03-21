@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 /**
  * @OA\Schema(
- *     schema="State",
- *     title="State",
- *     description="Modelo para representar un estado",
+ *     schema="PueblosMagicos",
+ *     title="PueblosMagicos",
+ *     description="Modelo para representar PueblosMagicos",
  *     @OA\Property(
  *         property="id",
  *         type="integer",
@@ -17,27 +17,27 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(
  *         property="nombre",
  *         type="string",
- *         example="Aguascalientes"
+ *         example="Zacatlan"
  *     ),
  *     @OA\Property(
- *         property="created_at",
+ *         property="descripcion",
  *         type="string",
- *         format="date-time",
- *         example="2023-04-01T12:00:00Z"
- *     ),
+ *         example="El pueblo de Zacatlan"
+ *     ) ,
  *     @OA\Property(
- *         property="updated_at",
- *         type="string",
- *         format="date-time",
- *         example="2023-04-01T12:00:00Z"
+ *         property="id_direccion",
+ *         type="integer",
+ *         example=1
  *     )
  * )
  */
-class State extends Model
+class PueblosMagicos extends Model
 {
     use HasFactory;
-    protected $table = 'estados';
+    protected $table = 'pueblos';
     protected $fillable = [
-        'nombre'
+        'nombre',
+        'descripcion',
+        'id_direccion'
     ];
 }

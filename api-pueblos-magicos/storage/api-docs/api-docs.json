@@ -280,6 +280,64 @@
                 },
                 "type": "object"
             },
+            "Direcciones": {
+                "title": "Direcciones",
+                "description": "Modelo para representar Direcciones",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "calle": {
+                        "type": "string",
+                        "example": "Zacatlan"
+                    },
+                    "municipio": {
+                        "type": "string",
+                        "example": "El pueblo de Zacatlan"
+                    },
+                    "CP": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "int": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "ext": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_estado": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "PueblosMagicos": {
+                "title": "PueblosMagicos",
+                "description": "Modelo para representar PueblosMagicos",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "Zacatlan"
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "example": "El pueblo de Zacatlan"
+                    },
+                    "id_direccion": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
             "State": {
                 "title": "State",
                 "description": "Modelo para representar un estado",
@@ -322,7 +380,7 @@
             },
             "Tipo_Servicios": {
                 "title": "Tipo_Servicios",
-                "description": "Modelo para representar Tipo_User",
+                "description": "Modelo para representar Tipo_Servicios",
                 "properties": {
                     "id": {
                         "type": "integer",

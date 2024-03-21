@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @OA\Schema(
  *     schema="Tipo_Servicios",
  *     title="Tipo_Servicios",
- *     description="Modelo para representar Tipo_User",
+ *     description="Modelo para representar Tipo_Servicios",
  *     @OA\Property(
  *         property="id",
  *         type="integer",
