@@ -11,36 +11,36 @@ class TipoUserController extends Controller
      * Display a listing of the resource.
      */
     /**
- * @OA\PathItem(
- *      path="/api/cattiposUsers",
- *      @OA\Get(
- *          summary="Obtiene todos los tipos de usuario",
- *          tags={"CatTipoUsers"},
- *          @OA\Response(
- *              response=200,
- *              description="Operación exitosa",
- *              @OA\JsonContent(
- *                  @OA\Property(
- *                      property="data",
- *                      type="array",
- *                      @OA\Items(ref="#/components/schemas/Tipo_User")
- *                  )
- *              )
- *          ),
- *          @OA\Response(
- *              response=401,
- *              description="No autorizado"
- *          )
- *      )
- * )
- */
+     * @OA\PathItem(
+     *      path="/api/cattiposUsers",
+     *      @OA\Get(
+     *          summary="Obtiene todos los tipos de usuario",
+     *          tags={"CatTipoUsers"},
+     *          @OA\Response(
+     *              response=200,
+     *              description="Operación exitosa",
+     *              @OA\JsonContent(
+     *                  @OA\Property(
+     *                      property="data",
+     *                      type="array",
+     *                      @OA\Items(ref="#/components/schemas/Tipo_User")
+     *                  )
+     *              )
+     *          ),
+     *          @OA\Response(
+     *              response=401,
+     *              description="No autorizado"
+     *          )
+     *      )
+     * )
+     */
     public function index()
     {
         $tipos = Tipo_User::all();
 
-   return response()->json([
-       'data' => $tipos
-   ]);
+        return response()->json([
+            'data' => $tipos
+        ]);
     }
 
     /**

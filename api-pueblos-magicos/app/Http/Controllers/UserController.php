@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RegistroRequest;
+use App\Models\User;
+use App\Models\Personas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegistroRequest;
 
 class UserController extends Controller
 {
@@ -17,7 +21,7 @@ class UserController extends Controller
 
   /**
 * @OA\Post(
-*     path="/api/users",
+*     path="/api/users/registrar",
 *     summary="Crea un nuevo usuario",
 *          tags={"Users"},
 *     @OA\RequestBody(
@@ -28,43 +32,31 @@ class UserController extends Controller
 *                     property="data",
 *                     type="object",
 *                     @OA\Property(
-*                         property="nombre",
-*                         type="string"
-*                     ),
-*                     @OA\Property(
-*                         property="apellido",
-*                         type="string"
-*                     ),
-*                     @OA\Property(
-*                         property="direccion",
-*                         type="string"
-*                     ),
-*                     @OA\Property(
-*                         property="ciudad",
-*                         type="string"
-*                     ),
-*                     @OA\Property(
-*                         property="cp",
-*                         type="integer"
-*                     ),
-*                     @OA\Property(
-*                         property="id_tipo_user",
-*                         type="integer"
-*                     ),
-*                     @OA\Property(
-*                         property="id_estado",
-*                         type="integer"
-*                     ),
-*                     @OA\Property(
-*                         property="email",
+*                         property="user_name",
 *                         type="string"
 *                     ),
 *                     @OA\Property(
 *                         property="password",
 *                         type="string"
+*                     ),
+*                     @OA\Property(
+*                         property="nombre",
+*                         type="string"
+*                     ),
+*                     @OA\Property(
+*                         property="apellido_pat",
+*                         type="string"
+*                     ),
+*                     @OA\Property(
+*                         property="apellido_mat",
+*                         type="string"
+*                     ),
+*                     @OA\Property(
+*                         property="id_tipo_user",
+*                         type="integer"
 *                     )
 *                 ),
-*                 example={"data": {"nombre": "Juan", "apellido": "Pérez", "direccion": "Calle Falsa 123", "ciudad": "Ciudad de Ejemplo", "cp": 12345, "id_tipo_user": 1, "id_estado": 2, "email": "juan@ejemplo.com", "password": "contraseña123"}}
+*                 example={"data": {"user_name":"lleon@ipn.mx","password":"pruebas1","nombre":"Luis","apellido_pat":"Leon","apellido_mat":"HDZ","id_tipo_usuario":2}}
 *             )
 *         )
 *     ),
@@ -76,8 +68,7 @@ class UserController extends Controller
 *                 @OA\Schema(ref="#/components/schemas/User"),
 *                 @OA\Schema(type="boolean")
 *             },
-*             @OA\Examples(example="result", value={"success": true}, summary="An result object."),
-*             @OA\Examples(example="bool", value=false, summary="A boolean value."),
+*             
 *         )
 *     )
 * )
@@ -85,19 +76,113 @@ class UserController extends Controller
     public function create(RegistroRequest $request)
     {
         $data = $request->validated();
-        return response()->json([
-            'data' => ['message'=>'ok']
+        $data = $data['data'];
+        $data['passward'] = Hash::make($data['password']);
+        $user = User::create([
+            'user_name'=>$data['user_name'],
+            'password'=>$data['password'],
+            'id_tipo_usuario'=>$data['id_tipo_usuario']
         ]);
+        $persona = Personas::create([
+            'nombre'=>$data['nombre'],
+            'apellido_pat'=>$data['apellido_pat'],
+            'apellido_mat'=>$data['apellido_mat'],
+            'id_usuario'=>$user->id
+        ]);
+
+          // Generar el token de acceso
+    $token = $user->createToken('authToken')->plainTextToken;
+
+    return response()->json([
+        'data' => [
+            'success' => true,
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'user' => [
+                'id' => $user->id,
+                'user_name' => $user->user_name,
+                'id_tipo_usuario' => $user->id_tipo_usuario
+            ],
+            'persona' => [
+                'id' => $persona->id,
+                'nombre' => $persona->nombre,
+                'apellido_pat' => $persona->apellido_pat,
+                'apellido_mat' => $persona->apellido_mat
+            ]
+        ]
+    ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+  /**
+* @OA\Post(
+*     path="/api/users/login",
+*     summary="Inicio de session de un usuario",
+*          tags={"Users"},
+*     @OA\RequestBody(
+*         @OA\MediaType(
+*             mediaType="application/json",
+*             @OA\Schema(
+*                 @OA\Property(
+*                     property="data",
+*                     type="object",
+*                     @OA\Property(
+*                         property="user_name",
+*                         type="string"
+*                     ),
+*                     @OA\Property(
+*                         property="password",
+*                         type="string"
+*                     )
+*                 ),
+*                 example={"data": {"user_name":"lleon@ipn.mx","password":"pruebas1"}}
+*             )
+*         )
+*     ),
+*     @OA\Response(
+*         response=200,
+*         description="OK",
+*         @OA\JsonContent(
+*             oneOf={
+*                 @OA\Schema(ref="#/components/schemas/User"),
+*                 @OA\Schema(type="boolean")
+*             },
+*             
+*         )
+*     )
+* )
+*/
+    public function Login(Request $request)
     {
-        //
+        $data = $request->data;
+    if (Auth::attempt($data)) {
+        $user = Auth::user();
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'user' => [
+                'id' => $user->id,
+                'user_name' => $user->user_name
+            ]
+        ]);
+    } else {
+        return response()->json(['error' => 'Credenciales incorrectas'], 401);
+    }
     }
 
+    public function logout(Request $request)
+{
+    // Revoca todos los tokens de acceso del usuario autenticado
+    $request->user()->currentAccessToken()->delete();
+
+    // Cierra la sesión del usuario
+    Auth::logout();
+
+    return response()->json([
+        'message' => 'Sesión cerrada correctamente'
+    ]);
+}
     /**
      * Display the specified resource.
      */

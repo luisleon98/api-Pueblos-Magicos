@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 /**
  * @OA\Schema(
- *     schema="Tipo_User",
- *     title="Tipo_User",
+ *     schema="Tipo_Servicios",
+ *     title="Tipo_Servicios",
  *     description="Modelo para representar Tipo_User",
  *     @OA\Property(
  *         property="id",
@@ -15,17 +15,24 @@ use Illuminate\Database\Eloquent\Model;
  *         example=1
  *     ),
  *     @OA\Property(
- *         property="nombre",
+ *         property="servicio",
  *         type="string",
  *         example="Administrador"
  *     )
+ * ,
+ *     @OA\Property(
+ *         property="esttatus",
+ *         type="bool",
+ *         example="true"
+ *     )
  * )
  */
-class Tipo_User extends Model
+class TiposServicios extends Model
 {
     use HasFactory;
-    protected $table = 'tipos_usuarios';
+    protected $table = 'tipos_servicios';
     protected $fillable = [
-        'tipo_usuario',
+        'servicio',
+        'estatus'
     ];
 }

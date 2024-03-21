@@ -102,13 +102,45 @@
                 }
             }
         },
-        "/api/users": {
+        "/api/tiposervicios": {
+            "get": {
+                "tags": [
+                    "tiposServicios"
+                ],
+                "summary": "Obtiene todos los tipos de servicios",
+                "operationId": "5f3dc06d0db640e2992e94d48bf563f3",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Tipo_Servicios"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    }
+                }
+            }
+        },
+        "/api/users/registrar": {
             "post": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Crea un nuevo usuario",
-                "operationId": "1a63883edb751cb640a2f6f516236f49",
+                "operationId": "475e0c7db715ee91a6d776e498efa7c4",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -116,32 +148,23 @@
                                 "properties": {
                                     "data": {
                                         "properties": {
-                                            "nombre": {
-                                                "type": "string"
-                                            },
-                                            "apellido": {
-                                                "type": "string"
-                                            },
-                                            "direccion": {
-                                                "type": "string"
-                                            },
-                                            "ciudad": {
-                                                "type": "string"
-                                            },
-                                            "cp": {
-                                                "type": "integer"
-                                            },
-                                            "id_tipo_user": {
-                                                "type": "integer"
-                                            },
-                                            "id_estado": {
-                                                "type": "integer"
-                                            },
-                                            "email": {
+                                            "user_name": {
                                                 "type": "string"
                                             },
                                             "password": {
                                                 "type": "string"
+                                            },
+                                            "nombre": {
+                                                "type": "string"
+                                            },
+                                            "apellido_pat": {
+                                                "type": "string"
+                                            },
+                                            "apellido_mat": {
+                                                "type": "string"
+                                            },
+                                            "id_tipo_user": {
+                                                "type": "integer"
                                             }
                                         },
                                         "type": "object"
@@ -150,15 +173,12 @@
                                 "type": "object",
                                 "example": {
                                     "data": {
-                                        "nombre": "Juan",
-                                        "apellido": "Pérez",
-                                        "direccion": "Calle Falsa 123",
-                                        "ciudad": "Ciudad de Ejemplo",
-                                        "cp": 12345,
-                                        "id_tipo_user": 1,
-                                        "id_estado": 2,
-                                        "email": "juan@ejemplo.com",
-                                        "password": "contraseña123"
+                                        "user_name": "lleon@ipn.mx",
+                                        "password": "pruebas1",
+                                        "nombre": "Luis",
+                                        "apellido_pat": "Leon",
+                                        "apellido_mat": "HDZ",
+                                        "id_tipo_usuario": 2
                                     }
                                 }
                             }
@@ -179,18 +199,62 @@
                                             "type": "boolean"
                                         }
                                     ]
-                                },
-                                "examples": {
-                                    "result": {
-                                        "summary": "An result object.",
-                                        "value": {
-                                            "success": true
-                                        }
-                                    },
-                                    "bool": {
-                                        "summary": "A boolean value.",
-                                        "value": false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Inicio de session de un usuario",
+                "operationId": "e7a377530f4b250da42ad2b352677c70",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "properties": {
+                                            "user_name": {
+                                                "type": "string"
+                                            },
+                                            "password": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
                                     }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "data": {
+                                        "user_name": "lleon@ipn.mx",
+                                        "password": "pruebas1"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        {
+                                            "type": "boolean"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -252,6 +316,25 @@
                     "nombre": {
                         "type": "string",
                         "example": "Administrador"
+                    }
+                },
+                "type": "object"
+            },
+            "Tipo_Servicios": {
+                "title": "Tipo_Servicios",
+                "description": "Modelo para representar Tipo_User",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "servicio": {
+                        "type": "string",
+                        "example": "Administrador"
+                    },
+                    "esttatus": {
+                        "type": "boolean",
+                        "example": "true"
                     }
                 },
                 "type": "object"

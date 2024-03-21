@@ -21,11 +21,11 @@ class StatesSeeder extends Seeder
         ];
 
         foreach ($states as $state) {
-            DB::table('states')->insert([
+            DB::table('estados')->insert([
                 'nombre' => $state,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+        }
     }
-}
 }
