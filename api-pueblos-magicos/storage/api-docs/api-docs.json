@@ -38,6 +38,38 @@
                 }
             }
         },
+        "/api/pueblosmagicos": {
+            "get": {
+                "tags": [
+                    "pueblosmagicos"
+                ],
+                "summary": "Obtiene todos los pueblosmagicos",
+                "operationId": "b2b6bf2f6ecc40015e2f3a535e968953",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PueblosMagicos"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    }
+                }
+            }
+        },
         "/api/catestados": {
             "get": {
                 "tags": [
@@ -298,7 +330,7 @@
                     },
                     "CP": {
                         "type": "integer",
-                        "example": 1
+                        "example": 7330
                     },
                     "int": {
                         "type": "integer",
@@ -310,7 +342,7 @@
                     },
                     "id_estado": {
                         "type": "integer",
-                        "example": 1
+                        "example": 21
                     }
                 },
                 "type": "object"

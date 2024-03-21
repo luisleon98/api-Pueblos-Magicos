@@ -34,10 +34,13 @@ use Illuminate\Database\Eloquent\Model;
 class PueblosMagicos extends Model
 {
     use HasFactory;
-    protected $table = 'pueblos';
+    protected $table = 'pueblos_magicos';
     protected $fillable = [
         'nombre',
         'descripcion',
         'id_direccion'
     ];
+    public function direccion(){
+        return $this->belongsTo(Direcciones::class,'id_direccion');
+    }
 }

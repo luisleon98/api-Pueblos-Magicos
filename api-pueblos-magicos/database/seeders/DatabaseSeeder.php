@@ -22,5 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(StatesSeeder::class);
         $this->call(TiposUsuariosSeeder::class);
         $this->call(TiposServicios::class);
+        $this->call(DireccionesSeeder::class);
+        $this->call(PueblosMagicosSeeder::class);
     }
 }

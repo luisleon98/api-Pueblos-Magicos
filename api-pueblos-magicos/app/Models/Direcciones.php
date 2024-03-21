@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(
  *         property="CP",
  *         type="integer",
- *         example=1
+ *         example=07330
  *     ),
  *     @OA\Property(
  *         property="int",
@@ -42,7 +42,7 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(
  *         property="id_estado",
  *         type="integer",
- *         example=1
+ *         example=21
  *     )
  * )
  */
