@@ -438,6 +438,27 @@
                 },
                 "type": "object"
             },
+            "Horarios": {
+                "title": "Horarios",
+                "description": "Modelo para representar Horarios",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "horario_inicio": {
+                        "type": "string",
+                        "format": "time",
+                        "example": "15:30:00"
+                    },
+                    "horario_fin": {
+                        "type": "string",
+                        "format": "time",
+                        "example": "15:30:00"
+                    }
+                },
+                "type": "object"
+            },
             "Imagen": {
                 "title": "Imagen",
                 "description": "Modelo para representar Imagenes",
