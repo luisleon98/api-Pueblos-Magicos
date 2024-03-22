@@ -108,25 +108,13 @@ class ServiciosController extends Controller
             'id_horarios' => $horarios->id
 
         ]);
+
         $imagenPrincipal = $this->procesarImagen($data['imgPrincipal']);
-        $imagenPrincipalDB = Imagen::create([
-            'nombre' => $imagenPrincipal,
-            'id_tipo_imagen' => 1
-        ]);
-        ServiciosImagen::create([
-            'id_servicio' => $servicio->id,
-            'id_imagen' => $imagenPrincipalDB->id
-        ]);
-        $nombesImagenes = $this->procesarImagenes($data['arrayGaleria']);
-        foreach ($nombesImagenes as $imagen) {
-            $imagenTempGaleria = Imagen::create([
-                'nombre' => $imagen,
-                'id_tipo_imagen' => 2
-            ]);
-            ServiciosImagen::create([
-                'id_servicio' => $servicio->id,
-                'id_imagen' => $imagenTempGaleria->id
-            ]);
+        $this->guardarImagenesBD($imagenPrincipal, 1, $servicio->id);
+
+        $nombresImagenes = $this->procesarImagenes($data['arrayGaleria']);
+        foreach ($nombresImagenes as $imagen) {
+            $this->guardarImagenesBD($imagen, 2, $servicio->id);
         }
 
 
@@ -156,5 +144,17 @@ class ServiciosController extends Controller
         }
 
         return $imagenesServidor;
+    }
+    public function guardarImagenesBD($nombreImagen, $idTipoImagen, $idServicio)
+    {
+        $imagen = Imagen::create([
+            'nombre' => $nombreImagen,
+            'id_tipo_imagen' => $idTipoImagen
+        ]);
+
+        ServiciosImagen::create([
+            'id_servicio' => $idServicio,
+            'id_imagen' => $imagen->id
+        ]);
     }
 }
