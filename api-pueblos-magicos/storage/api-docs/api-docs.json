@@ -166,6 +166,78 @@
                 }
             }
         },
+        "/api/servicios/registrar": {
+            "post": {
+                "tags": [
+                    "servicios"
+                ],
+                "summary": "Crea un nuevo servicio",
+                "operationId": "49e6388e29991bd7f2d22c505cde4d8d",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "properties": {
+                                            "user_name": {
+                                                "type": "string"
+                                            },
+                                            "password": {
+                                                "type": "string"
+                                            },
+                                            "nombre": {
+                                                "type": "string"
+                                            },
+                                            "apellido_pat": {
+                                                "type": "string"
+                                            },
+                                            "apellido_mat": {
+                                                "type": "string"
+                                            },
+                                            "id_tipo_user": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "data": {
+                                        "user_name": "lleon@ipn.mx",
+                                        "password": "pruebas1",
+                                        "nombre": "Luis",
+                                        "apellido_pat": "Leon",
+                                        "apellido_mat": "HDZ",
+                                        "id_tipo_usuario": 2
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        {
+                                            "type": "boolean"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/users/registrar": {
             "post": {
                 "tags": [

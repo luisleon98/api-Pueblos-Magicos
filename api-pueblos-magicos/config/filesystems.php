@@ -34,6 +34,7 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
             'throw' => false,
+            'max_file_upload_size' => 20480, // 20MB en kilobytes
         ],
 
         'public' => [
