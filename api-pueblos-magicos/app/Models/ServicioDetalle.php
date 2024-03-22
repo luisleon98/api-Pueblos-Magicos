@@ -52,12 +52,12 @@ class ServicioDetalle extends Model
     protected $table = 'servicio_detalles';
     protected $fillable = [
         'dias_servicio',
-        'horarios',
         'precios',
         'titulo',
         'descripcion',
         'id_coordenadas',
-        'id_servicio'
+        'id_servicio',
+        'id_horarios'
     ];
     public function servicio()
     {
@@ -66,5 +66,8 @@ class ServicioDetalle extends Model
     public function coordenada()
     {
         return $this->belongsTo(Coordenadas::class, 'id_servicio');
+    }
+    public function horario(){
+        return $this->belongsTo(Horarios::class,'id_horarios');
     }
 }

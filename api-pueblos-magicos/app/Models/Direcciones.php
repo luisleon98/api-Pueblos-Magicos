@@ -56,6 +56,7 @@ class Direcciones extends Model
         'CP',
         'int',
         'ext',
-        'id_estado'
+        'id_estado',
+        'colonia'
     ];
 }
