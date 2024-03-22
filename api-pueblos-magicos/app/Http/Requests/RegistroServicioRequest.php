@@ -35,7 +35,7 @@ class RegistroServicioRequest extends FormRequest
             'data.dias_servicio' => ['required','min:5','max:20'],
             'data.horario_inicio' => ['required'],
             'data.horario_fin' => ['required'],
-            'data.precios' => ['required'],
+            'data.precio' => ['required'],
             'data.titulo' => ['required','max:100'],
             'data.descripcion' => ['required'],
             'data.latitud' => ['required'],
