@@ -10,9 +10,13 @@ use App\Http\Controllers\CatServiciosController;
 use App\Http\Controllers\PueblosMagicosController;
 use App\Http\Controllers\TiposServiciosController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    // Puedes agregar más rutas aquí que también usarán el middleware 'auth:sanctum'
+});
 
 Route::get('catestados',[StateController::class,'index']);
 Route::get('cattiposUsers',[TipoUserController::class,'index']);

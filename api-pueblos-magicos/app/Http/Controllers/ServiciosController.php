@@ -14,6 +14,7 @@ use App\Models\ServicioDetalle;
 use App\Models\ServiciosImagen;
 use Intervention\Image\Facades\Image;
 use App\Http\Requests\RegistroServicioRequest;
+use App\Models\PueblosSolicitudes;
 
 class ServiciosController extends Controller
 {
@@ -107,6 +108,12 @@ class ServiciosController extends Controller
             'id_servicio' => $servicio->id,
             'id_horarios' => $horarios->id
 
+        ]);
+
+        $puebloSolicitud = PueblosSolicitudes::create([
+            'id_servicio'  => $servicio->id,
+        'id_pueblo_magico' => $data['id_pueblo'],
+        'id_tipo_servicio' => $data['id_tipo_servicio']
         ]);
 
         $imagenPrincipal = $this->procesarImagen($data['imgPrincipal']);
