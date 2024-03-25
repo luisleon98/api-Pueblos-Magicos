@@ -337,8 +337,8 @@
                                 "type": "object",
                                 "example": {
                                     "data": {
-                                        "user_name": "lleon@ipn.mx",
-                                        "password": "pruebas1"
+                                        "user_name": "bajimeneza@ipn.mx",
+                                        "password": "Pruebas1"
                                     }
                                 }
                             }
@@ -364,6 +364,39 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/users/logout": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Cerrar sesión de un usuario",
+                "operationId": "3f4630f2faa114f9a6495b04588632ec",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        {
+                                            "type": "boolean"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
@@ -704,6 +737,12 @@
                     }
                 },
                 "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
             }
         }
     }

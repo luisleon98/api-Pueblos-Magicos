@@ -134,7 +134,7 @@ class UserController extends Controller
 *                         type="string"
 *                     )
 *                 ),
-*                 example={"data": {"user_name":"lleon@ipn.mx","password":"pruebas1"}}
+*                 example={"data": {"user_name":"bajimeneza@ipn.mx","password":"Pruebas1"}}
 *             )
 *         )
 *     ),
@@ -170,17 +170,38 @@ class UserController extends Controller
         return response()->json(['error' => 'Credenciales incorrectas'], 401);
     }
     }
+      /**
+ * @OA\Post(
+ *     path="/api/users/logout",
+ *     summary="Cerrar sesión de un usuario",
+ *     tags={"Users"},
+ *     security={{"bearerAuth":{}}},
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="OK",
+ *         @OA\JsonContent(
+ *             oneOf={
+ *                 @OA\Schema(ref="#/components/schemas/User"),
+ *                 @OA\Schema(type="boolean")
+ *             },
+ *         )
+ *     )
+ * )
+ *
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer"
+ * )
+ */
 
     public function logout(Request $request)
 {
     // Revoca todos los tokens de acceso del usuario autenticado
     $request->user()->currentAccessToken()->delete();
-
-    // Cierra la sesión del usuario
-    Auth::logout();
-
     return response()->json([
-        'message' => 'Sesión cerrada correctamente'
+        'data' => ['mensaje'=>'Cierre de sesión exitoso']
     ]);
 }
     /**

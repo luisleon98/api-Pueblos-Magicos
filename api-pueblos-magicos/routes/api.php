@@ -14,7 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-
+    Route::post('users/logout',[UserController::class,'logout']);
     // Puedes agregar más rutas aquí que también usarán el middleware 'auth:sanctum'
 });
 
@@ -25,5 +25,6 @@ Route::get('tiposervicios',[TiposServiciosController::class,'index']);
 Route::get('pueblosmagicos',[PueblosMagicosController::class,'index']);
 Route::post('users/registrar',[UserController::class,'create']);
 Route::post('users/login',[UserController::class,'login']);
+
 Route::post('servicios/registrar',[ServiciosController::class,'store']);
 // Route::post()
