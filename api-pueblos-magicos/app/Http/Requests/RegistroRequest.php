@@ -28,7 +28,7 @@ class RegistroRequest extends FormRequest
             'data.nombre'=>['required','string'],
             'data.apellido_pat'=>['required','string'],
             'data.apellido_mat'=>['required','string'],
-            'data.password'=>['required','string'],
+            'data.password'=>['required','string','confirmed'],
             'data.id_tipo_usuario'=>['required','numeric'],
         ];
     }
@@ -45,6 +45,7 @@ class RegistroRequest extends FormRequest
             'data.apellido_mat.string' => 'El apellido materno debe ser una cadena de texto',
             'data.password.required' => 'La contraseña es obligatoria',
             'data.password.string' => 'La contraseña debe ser una cadena de texto',
+            'data.password.confirmed' => 'Debes confirmar la contraseña',
             'data.id_tipo_usuario.required' => 'El tipo de usuario es obligatorio',
             'data.id_tipo_usuario.numeric' => 'El tipo de usuario debe ser un número',
         ];
