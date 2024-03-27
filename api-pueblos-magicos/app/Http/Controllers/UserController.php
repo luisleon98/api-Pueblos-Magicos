@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegistroRequest;
+use Illuminate\Auth\AuthenticationException;
 
 class UserController extends Controller
 {
@@ -198,11 +199,18 @@ class UserController extends Controller
 
     public function logout(Request $request)
 {
-    // Revoca todos los tokens de acceso del usuario autenticado
-    $request->user()->currentAccessToken()->delete();
-    return response()->json([
-        'data' => ['mensaje'=>'Cierre de sesión exitoso']
-    ]);
+    try{
+    // Verifica si el usuario está autenticado
+    if ($request->user()) {
+        // Si el usuario está autenticado, revoca todos los tokens de acceso
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'data' => ['mensaje'=>'Cierre de sesión exitoso']
+        ]);
+    } 
+}catch(AuthenticationException $e) {
+    return response()->json(['error' => 'Unauthorized'], 401);
+}
 }
     /**
      * Display the specified resource.
