@@ -15,7 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::post('users/logout',[UserController::class,'logout']);
-    // Puedes agregar más rutas aquí que también usarán el middleware 'auth:sanctum'
+    Route::post('servicios/registrar',[ServiciosController::class,'store']);
 });
 
 Route::get('catestados',[StateController::class,'index']);
@@ -28,5 +28,5 @@ Route::post('users/login',[UserController::class,'login']);
 // Route::get('/user/login', function (Request $request) {
 //     return response()->json(['error' => 'Unauthorizefdsfsdfsdd'], 401);
 // })->name('login');
-Route::post('servicios/registrar',[ServiciosController::class,'store']);
+
 // Route::post()
