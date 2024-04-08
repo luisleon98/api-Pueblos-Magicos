@@ -69,4 +69,15 @@ class Servicios extends Model
     {
         return $this->hasOne(ServicioDetalle::class, 'id_servicio');
     }
+    public function imagenes()
+    {
+        return $this->hasManyThrough(
+            Imagen::class,
+            ServiciosImagen::class,
+            'id_servicio', // Llave foránea en la tabla intermedia
+            'id', // Llave foránea en la tabla final
+            'id', // Llave local en la tabla inicial
+            'id_imagen' // Llave local en la tabla intermedia
+        );
+    }
 }

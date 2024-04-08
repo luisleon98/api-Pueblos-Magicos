@@ -22,7 +22,7 @@ class ServiciosController extends Controller
      * @OA\Post(
      *     path="/api/servicios/registrar",
      *     summary="Crea un nuevo servicio",
-     *          tags={"servicios"},
+     *          tags={"Servicios"},
      *     @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -162,6 +162,16 @@ class ServiciosController extends Controller
         ServiciosImagen::create([
             'id_servicio' => $idServicio,
             'id_imagen' => $imagen->id
+        ]);
+    }
+        /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $servicio = Servicios::where('id',$id)->with(['tipoServicio','direccion','usuario','pueblo','detalleServicio','imagenes.tipo'])->get();
+        return response()->json([
+            "data" => ["servicio" => $servicio]
         ]);
     }
 }

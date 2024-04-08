@@ -37,4 +37,15 @@ class Imagen extends Model
     public function tipo(){
         return $this->belongsTo(TipoImagen::class,'id_tipo_imagen');
     }
+    public function servicio()
+    {
+        return $this->hasOneThrough(
+            Servicios::class,
+            ServiciosImagen::class,
+            'id_imagen', // Llave foránea en la tabla intermedia
+            'id', // Llave foránea en la tabla final
+            'id', // Llave local en la tabla inicial
+            'id_servicio' // Llave local en la tabla intermedia
+        );
+    }
 }
