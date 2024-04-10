@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @OA\Schema(
  *     schema="Tipo_User",
@@ -23,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Tipo_User extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $table = 'tipos_usuarios';
     protected $fillable = [
         'tipo_usuario',

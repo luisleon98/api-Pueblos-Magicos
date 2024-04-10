@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @OA\Schema(
  *     schema="Horarios",
@@ -30,7 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Horarios extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $table = 'horarios';
     protected $fillable = [
         'horario_inicio',

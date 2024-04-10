@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @OA\Schema(
  *     schema="Servicios",
@@ -38,7 +39,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Servicios extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
+
     protected $table = 'servicios';
     protected $fillable = [
         'id_tipo_servicio',
@@ -69,6 +71,10 @@ class Servicios extends Model
     {
         return $this->hasOne(ServicioDetalle::class, 'id_servicio');
     }
+    public function solicitud()
+    {
+        return $this->hasOne(PueblosSolicitudes::class, 'id_servicio');
+    }
     public function imagenes()
     {
         return $this->hasManyThrough(
@@ -79,5 +85,23 @@ class Servicios extends Model
             'id', // Llave local en la tabla inicial
             'id_imagen' // Llave local en la tabla intermedia
         );
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($servicio) {
+            // Eliminar detalles del servicio
+            // $servicio->detalleServicio()->delete();
+            $detalle = $servicio->detalleServicio()->first();
+            $detalle->delete();
+            // Eliminar imágenes asociadas al servicio
+            $servicio->imagenes()->delete();
+            // Eliminar la dirección asociada
+            $servicio->direccion()->delete();
+            $servicio->solicitud()->delete();
+            
+        });
     }
 }

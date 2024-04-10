@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @OA\Schema(
  *     schema="State",
@@ -35,7 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class State extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $table = 'estados';
     protected $fillable = [
         'nombre'

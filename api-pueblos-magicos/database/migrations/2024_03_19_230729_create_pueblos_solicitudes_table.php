@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pueblos_solicitudes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_servicio')->constrained('servicios','id');
+            $table->foreignId('id_servicio')->constrained('servicios','id')->onDelete('cascade');
             $table->foreignId('id_pueblo_magico')->constrained('pueblos_magicos','id');
             $table->foreignId('id_tipo_servicio')->constrained('tipos_servicios','id');
             $table->timestamps();

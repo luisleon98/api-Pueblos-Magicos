@@ -23,6 +23,7 @@ class ServiciosController extends Controller
      *     path="/api/servicios/registrar",
      *     summary="Crea un nuevo servicio",
      *          tags={"Servicios"},
+     * *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -167,9 +168,47 @@ class ServiciosController extends Controller
         /**
      * Display the specified resource.
      */
+    /**
+ * @OA\Get(
+ *     path="/api/servicios/{id}",
+ *     summary="Muestra un servicio específico",
+ *     tags={"Servicios"},
+ * *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="ID del servicio a buscar",
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa, servicio encontrado",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="servicio",
+ *                     type="array",
+ *                     @OA\Items(ref="#/components/schemas/Servicios")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Servicio no encontrado"
+ *     )
+ * )
+ */
+
     public function show(string $id)
     {
-        $servicio = Servicios::where('id',$id)->with(['tipoServicio','direccion','usuario','pueblo','detalleServicio','imagenes.tipo'])->get();
+        $servicio = Servicios::where('id',$id)->with(['tipoServicio','direccion','usuario','pueblo','detalleServicio.coordenada','detalleServicio.horario','imagenes.tipo'])->get();
         return response()->json([
             "data" => ["servicio" => $servicio]
         ]);

@@ -164,7 +164,8 @@ class UserController extends Controller
             'token_type' => 'bearer',
             'user' => [
                 'id' => $user->id,
-                'user_name' => $user->user_name
+                'user_name' => $user->user_name,
+                 'id_tipo_usuario'=>$user->id_tipo_usuario
             ]
         ]);
     } else {
