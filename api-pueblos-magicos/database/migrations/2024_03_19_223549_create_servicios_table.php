@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('servicios', function (Blueprint $table) {
             $table->id();
             $table->foreignId("id_tipo_servicio")->constrained('tipos_servicios','id');
-            $table->foreignId('id_direccion')->constrained('direcciones','id');
+            $table->foreignId('id_direccion')->constrained('direcciones','id')->onDelete('cascade');
             $table->foreignId('id_usuario')->constrained('usuarios','id');
             $table->foreignId('id_pueblo')->constrained('pueblos_magicos','id');
             $table->timestamps();

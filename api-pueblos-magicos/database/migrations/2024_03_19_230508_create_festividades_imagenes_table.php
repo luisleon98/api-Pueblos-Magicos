@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('festividades_imagenes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_festividad')->constrained('festividades','id');
-            $table->foreignId('id_imagen')->constrained('imagenes','id');
+            $table->foreignId('id_festividad')->constrained('festividades','id')->onDelete('cascade');
+            $table->foreignId('id_imagen')->constrained('imagenes','id')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

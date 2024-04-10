@@ -24,7 +24,7 @@ Route::get('cattiposUsers',[TipoUserController::class,'index']);
 Route::get('catservicios',[CatServiciosController::class,'index']);
 Route::get('tiposervicios',[TiposServiciosController::class,'index']);
 Route::get('pueblosmagicos',[PueblosMagicosController::class,'index']);
-
+Route::delete('/servicios/{servicio}',[ServiciosController::class,'destroy']);
 Route::post('users/registrar',[UserController::class,'create']);
 Route::post('users/login',[UserController::class,'login']);
 // Route::get('/user/login', function (Request $request) {

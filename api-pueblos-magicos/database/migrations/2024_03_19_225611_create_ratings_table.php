@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("rating");
             $table->string("comentario");
-            $table->foreignId('id_servicio')->constrained('servicios','id');
+            $table->foreignId('id_servicio')->constrained('servicios','id')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

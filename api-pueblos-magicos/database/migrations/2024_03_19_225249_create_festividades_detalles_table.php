@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('precios');
             $table->string('nombre');
             $table->string("descripcion");
-            $table->foreignId("id_coordenadas")->constrained('coordenadas','id');
-            $table->foreignId("id_servicio")->constrained('servicios','id');
+            $table->foreignId("id_coordenadas")->constrained('coordenadas', 'id')->onDelete('cascade');
+            $table->foreignId("id_servicio")->constrained('servicios', 'id')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

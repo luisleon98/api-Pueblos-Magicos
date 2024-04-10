@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('pueblos_magicos_imagenes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_pueblo_magico')->constrained('pueblos_magicos','id');
-            $table->foreignId('id_imagen')->constrained('imagenes','id');
+            $table->foreignId('id_pueblo_magico')->constrained('pueblos_magicos','id')->onDelete('cascade');
+            $table->foreignId('id_imagen')->constrained('imagenes','id')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

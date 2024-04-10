@@ -13,7 +13,7 @@ class TiposServicios extends Seeder
      */
     public function run(): void
     {
-        $tipos = ['Hospedaje', 'Gasto', 'Tours', 'Sitios', 'Festividades', 'Cerca de ustedes'];
+        $tipos = ['Hospedaje', 'Gastronomia', 'Tours', 'Sitios', 'Festividades', 'Cerca de ustedes'];
         foreach ($tipos as $tipo) {
             DB::table('tipos_servicios')->insert([
                 'servicio' => $tipo,

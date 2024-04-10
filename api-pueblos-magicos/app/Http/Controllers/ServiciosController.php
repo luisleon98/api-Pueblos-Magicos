@@ -174,4 +174,14 @@ class ServiciosController extends Controller
             "data" => ["servicio" => $servicio]
         ]);
     }
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Servicios $servicio)
+    {
+        $servicio->delete();
+        return response()->json([
+            "data" => ["servicio" => $servicio]
+        ]);
+    }
 }
