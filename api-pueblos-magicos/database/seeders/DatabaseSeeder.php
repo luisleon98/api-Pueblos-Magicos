@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PueblosMagicosSeeder::class);
         $this->call(TiposImagenesSeeder::class);
         $this->call(UsuarioAdminSeeder::class);
+        $this->call(Status::class);
     }
 }
