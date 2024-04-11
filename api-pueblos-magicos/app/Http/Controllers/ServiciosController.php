@@ -12,9 +12,10 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ServicioDetalle;
 use App\Models\ServiciosImagen;
+use App\Models\PueblosSolicitudes;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use App\Http\Requests\RegistroServicioRequest;
-use App\Models\PueblosSolicitudes;
 
 class ServiciosController extends Controller
 {
@@ -262,8 +263,41 @@ class ServiciosController extends Controller
         ]);
     }
     public function getAllPreview(){
+        $servicios = Servicios::with([
+            'pueblo' => function($query) {
+                $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
+            },
+            'detalleServicio' => function($query) {
+                $query->select('servicio_detalles.id', 'servicio_detalles.titulo', 'servicio_detalles.descripcion','servicio_detalles.id_servicio');
+            },
+            'imagenes' => function($query) {
+                $query->select('imagenes.id', 'imagenes.nombre');
+            }
+        ])->paginate(env('PAGINATION_LIMIT', 5));
+         // Agregar la ruta del archivo a cada imagen directamente en la colección de items
+    $servicios->getCollection()->transform(function ($servicio) {
+        return $this->addFileToImages([$servicio])[0];
+    });
         return response()->json([
-            "data" => ["ol"]
+            "data" => ["servicios"=>$servicios]
         ]);
     }
+    public function addFileToImages($servicios)
+{
+    foreach ($servicios as $servicio) {
+        if (isset($servicio->imagenes)) {
+            foreach ($servicio->imagenes as $imagen) {
+                // Asumiendo que 'nombre' contiene el nombre del archivo
+                $path = storage_path( env('STORAGE_PATH', '../public/uploads/') . $imagen->nombre);
+                if (File::exists($path)) {
+                    $contenido = file_get_contents($path);
+                    $imagen->archivo = base64_encode($contenido);
+                } else {
+                    $imagen->archivo = null; // O manejar el error como prefieras
+                }
+            }
+        }
+    }
+    return $servicios;
+}
 }
