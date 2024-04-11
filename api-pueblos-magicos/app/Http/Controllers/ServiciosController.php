@@ -100,7 +100,7 @@ class ServiciosController extends Controller
             'id_direccion' => $direccion->id,
             'id_usuario' => $data['id_usuario'],
             'id_pueblo' => $data['id_pueblo'],
-            'id_estatus'=> 1
+            'id_estatus' => 1
         ]);
         $servicioDetalle = ServicioDetalle::create([
             'dias_servicio' => $data['dias_servicio'],
@@ -115,8 +115,8 @@ class ServiciosController extends Controller
 
         $puebloSolicitud = PueblosSolicitudes::create([
             'id_servicio'  => $servicio->id,
-        'id_pueblo_magico' => $data['id_pueblo'],
-        'id_tipo_servicio' => $data['id_tipo_servicio']
+            'id_pueblo_magico' => $data['id_pueblo'],
+            'id_tipo_servicio' => $data['id_tipo_servicio']
         ]);
 
         $imagenPrincipal = $this->procesarImagen($data['imgPrincipal']);
@@ -167,50 +167,50 @@ class ServiciosController extends Controller
             'id_imagen' => $imagen->id
         ]);
     }
-        /**
+    /**
      * Display the specified resource.
      */
     /**
- * @OA\Get(
- *     path="/api/servicios/{id}",
- *     summary="Muestra un servicio específico",
- *     tags={"Servicios"},
- * *     security={{"bearerAuth":{}}},
- *     @OA\Parameter(
- *         name="id",
- *         in="path",
- *         required=true,
- *         description="ID del servicio a buscar",
- *         @OA\Schema(
- *             type="string"
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Operación exitosa, servicio encontrado",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="data",
- *                 type="object",
- *                 @OA\Property(
- *                     property="servicio",
- *                     type="array",
- *                     @OA\Items(ref="#/components/schemas/Servicios")
- *                 )
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=404,
- *         description="Servicio no encontrado"
- *     )
- * )
- */
+     * @OA\Get(
+     *     path="/api/servicios/{id}",
+     *     summary="Muestra un servicio específico",
+     *     tags={"Servicios"},
+     * *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del servicio a buscar",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa, servicio encontrado",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="servicio",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/Servicios")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Servicio no encontrado"
+     *     )
+     * )
+     */
 
     public function show(string $id)
     {
-        $servicio = Servicios::where('id',$id)->with(['tipoServicio','direccion','usuario','pueblo','detalleServicio.coordenada','detalleServicio.horario','imagenes.tipo','estatus'])->get();
+        $servicio = Servicios::where('id', $id)->with(['tipoServicio', 'direccion', 'usuario', 'pueblo', 'detalleServicio.coordenada', 'detalleServicio.horario', 'imagenes.tipo', 'estatus'])->get();
         return response()->json([
             "data" => ["servicio" => $servicio]
         ]);
@@ -219,42 +219,42 @@ class ServiciosController extends Controller
      * Remove the specified resource from storage.
      */
     /**
- * @OA\Delete(
- *     path="/api/servicios/{id}",
- *     summary="Elimina un servicio específico",
- *     tags={"Servicios"},
- *     security={{"bearerAuth":{}}},
- *     @OA\Parameter(
- *         name="id",
- *         in="path",
- *         required=true,
- *         description="ID del servicio a eliminar",
- *         @OA\Schema(
- *             type="string"
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Operación exitosa, servicio eliminado",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="data",
- *                 type="object",
- *                 @OA\Property(
- *                     property="servicio",
- *                     type="object",
- *                     ref="#/components/schemas/Servicios"
- *                 )
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=404,
- *         description="Servicio no encontrado"
- *     )
- * )
- */
+     * @OA\Delete(
+     *     path="/api/servicios/{id}",
+     *     summary="Elimina un servicio específico",
+     *     tags={"Servicios"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del servicio a eliminar",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa, servicio eliminado",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="servicio",
+     *                     type="object",
+     *                     ref="#/components/schemas/Servicios"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Servicio no encontrado"
+     *     )
+     * )
+     */
     public function destroy(Servicios $servicio)
     {
         $servicio->delete();
@@ -262,40 +262,76 @@ class ServiciosController extends Controller
             "data" => ["servicio" => $servicio]
         ]);
     }
-    public function getAllPreview(){
+    /**
+ * @OA\Get(
+ *     path="/api/servicios",
+ *     summary="Obtiene una vista previa de los servicios",
+ *     tags={"Servicios"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="query",
+ *         description="Número de página para la paginación",
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="servicios",
+ *                     type="array",
+ *                     @OA\Items(ref="#/components/schemas/Servicios")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autenticado"
+ *     )
+ * )
+ */
+    public function getAllPreview()
+    {
         $servicios = Servicios::with([
-            'pueblo' => function($query) {
+            'pueblo' => function ($query) {
                 $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
             },
-            'detalleServicio' => function($query) {
-                $query->select('servicio_detalles.id', 'servicio_detalles.titulo', 'servicio_detalles.descripcion','servicio_detalles.id_servicio');
+            'detalleServicio' => function ($query) {
+                $query->select('servicio_detalles.id', 'servicio_detalles.titulo', 'servicio_detalles.descripcion', 'servicio_detalles.id_servicio');
             },
-            'imagenes' => function($query) {
+            'imagenes' => function ($query) {
                 $query->select('imagenes.id', 'imagenes.nombre');
             }
         ])->paginate(env('PAGINATION_LIMIT', 5));
-    $servicios->getCollection()->transform(function ($servicio) {
-        return $this->addFileToImages([$servicio])[0];
-    });
+        $servicios->getCollection()->transform(function ($servicio) {
+            return $this->addFileToImages([$servicio])[0];
+        });
         return response()->json([
-            "data" => ["servicios"=>$servicios]
+            "data" => ["servicios" => $servicios]
         ]);
     }
     public function addFileToImages($servicios)
-{
-    foreach ($servicios as $servicio) {
-        if (isset($servicio->imagenes)) {
-            foreach ($servicio->imagenes as $imagen) {
-                $path = storage_path( env('STORAGE_PATH', '../public/uploads/') . $imagen->nombre);
-                if (File::exists($path)) {
-                    $contenido = file_get_contents($path);
-                    $imagen->archivo = base64_encode($contenido);
-                } else {
-                    $imagen->archivo = null; 
+    {
+        foreach ($servicios as $servicio) {
+            if (isset($servicio->imagenes)) {
+                foreach ($servicio->imagenes as $imagen) {
+                    $path = storage_path(env('STORAGE_PATH', '../public/uploads/') . $imagen->nombre);
+                    if (File::exists($path)) {
+                        $contenido = file_get_contents($path);
+                        $imagen->archivo = base64_encode($contenido);
+                    } else {
+                        $imagen->archivo = null;
+                    }
                 }
             }
         }
+        return $servicios;
     }
-    return $servicios;
-}
 }

@@ -344,6 +344,58 @@
                 ]
             }
         },
+        "/api/servicios": {
+            "get": {
+                "tags": [
+                    "Servicios"
+                ],
+                "summary": "Obtiene una vista previa de los servicios",
+                "operationId": "2538bb0cac628dc5af1315e50ee53396",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página para la paginación",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "servicios": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Servicios"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users/registrar": {
             "post": {
                 "tags": [
@@ -503,6 +555,28 @@
                         "bearerAuth": []
                     }
                 ]
+            }
+        },
+        "/sanctum/csrf-cookie": {
+            "get": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Obtiene los tokens CSRF y de sesión",
+                "operationId": "79fca2da22bba201dfdb4ed40de92eff",
+                "responses": {
+                    "204": {
+                        "description": "Operación exitosa",
+                        "headers": {
+                            "Set-Cookie": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {}
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },

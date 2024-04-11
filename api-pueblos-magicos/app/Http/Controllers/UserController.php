@@ -139,6 +139,7 @@ class UserController extends Controller
 *             )
 *         )
 *     ),
+
 *     @OA\Response(
 *         response=200,
 *         description="OK",
@@ -237,9 +238,33 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+/**
+ * @OA\Get(
+ *     path="/sanctum/csrf-cookie",
+ *     summary="Obtiene los tokens CSRF y de sesión",
+ *     tags={"Autenticación"},
+ *     @OA\Response(
+ *         response=204,
+ *         description="Operación exitosa",
+ *         @OA\Header(
+ *             header="Set-Cookie",
+ *             @OA\Schema(
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Schema(
+ *                         type="string",
+ *                         example="XSRF-TOKEN=eyJpdiI6IktmZkhXWVlLS1VQTW1STXE4VG1UbHc9PSIsInZhbHVlIjoiSTNSVExZRkpBMjlzdG1jNWlOUW1SVTVYeVFmQ09xQW9TVkFDREhCaGYra3VCOUxyVkM4dUE1S0h3WVBqMDVyS2F5anNqL1Y2UGNOUkxiWjZmWTdjTTYvYmJUMk00dnRIMDBucXdSSkFTR1JZTWF1TlNacHFPOEZkYmt0RWhzMUEiLCJtYWMiOiI3ZGFkODRhZTYzZjUwMzM1Mjg3MmQ0YTljZDZiZDc1ZDU4NjY3ZjVmNWI5YzBiOTA0Yzk2NTE0OTY3MGFmYTdlIiwidGFnIjoiIn0%3D; expires=Thu, 11 Apr 2024 21:43:15 GMT; Max-Age=7200; path=/; samesite=lax"
+ *                     ),
+ *                     @OA\Schema(
+ *                         type="string",
+ *                         example="laravel_session=eyJpdiI6IlNzVklsYndhOWZseDk1NnNLeWJhM1E9PSIsInZhbHVlIjoicHZsakxmOVVxdmJMY0ZVdDJNbUxnclJqejFlTzFHWXZ6Y1VZSGI4V2FxZndlUnJ0L3hSZmgwM3JGNGcrQjljdWI3VjVCWW9XaWx1Lzczc2VjbkN5ekIvQ3lvZmpxNWxxeDVUbWsrbVZPT3ZwTnJMWDRzSnVOWHNSVHAzUlg0bzAiLCJtYWMiOiIyMmUwNWFhM2I0Yjk2ZjM2OWNhNDE1ZDAyOGEzM2ZmZDhhMzAzZjI2ODExZGJkZmNhNDFjODkzMmNhZmE0ZTUzIiwidGFnIjoiIn0%3D; expires=Thu, 11 Apr 2024 21:43:15 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     )
+ * )
+ */
     public function destroy(string $id)
     {
         //
