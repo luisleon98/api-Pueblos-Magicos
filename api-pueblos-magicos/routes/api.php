@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/servicios/{id}',[ServiciosController::class,'show']);
     Route::post('users/logout',[UserController::class,'logout']);
     Route::post('servicios/registrar',[ServiciosController::class,'store']);
+    Route::delete('/servicios/{servicio}',[ServiciosController::class,'destroy']);
 });
 
 Route::get('catestados',[StateController::class,'index']);
@@ -24,11 +25,6 @@ Route::get('cattiposUsers',[TipoUserController::class,'index']);
 Route::get('catservicios',[CatServiciosController::class,'index']);
 Route::get('tiposervicios',[TiposServiciosController::class,'index']);
 Route::get('pueblosmagicos',[PueblosMagicosController::class,'index']);
-Route::delete('/servicios/{servicio}',[ServiciosController::class,'destroy']);
+Route::get('servicios',[ServiciosController::class,'getAllPreview']);
 Route::post('users/registrar',[UserController::class,'create']);
 Route::post('users/login',[UserController::class,'login']);
-// Route::get('/user/login', function (Request $request) {
-//     return response()->json(['error' => 'Unauthorizefdsfsdfsdd'], 401);
-// })->name('login');
-
-// Route::post()

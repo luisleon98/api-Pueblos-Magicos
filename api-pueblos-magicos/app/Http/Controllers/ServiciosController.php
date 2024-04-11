@@ -98,7 +98,8 @@ class ServiciosController extends Controller
             'id_tipo_servicio' => $data['id_tipo_servicio'],
             'id_direccion' => $direccion->id,
             'id_usuario' => $data['id_usuario'],
-            'id_pueblo' => $data['id_pueblo']
+            'id_pueblo' => $data['id_pueblo'],
+            'id_estatus'=> 1
         ]);
         $servicioDetalle = ServicioDetalle::create([
             'dias_servicio' => $data['dias_servicio'],
@@ -208,7 +209,7 @@ class ServiciosController extends Controller
 
     public function show(string $id)
     {
-        $servicio = Servicios::where('id',$id)->with(['tipoServicio','direccion','usuario','pueblo','detalleServicio.coordenada','detalleServicio.horario','imagenes.tipo'])->get();
+        $servicio = Servicios::where('id',$id)->with(['tipoServicio','direccion','usuario','pueblo','detalleServicio.coordenada','detalleServicio.horario','imagenes.tipo','estatus'])->get();
         return response()->json([
             "data" => ["servicio" => $servicio]
         ]);
@@ -216,11 +217,53 @@ class ServiciosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    /**
+ * @OA\Delete(
+ *     path="/api/servicios/{id}",
+ *     summary="Elimina un servicio específico",
+ *     tags={"Servicios"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="ID del servicio a eliminar",
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa, servicio eliminado",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="servicio",
+ *                     type="object",
+ *                     ref="#/components/schemas/Servicios"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Servicio no encontrado"
+ *     )
+ * )
+ */
     public function destroy(Servicios $servicio)
     {
         $servicio->delete();
         return response()->json([
             "data" => ["servicio" => $servicio]
+        ]);
+    }
+    public function getAllPreview(){
+        return response()->json([
+            "data" => ["ol"]
         ]);
     }
 }

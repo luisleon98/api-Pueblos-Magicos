@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Seeders\Status;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,7 +47,8 @@ class Servicios extends Model
         'id_tipo_servicio',
         'id_direccion',
         'id_usuario',
-        'id_pueblo'
+        'id_pueblo',
+        'id_estatus'
     ];
     public function tipoServicio()
     {
@@ -85,6 +87,9 @@ class Servicios extends Model
             'id', // Llave local en la tabla inicial
             'id_imagen' // Llave local en la tabla intermedia
         );
+    }
+    public function estatus(){
+        return $this->belongsTo(Estatus::class, 'id_estatus');
     }
 
     public static function boot()
