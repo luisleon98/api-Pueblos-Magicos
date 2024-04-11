@@ -274,7 +274,6 @@ class ServiciosController extends Controller
                 $query->select('imagenes.id', 'imagenes.nombre');
             }
         ])->paginate(env('PAGINATION_LIMIT', 5));
-         // Agregar la ruta del archivo a cada imagen directamente en la colección de items
     $servicios->getCollection()->transform(function ($servicio) {
         return $this->addFileToImages([$servicio])[0];
     });
@@ -287,13 +286,12 @@ class ServiciosController extends Controller
     foreach ($servicios as $servicio) {
         if (isset($servicio->imagenes)) {
             foreach ($servicio->imagenes as $imagen) {
-                // Asumiendo que 'nombre' contiene el nombre del archivo
                 $path = storage_path( env('STORAGE_PATH', '../public/uploads/') . $imagen->nombre);
                 if (File::exists($path)) {
                     $contenido = file_get_contents($path);
                     $imagen->archivo = base64_encode($contenido);
                 } else {
-                    $imagen->archivo = null; // O manejar el error como prefieras
+                    $imagen->archivo = null; 
                 }
             }
         }
