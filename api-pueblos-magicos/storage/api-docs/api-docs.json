@@ -457,6 +457,207 @@
                 ]
             }
         },
+        "/api/servicios/filtrar/pueblo/magico/{id_pueblo}": {
+            "get": {
+                "tags": [
+                    "Servicios"
+                ],
+                "summary": "Obtiene una vista previa de los servicios filtrada por el pueblo magico al que pertenece",
+                "operationId": "5b4a58eb3506d86d5419e14e36bc91df",
+                "parameters": [
+                    {
+                        "name": "id_pueblo",
+                        "in": "path",
+                        "description": "ID del pueblo de los servicios a buscar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página para la paginación",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "servicios": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Servicios"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/servicios/filtrar/categoria/{id_categoria}": {
+            "get": {
+                "tags": [
+                    "Servicios"
+                ],
+                "summary": "Obtiene una vista previa de los servicios filtrada por el tipo de servicio",
+                "operationId": "dbd59ae4ef74ad787b0dd43c28c839b3",
+                "parameters": [
+                    {
+                        "name": "id_categoria",
+                        "in": "path",
+                        "description": "ID del tipo deservicio a buscar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página para la paginación",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "servicios": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Servicios"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/servicios/filtrar/{id_estatus}/{id_pueblo}/{id_categoria}": {
+            "get": {
+                "tags": [
+                    "Servicios"
+                ],
+                "summary": "Obtiene una vista previa de los servicios filtrada por el pueblo magico, el estado y la categoria",
+                "operationId": "da8b5c09689c9abc72f3323eae7b476a",
+                "parameters": [
+                    {
+                        "name": "id_estatus",
+                        "in": "path",
+                        "description": "ID del estado de los servicios a buscar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id_pueblo",
+                        "in": "path",
+                        "description": "ID del pueblo de los servicios a buscar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id_categoria",
+                        "in": "path",
+                        "description": "ID del tipo deservicio a buscar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página para la paginación",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "servicios": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Servicios"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users/registrar": {
             "post": {
                 "tags": [

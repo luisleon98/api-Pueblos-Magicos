@@ -266,40 +266,40 @@ class ServiciosController extends Controller
         ]);
     }
     /**
- * @OA\Get(
- *     path="/api/servicios",
- *     summary="Obtiene una vista previa de los servicios",
- *     tags={"Servicios"},
- *     security={{"bearerAuth":{}}},
- *     @OA\Parameter(
- *         name="page",
- *         in="query",
- *         description="Número de página para la paginación",
- *         @OA\Schema(
- *             type="integer"
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Operación exitosa",
- *         @OA\JsonContent(
- *             @OA\Property(
- *                 property="data",
- *                 type="object",
- *                 @OA\Property(
- *                     property="servicios",
- *                     type="array",
- *                     @OA\Items(ref="#/components/schemas/Servicios")
- *                 )
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="No autenticado"
- *     )
- * )
- */
+     * @OA\Get(
+     *     path="/api/servicios",
+     *     summary="Obtiene una vista previa de los servicios",
+     *     tags={"Servicios"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Número de página para la paginación",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="servicios",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/Servicios")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado"
+     *     )
+     * )
+     */
     public function getAllPreview()
     {
         $servicios = Servicios::with([
@@ -312,8 +312,8 @@ class ServiciosController extends Controller
             'imagenes' => function ($query) {
                 $query->select('imagenes.id', 'imagenes.nombre');
             },
-            'estatus' => function ($query){
-                $query->select('id','estado');
+            'estatus' => function ($query) {
+                $query->select('id', 'estado');
             }
         ])->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -340,13 +340,13 @@ class ServiciosController extends Controller
         }
         return $servicios;
     }
-        /**
- * @OA\Get(
- *     path="/api/servicios/filtrar/estatus/{id_estatus}",
- *     summary="Obtiene una vista previa de los servicios filtrada por el estado solicitado",
- *     tags={"Servicios"},
- *     security={{"bearerAuth":{}}},
- * @OA\Parameter(
+    /**
+     * @OA\Get(
+     *     path="/api/servicios/filtrar/estatus/{id_estatus}",
+     *     summary="Obtiene una vista previa de los servicios filtrada por el estado solicitado",
+     *     tags={"Servicios"},
+     *     security={{"bearerAuth":{}}},
+     * @OA\Parameter(
      *         name="id_estatus",
      *         in="path",
      *         required=true,
@@ -355,37 +355,38 @@ class ServiciosController extends Controller
      *             type="string"
      *         )
      *     ),
- *     @OA\Parameter(
- *         name="page",
- *         in="query",
- *         description="Número de página para la paginación",
- *         @OA\Schema(
- *             type="integer"
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Operación exitosa",
- *         @OA\JsonContent(
- *             @OA\Property(
- *                 property="data",
- *                 type="object",
- *                 @OA\Property(
- *                     property="servicios",
- *                     type="array",
- *                     @OA\Items(ref="#/components/schemas/Servicios")
- *                 )
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="No autenticado"
- *     )
- * )
- */
-    public function getServiciosByEstatus($id_estatus){
-        $servicios = Servicios::where('id_estatus',$id_estatus)->with([
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Número de página para la paginación",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="servicios",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/Servicios")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado"
+     *     )
+     * )
+     */
+    public function getServiciosByEstatus($id_estatus)
+    {
+        $servicios = Servicios::where('id_estatus', $id_estatus)->with([
             'pueblo' => function ($query) {
                 $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
             },
@@ -395,8 +396,8 @@ class ServiciosController extends Controller
             'imagenes' => function ($query) {
                 $query->select('imagenes.id', 'imagenes.nombre');
             },
-            'estatus' => function ($query){
-                $query->select('id','estado');
+            'estatus' => function ($query) {
+                $query->select('id', 'estado');
             }
         ])->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -406,8 +407,53 @@ class ServiciosController extends Controller
             "data" => ["servicios" => $servicios]
         ]);
     }
-    public function getServiciosByPueblo($id_pueblo){
-        $servicios = Servicios::where('id_pueblo',$id_pueblo)->with([
+    /**
+     * @OA\Get(
+     *     path="/api/servicios/filtrar/pueblo/magico/{id_pueblo}",
+     *     summary="Obtiene una vista previa de los servicios filtrada por el pueblo magico al que pertenece",
+     *     tags={"Servicios"},
+     *     security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     *         name="id_pueblo",
+     *         in="path",
+     *         required=true,
+     *         description="ID del pueblo de los servicios a buscar",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Número de página para la paginación",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="servicios",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/Servicios")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado"
+     *     )
+     * )
+     */
+    public function getServiciosByPueblo($id_pueblo)
+    {
+        $servicios = Servicios::where('id_pueblo', $id_pueblo)->with([
             'pueblo' => function ($query) {
                 $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
             },
@@ -417,8 +463,160 @@ class ServiciosController extends Controller
             'imagenes' => function ($query) {
                 $query->select('imagenes.id', 'imagenes.nombre');
             },
-            'estatus' => function ($query){
-                $query->select('id','estado');
+            'estatus' => function ($query) {
+                $query->select('id', 'estado');
+            }
+        ])->paginate(env('PAGINATION_LIMIT', 5));
+        $servicios->getCollection()->transform(function ($servicio) {
+            return $this->addFileToImages([$servicio])[0];
+        });
+        return response()->json([
+            "data" => ["servicios" => $servicios]
+        ]);
+    }
+    /**
+     * @OA\Get(
+     *     path="/api/servicios/filtrar/categoria/{id_categoria}",
+     *     summary="Obtiene una vista previa de los servicios filtrada por el tipo de servicio",
+     *     tags={"Servicios"},
+     *     security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     *         name="id_categoria",
+     *         in="path",
+     *         required=true,
+     *         description="ID del tipo deservicio a buscar",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Número de página para la paginación",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="servicios",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/Servicios")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado"
+     *     )
+     * )
+     */
+    public function getServiciosByCategoria($id_categoria)
+    {
+        $servicios = Servicios::where('id_tipo_servicio', $id_categoria)->with([
+            'pueblo' => function ($query) {
+                $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
+            },
+            'detalleServicio' => function ($query) {
+                $query->select('servicio_detalles.id', 'servicio_detalles.titulo', 'servicio_detalles.descripcion', 'servicio_detalles.id_servicio');
+            },
+            'imagenes' => function ($query) {
+                $query->select('imagenes.id', 'imagenes.nombre');
+            },
+            'estatus' => function ($query) {
+                $query->select('id', 'estado');
+            }
+        ])->paginate(env('PAGINATION_LIMIT', 5));
+        $servicios->getCollection()->transform(function ($servicio) {
+            return $this->addFileToImages([$servicio])[0];
+        });
+        return response()->json([
+            "data" => ["servicios" => $servicios]
+        ]);
+    }
+    /**
+     * @OA\Get(
+     *     path="/api/servicios/filtrar/{id_estatus}/{id_pueblo}/{id_categoria}",
+     *     summary="Obtiene una vista previa de los servicios filtrada por el pueblo magico, el estado y la categoria",
+     *     tags={"Servicios"},
+     *     security={{"bearerAuth":{}}},
+     * @OA\Parameter(
+     *         name="id_estatus",
+     *         in="path",
+     *         required=true,
+     *         description="ID del estado de los servicios a buscar",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     * @OA\Parameter(
+     *         name="id_pueblo",
+     *         in="path",
+     *         required=true,
+     *         description="ID del pueblo de los servicios a buscar",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     * @OA\Parameter(
+     *         name="id_categoria",
+     *         in="path",
+     *         required=true,
+     *         description="ID del tipo deservicio a buscar",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Número de página para la paginación",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="servicios",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/Servicios")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado"
+     *     )
+     * )
+     */
+    public function getServiciosFiltradoEspecifico($id_estatus, $id_pueblo, $id_categoria)
+    {
+        $servicios = Servicios::where('id_estatus', $id_estatus)->where('id_pueblo', $id_pueblo)->where('id_tipo_servicio', $id_categoria)->with([
+            'pueblo' => function ($query) {
+                $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
+            },
+            'detalleServicio' => function ($query) {
+                $query->select('servicio_detalles.id', 'servicio_detalles.titulo', 'servicio_detalles.descripcion', 'servicio_detalles.id_servicio');
+            },
+            'imagenes' => function ($query) {
+                $query->select('imagenes.id', 'imagenes.nombre');
+            },
+            'estatus' => function ($query) {
+                $query->select('id', 'estado');
             }
         ])->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
