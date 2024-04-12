@@ -396,6 +396,67 @@
                 ]
             }
         },
+        "/api/servicios/filtrar/estatus/{id_estatus}": {
+            "get": {
+                "tags": [
+                    "Servicios"
+                ],
+                "summary": "Obtiene una vista previa de los servicios filtrada por el estado solicitado",
+                "operationId": "a0881f28180e510bb3e32b12c770e177",
+                "parameters": [
+                    {
+                        "name": "id_estatus",
+                        "in": "path",
+                        "description": "ID del estado de los servicios a buscar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página para la paginación",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "servicios": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Servicios"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users/registrar": {
             "post": {
                 "tags": [
