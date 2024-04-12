@@ -406,4 +406,26 @@ class ServiciosController extends Controller
             "data" => ["servicios" => $servicios]
         ]);
     }
+    public function getServiciosByPueblo($id_pueblo){
+        $servicios = Servicios::where('id_pueblo',$id_pueblo)->with([
+            'pueblo' => function ($query) {
+                $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
+            },
+            'detalleServicio' => function ($query) {
+                $query->select('servicio_detalles.id', 'servicio_detalles.titulo', 'servicio_detalles.descripcion', 'servicio_detalles.id_servicio');
+            },
+            'imagenes' => function ($query) {
+                $query->select('imagenes.id', 'imagenes.nombre');
+            },
+            'estatus' => function ($query){
+                $query->select('id','estado');
+            }
+        ])->paginate(env('PAGINATION_LIMIT', 5));
+        $servicios->getCollection()->transform(function ($servicio) {
+            return $this->addFileToImages([$servicio])[0];
+        });
+        return response()->json([
+            "data" => ["servicios" => $servicios]
+        ]);
+    }
 }
