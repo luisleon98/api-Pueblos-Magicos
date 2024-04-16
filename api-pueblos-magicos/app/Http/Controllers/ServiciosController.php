@@ -9,12 +9,12 @@ use App\Models\Coordenadas;
 use App\Models\Direcciones;
 use Illuminate\Support\Str;
 
-use Illuminate\Http\Request;
 use App\Models\ServicioDetalle;
 use App\Models\ServiciosImagen;
 use App\Models\PueblosSolicitudes;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
+use App\Http\Requests\PutServicioRequest;
 use App\Http\Requests\RegistroServicioRequest;
 
 class ServiciosController extends Controller
@@ -314,6 +314,9 @@ class ServiciosController extends Controller
             },
             'estatus' => function ($query) {
                 $query->select('id', 'estado');
+            },
+            'tipoServicio'=>function($query){
+                $query->select('id','servicio');
             }
         ])->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -398,6 +401,9 @@ class ServiciosController extends Controller
             },
             'estatus' => function ($query) {
                 $query->select('id', 'estado');
+            },
+            'tipoServicio'=>function($query){
+                $query->select('id','servicio');
             }
         ])->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -465,6 +471,9 @@ class ServiciosController extends Controller
             },
             'estatus' => function ($query) {
                 $query->select('id', 'estado');
+            },
+            'tipoServicio'=>function($query){
+                $query->select('id','servicio');
             }
         ])->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -532,6 +541,9 @@ class ServiciosController extends Controller
             },
             'estatus' => function ($query) {
                 $query->select('id', 'estado');
+            },
+            'tipoServicio'=>function($query){
+                $query->select('id','servicio');
             }
         ])->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -617,6 +629,9 @@ class ServiciosController extends Controller
             },
             'estatus' => function ($query) {
                 $query->select('id', 'estado');
+            },
+            'tipoServicio'=>function($query){
+                $query->select('id','servicio');
             }
         ])->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -624,6 +639,17 @@ class ServiciosController extends Controller
         });
         return response()->json([
             "data" => ["servicios" => $servicios]
+        ]);
+    }
+     /**
+     * Show the form for editing the specified resource.
+     */
+    public function updateServicio(PutServicioRequest $request, Servicios $servicio)
+    {
+      $data = $request->validated();
+        
+        return response()->json([
+            "data" => ["servicio" => $data]
         ]);
     }
 }
