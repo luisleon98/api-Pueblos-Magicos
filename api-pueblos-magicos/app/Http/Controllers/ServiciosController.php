@@ -210,7 +210,7 @@ class ServiciosController extends Controller
 
     public function show(string $id)
     {
-        $servicio = Servicios::where('id', $id)->with(['tipoServicio', 'direccion', 'usuario', 'pueblo', 'detalleServicio.coordenada', 'detalleServicio.horario', 'imagenes.tipo', 'estatus'])->get();
+        $servicio = Servicios::where('id', $id)->with(['tipoServicio', 'direccion.estado', 'usuario', 'pueblo', 'detalleServicio.coordenada', 'detalleServicio.horario', 'imagenes.tipo', 'estatus'])->get();
         $servicio->transform(function ($servicio) {
             return $this->addFileToImages([$servicio])[0];
         });

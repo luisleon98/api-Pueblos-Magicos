@@ -60,4 +60,8 @@ class Direcciones extends Model
         'id_estado',
         'colonia'
     ];
+    public function estado()
+    {
+        return $this->belongsTo(State::class, 'id_estado');
+    }
 }
