@@ -41,6 +41,13 @@ class PutServicioRequest extends FormRequest
             'data.imagenes_eliminar.*.nombre' => ['required_with:data.imagenes_eliminar.*.id','exists:imagenes,nombre'],
             'data.imagen_principal'=>['sometimes','required', 'mimes:jpg,png', 'max:20480'],
             'data.imagenes_nuevas.*' => ['sometimes','required', 'mimes:jpg,png', 'max:20480'],
+            'data.direccion.calle' => ['sometimes','required'],
+            'data.direccion.municipio' => ['sometimes','required'],
+            'data.direccion.CP' => ['sometimes','required'],
+            'data.direccion.int' => ['sometimes','required'],
+            'data.direccion.ext' => ['sometimes','nullable'],
+            'data.direccion.colonia' => ['sometimes','required'],
+            'data.direccion.id_estado' => ['sometimes','required','exists:estados,id'],
         ];
     }
     public function messages(): array
@@ -75,6 +82,14 @@ class PutServicioRequest extends FormRequest
         'data.imagenes_nuevas.*.required' => 'Al menos una imagen nueva es obligatoria.',
         'data.imagenes_nuevas.*.mimes' => 'Los archivos de las imágenes nuevas deben ser de tipo JPG o PNG.',
         'data.imagenes_nuevas.*.max' => 'El tamaño de las imágenes nuevas no debe exceder los 20MB.',
+        'data.direccion.calle.required' => 'La calle es requerida',
+        'data.direccion.municipio.required' => 'El municipio es requerido',
+        'data.direccion.CP.required' => 'El código postal es requerido',
+        'data.direccion.int.required' => 'El número interior es requerido',
+        'data.direccion.ext.nullable' => 'El número exterior debe ser un valor válido',
+        'data.direccion.colonia.required' => 'La colonia es requerida',
+        'data.direccion.id_estado.required' => 'El estado es requerido',
+        'data.direccion.id_estado.exists' => 'El estado no existe',
     ];
 }
     protected function failedValidation(Validator $validator) {

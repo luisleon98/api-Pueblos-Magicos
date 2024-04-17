@@ -837,8 +837,12 @@ class ServiciosController extends Controller
                 $this->guardarImagenesBD($imagen, 2, $servicio->id);
             }
         }
+        if(isset($data['direccion'])){
+            $direccion = $servicio->direccion();
+            $direccion->update($data['direccion']);
+        }
         return response()->json([
-            "data" => ["servicio" => $data]
+            "data" => ["servicio" => $servicio]
         ]);
     }
 }
