@@ -166,6 +166,77 @@
                 }
             }
         },
+        "/api/observaciones": {
+            "post": {
+                "tags": [
+                    "Observaciones"
+                ],
+                "summary": "Crear una nueva observación para un servicio",
+                "operationId": "ba399de6def02c1ff032b4304dde220b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "properties": {
+                                            "id_servicio": {
+                                                "type": "integer",
+                                                "example": 5
+                                            },
+                                            "id_usuario": {
+                                                "type": "integer",
+                                                "example": 10
+                                            },
+                                            "observacion": {
+                                                "type": "string",
+                                                "example": "Esta es una observación de ejemplo."
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "observacion": {
+                                                    "$ref": "#/components/schemas/Observaciones"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "422": {
+                        "description": "Datos de entrada no válidos"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/servicios/registrar": {
             "post": {
                 "tags": [
@@ -1107,6 +1178,33 @@
                     "tipo": {
                         "type": "integer",
                         "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Observaciones": {
+                "title": "Observaciones",
+                "description": "Modelo para representar observaciones realizadas a un servicio",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_servicio": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "id_estatus": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "observacion": {
+                        "type": "string",
+                        "example": "Esta es una observación de ejemplo."
+                    },
+                    "id_usuario": {
+                        "type": "integer",
+                        "example": 10
                     }
                 },
                 "type": "object"

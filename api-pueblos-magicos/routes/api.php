@@ -7,6 +7,7 @@ use App\Http\Controllers\StateController;
 use App\Http\Controllers\TipoUserController;
 use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\CatServiciosController;
+use App\Http\Controllers\ObservacionesController;
 use App\Http\Controllers\PueblosMagicosController;
 use App\Http\Controllers\TiposServiciosController;
 
@@ -23,9 +24,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route ::get('servicios/filtrar/{id_estatus}/{id_pueblo}/{id_categoria}',[ServiciosController::class,'getServiciosFiltradoEspecifico']);
     Route::post('users/logout',[UserController::class,'logout']);
     Route::post('servicios/registrar',[ServiciosController::class,'store']);
+    Route::post('observaciones',[ObservacionesController::class,'store']);
     Route::delete('/servicios/{servicio}',[ServiciosController::class,'destroy']);
+    Route::put('servicios/{servicio}',[ServiciosController::class,'updateServicio']);
 });
-Route::put('servicios/{servicio}',[ServiciosController::class,'updateServicio']);
+
 Route::get('catestados',[StateController::class,'index']);
 Route::get('cattiposUsers',[TipoUserController::class,'index']);
 Route::get('catservicios',[CatServiciosController::class,'index']);
