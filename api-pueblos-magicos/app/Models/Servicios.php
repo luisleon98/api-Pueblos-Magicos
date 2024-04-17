@@ -102,6 +102,7 @@ class Servicios extends Model
             $detalle = $servicio->detalleServicio()->first();
             $detalle->delete();
             // Eliminar imágenes asociadas al servicio
+            
             $servicio->imagenes()->delete();
             // Eliminar la dirección asociada
             $servicio->direccion()->delete();
