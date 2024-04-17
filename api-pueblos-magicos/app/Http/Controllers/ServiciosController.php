@@ -641,13 +641,179 @@ class ServiciosController extends Controller
             "data" => ["servicios" => $servicios]
         ]);
     }
-     /**
-     * Show the form for editing the specified resource.
-     */
+/**
+ * @OA\Put(
+ *     path="/api/servicios/{servicio}",
+ *     summary="Actualiza un servicio específico",
+ *     tags={"Servicios"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="servicio",
+ *         in="path",
+ *         required=true,
+ *         description="ID del servicio a actualizar",
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"data"},
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="servicio",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="id_tipo_servicio",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="id_usuario",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="id_pueblo",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="id_estatus",
+ *                         type="string"
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="servicio_detalles",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="dias_servicio",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="precio",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="titulo",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="descripcion",
+ *                         type="string"
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="coordenadas",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="longitud",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="latitud",
+ *                         type="string"
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="horarios",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="horario_inicio",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="horario_fin",
+ *                         type="string"
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="imagenes_eliminar",
+ *                     type="array",
+ *                     @OA\Items(
+ *                         type="object",
+ *                         required={"id", "nombre"},
+ *                         @OA\Property(
+ *                             property="id",
+ *                             type="string"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="nombre",
+ *                             type="string"
+ *                         )
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="imagen_principal",
+ *                     type="string",
+ *                     format="binary"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="imagenes_nuevas",
+ *                     type="array",
+ *                     @OA\Items(
+ *                         type="string",
+ *                         format="binary"
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="servicio",
+ *                     type="object",
+ *                     ref="#/components/schemas/Servicios"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autenticado"
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Datos de entrada no válidos"
+ *     )
+ * )
+ */
     public function updateServicio(PutServicioRequest $request, Servicios $servicio)
     {
-      $data = $request->validated();
         
+      $data = $request->validated();
+        $data = $data['data'];
+        if(isset($data['servicio'])){
+            $servicio->update($data['servicio']);
+        }
+        if(isset($data['servicio_detalles'])){
+            $detalles = $servicio->detalleServicio();
+            $detalles->update($data['servicio_detalles']);
+        }
+        if(isset($data['coordenadas'])){
+            $detalles = $servicio->detalleServicio;
+            $coordenadas = $detalles->coordenada;
+            $coordenadas->update($data['coordenadas']);
+        }
+        if(isset($data['horarios'])){
+            $detalles = $servicio->detalleServicio;
+            $horarios = $detalles->horario;
+            $horarios->update($data['horarios']);
+        }
+        if(isset($data['imagenes_eliminar'])){
+            $imagenesIds = [];
+            foreach ($data['imagenes_eliminar'] as $imagen) {
+                $imagenesIds[] = $imagen['id'];
+            }
+    
+            
+        }
         return response()->json([
             "data" => ["servicio" => $data]
         ]);

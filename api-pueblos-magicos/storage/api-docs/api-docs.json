@@ -658,6 +658,164 @@
                 ]
             }
         },
+        "/api/servicios/{servicio}": {
+            "put": {
+                "tags": [
+                    "Servicios"
+                ],
+                "summary": "Actualiza un servicio específico",
+                "operationId": "1320a3fc161953ec5ef15ff79440fc75",
+                "parameters": [
+                    {
+                        "name": "servicio",
+                        "in": "path",
+                        "description": "ID del servicio a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "data"
+                                ],
+                                "properties": {
+                                    "data": {
+                                        "properties": {
+                                            "servicio": {
+                                                "properties": {
+                                                    "id_tipo_servicio": {
+                                                        "type": "string"
+                                                    },
+                                                    "id_usuario": {
+                                                        "type": "string"
+                                                    },
+                                                    "id_pueblo": {
+                                                        "type": "string"
+                                                    },
+                                                    "id_estatus": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "servicio_detalles": {
+                                                "properties": {
+                                                    "dias_servicio": {
+                                                        "type": "string"
+                                                    },
+                                                    "precio": {
+                                                        "type": "string"
+                                                    },
+                                                    "titulo": {
+                                                        "type": "string"
+                                                    },
+                                                    "descripcion": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "coordenadas": {
+                                                "properties": {
+                                                    "longitud": {
+                                                        "type": "string"
+                                                    },
+                                                    "latitud": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "horarios": {
+                                                "properties": {
+                                                    "horario_inicio": {
+                                                        "type": "string"
+                                                    },
+                                                    "horario_fin": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "imagenes_eliminar": {
+                                                "type": "array",
+                                                "items": {
+                                                    "required": [
+                                                        "id",
+                                                        "nombre"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "nombre": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "imagen_principal": {
+                                                "type": "string",
+                                                "format": "binary"
+                                            },
+                                            "imagenes_nuevas": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "servicio": {
+                                                    "$ref": "#/components/schemas/Servicios"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "422": {
+                        "description": "Datos de entrada no válidos"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users/registrar": {
             "post": {
                 "tags": [

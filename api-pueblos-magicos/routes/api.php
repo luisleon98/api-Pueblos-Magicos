@@ -10,6 +10,7 @@ use App\Http\Controllers\CatServiciosController;
 use App\Http\Controllers\PueblosMagicosController;
 use App\Http\Controllers\TiposServiciosController;
 
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -24,7 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('servicios/registrar',[ServiciosController::class,'store']);
     Route::delete('/servicios/{servicio}',[ServiciosController::class,'destroy']);
 });
-
+Route::put('servicios/{servicio}',[ServiciosController::class,'updateServicio']);
 Route::get('catestados',[StateController::class,'index']);
 Route::get('cattiposUsers',[TipoUserController::class,'index']);
 Route::get('catservicios',[CatServiciosController::class,'index']);
