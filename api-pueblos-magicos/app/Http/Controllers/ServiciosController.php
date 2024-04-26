@@ -468,9 +468,10 @@ class ServiciosController extends Controller
      *     )
      * )
      */
-    public function getServiciosByPueblo($id_pueblo)
+    public function getServiciosByPueblo(Request $request,$id_pueblo)
     {
-        $servicios = Servicios::where('id_pueblo', $id_pueblo)->with([
+        $user = $request->user();
+        $query = Servicios::where('id_pueblo', $id_pueblo)->with([
             'pueblo' => function ($query) {
                 $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
             },
@@ -486,7 +487,11 @@ class ServiciosController extends Controller
             'tipoServicio' => function ($query) {
                 $query->select('id', 'servicio');
             }
-        ])->paginate(env('PAGINATION_LIMIT', 5));
+        ]);
+        if(in_array($user->id_tipo_usuario,[3,4,5])){
+            $query->where('id_usuario',$user->id);
+        }
+        $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
             return $this->addFileToImages([$servicio])[0];
         });
@@ -538,9 +543,10 @@ class ServiciosController extends Controller
      *     )
      * )
      */
-    public function getServiciosByCategoria($id_categoria)
+    public function getServiciosByCategoria(Request $request,$id_categoria)
     {
-        $servicios = Servicios::where('id_tipo_servicio', $id_categoria)->with([
+        $user = $request->user();
+        $query = Servicios::where('id_tipo_servicio', $id_categoria)->with([
             'pueblo' => function ($query) {
                 $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
             },
@@ -556,7 +562,11 @@ class ServiciosController extends Controller
             'tipoServicio' => function ($query) {
                 $query->select('id', 'servicio');
             }
-        ])->paginate(env('PAGINATION_LIMIT', 5));
+        ]);
+        if(in_array($user->id_tipo_usuario,[3,4,5])){
+            $query->where('id_usuario',$user->id);
+        }
+        $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
             return $this->addFileToImages([$servicio])[0];
         });
@@ -626,9 +636,10 @@ class ServiciosController extends Controller
      *     )
      * )
      */
-    public function getServiciosFiltradoEspecifico($id_estatus, $id_pueblo, $id_categoria)
+    public function getServiciosFiltradoEspecifico(Request $request,$id_estatus, $id_pueblo, $id_categoria)
     {
-        $servicios = Servicios::where('id_estatus', $id_estatus)->where('id_pueblo', $id_pueblo)->where('id_tipo_servicio', $id_categoria)->with([
+        $user = $request->user();
+        $query = Servicios::where('id_estatus', $id_estatus)->where('id_pueblo', $id_pueblo)->where('id_tipo_servicio', $id_categoria)->with([
             'pueblo' => function ($query) {
                 $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
             },
@@ -644,7 +655,11 @@ class ServiciosController extends Controller
             'tipoServicio' => function ($query) {
                 $query->select('id', 'servicio');
             }
-        ])->paginate(env('PAGINATION_LIMIT', 5));
+        ]);
+        if(in_array($user->id_tipo_usuario,[3,4,5])){
+            $query->where('id_usuario',$user->id);
+        }
+        $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
             return $this->addFileToImages([$servicio])[0];
         });
