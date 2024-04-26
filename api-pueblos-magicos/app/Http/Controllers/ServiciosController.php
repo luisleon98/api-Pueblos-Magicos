@@ -393,9 +393,10 @@ class ServiciosController extends Controller
      *     )
      * )
      */
-    public function getServiciosByEstatus($id_estatus)
+    public function getServiciosByEstatus(Request $request,$id_estatus)
     {
-        $servicios = Servicios::where('id_estatus', $id_estatus)->with([
+        $user = $request->user();
+        $query = Servicios::where('id_estatus', $id_estatus)->with([
             'pueblo' => function ($query) {
                 $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
             },
@@ -411,7 +412,11 @@ class ServiciosController extends Controller
             'tipoServicio' => function ($query) {
                 $query->select('id', 'servicio');
             }
-        ])->paginate(env('PAGINATION_LIMIT', 5));
+        ]);
+        if(in_array($user->id_tipo_usuario,[3,4,5])){
+            $query->where('id_usuario',$user->id);
+        }
+        $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
             return $this->addFileToImages([$servicio])[0];
         });
