@@ -136,12 +136,13 @@ class ServiciosController extends Controller
     public function procesarImagen($imagen)
     {
         // Generar un nombre único para el archivo
-        $nombreImagen = Str::uuid() . "." . $imagen->extension();
+        $nombreImagen = Str::uuid() . ".webp" ;
 
         // Guardar el archivo en la carpeta uploads
         $imagenServidor = Image::make($imagen);
         $imagenPath = public_path('uploads') . '/' . $nombreImagen;
-        $imagenServidor->save($imagenPath);
+        $calidad = 60; 
+        $imagenServidor->save($imagenPath, $calidad, 'webp');
 
         return $nombreImagen;
     }
