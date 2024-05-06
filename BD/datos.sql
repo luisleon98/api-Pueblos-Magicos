@@ -1,23 +1,23 @@
-insert into public.tipos_usuarios (id, tipo_usuario, created_at, updated_at, deleted_at)
+insert into sch_api_pueblos_magicos.tipos_usuarios (id, tipo_usuario, created_at, updated_at, deleted_at)
 values  (1, 'Admin_Systema', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (2, 'Director_Pueblos_Magicos', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (3, 'Hotelero', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (4, 'Restaurantero', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (5, 'Pueblo_Magico', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (6, 'Turista', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null);
-insert into public.tipos_servicios (id, servicio, estatus, created_at, updated_at, deleted_at)
+insert into sch_api_pueblos_magicos.tipos_servicios (id, servicio, estatus, created_at, updated_at, deleted_at)
 values  (1, 'Hospedaje', true, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (2, 'Gastronomia', true, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (3, 'Tours', true, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (4, 'Sitios', true, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (5, 'Festividades', true, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (6, 'Cerca de ustedes', true, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null);
-insert into public.tipos_imagenes (id, tipo, created_at, updated_at, deleted_at)
+insert into sch_api_pueblos_magicos.tipos_imagenes (id, tipo, created_at, updated_at, deleted_at)
 values  (1, 'back', '2024-04-11 19:56:37', '2024-04-11 19:56:37', null),
         (2, 'galeria', '2024-04-11 19:56:37', '2024-04-11 19:56:37', null);
-insert into public.usuarios (id, user_name, password, remember_token, created_at, updated_at, deleted_at, id_tipo_usuario)
+insert into sch_api_pueblos_magicos.usuarios (id, user_name, password, remember_token, created_at, updated_at, deleted_at, id_tipo_usuario)
 values  (1, 'bajimeneza@ipn.mx', '$2y$12$XafkqPa.JpEU3JzIrnvrb..s5k2bli2U6a6vfe31PzT6VjwIK4yEC', null, '2024-04-11 19:56:37', '2024-04-11 19:56:37', null, 1);
-insert into public.estados (id, nombre, created_at, updated_at, deleted_at)
+insert into sch_api_pueblos_magicos.estados (id, nombre, created_at, updated_at, deleted_at)
 values  (1, 'Aguascalientes', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (2, 'Baja California', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (3, 'Baja California Sur', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
@@ -50,14 +50,14 @@ values  (1, 'Aguascalientes', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null
         (30, 'Veracruz', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (31, 'Yucatán', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (32, 'Zacatecas', '2024-04-11 19:56:36', '2024-04-11 19:56:36', null);
-insert into public.estatus (id, estado, created_at, updated_at, deleted_at)
+insert into sch_api_pueblos_magicos.estatus (id, estado, created_at, updated_at, deleted_at)
 values  (1, 'En Validación', '2024-04-11 19:56:37', '2024-04-11 19:56:37', null),
         (2, 'Aceptado', '2024-04-11 19:56:37', '2024-04-11 19:56:37', null),
         (3, 'Con Observaciones', '2024-04-11 19:56:37', '2024-04-11 19:56:37', null),
         (4, 'Inactivo', '2024-04-11 19:56:37', '2024-04-11 19:56:37', null),
         (5, 'En Revisión', '2024-04-11 19:56:37', '2024-04-11 19:56:37', null),
         (6, 'Atendidas', '2024-04-11 19:56:37', '2024-04-11 19:56:37', null);
-insert into public.direcciones (id, calle, municipio, CP, int, ext, id_estado, created_at, updated_at, deleted_at, colonia)
+insert into sch_api_pueblos_magicos.direcciones (id, calle, municipio, CP, int, ext, id_estado, created_at, updated_at, deleted_at, colonia)
 values  (1, 'Av. 4 Ote. 1', 'Residencial el Refugio de San Miguel', 72764, 'SN', 'SN', 21, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null, 'Cholula de Rivadavia'),
         (2, 'Libertad 416', 'Centro', 74200, 'SN', 'SN', 21, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null, 'Atlixco'),
         (3, 'Calle 3 Ote. 2', 'Centro', 73640, 'SN', 'SN', 21, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null, 'Cdad. de Tetela de Ocampo'),
@@ -77,7 +77,7 @@ values  (1, 'Av. 4 Ote. 1', 'Residencial el Refugio de San Miguel', 72764, 'SN',
         (16, 'Calz. Gral Mariano Escobedo', 'Rincon del bosque', 11560, '555', '666', 9, '2024-04-17 00:13:22', '2024-04-23 23:42:14', null, 'Miguel Hidalgo'),
         (19, 'Calz. Gral Mariano Escobedo', 'Rincon del bosque', 11560, '555', '666', 9, '2024-04-23 22:47:47', '2024-04-25 20:03:16', null, 'Miguel Hidalgo'),
         (14, 'Test Calle', 'Alcaldia prueba', 9310, '1', '0', 15, '2024-04-16 23:55:29', '2024-04-25 20:43:22', null, 'Test Colonia');
-insert into public.pueblos_magicos (id, nombre, descripcion, id_direccion, created_at, updated_at, deleted_at)
+insert into sch_api_pueblos_magicos.pueblos_magicos (id, nombre, descripcion, id_direccion, created_at, updated_at, deleted_at)
 values  (1, 'Cholula', '', 1, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (2, 'Atlixco', '', 2, '2024-04-11 19:56:36', '2024-04-11 19:56:36', null),
         (3, 'Tetela de Ocampo', '', 3, '2024-04-11 19:56:37', '2024-04-11 19:56:37', null),
