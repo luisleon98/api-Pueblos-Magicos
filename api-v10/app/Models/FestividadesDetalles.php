@@ -8,11 +8,52 @@ use App\Models\Festividades;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+/**
+ * @OA\Schema(
+ *     schema="FestividadesDetalles",
+ *     title="FestividadesDetalles",
+ *     description="Modelo para representar los detalles de las Festividades",
+ *     @OA\Property(
+ *         property="dias_servicio",
+ *         type="string",
+ *         example="Lunes a Viernes"
+ *     ),
+ *     @OA\Property(
+ *         property="precios",
+ *         type="string",
+ *         example="100-200"
+ *     ),
+ *     @OA\Property(
+ *         property="titulo",
+ *         type="string",
+ *         example="Fiesta de la Primavera"
+ *     ),
+ *     @OA\Property(
+ *         property="descripcion",
+ *         type="string",
+ *         example="Una descripción detallada de la festividad"
+ *     ),
+ *     @OA\Property(
+ *         property="id_coordenadas",
+ *         type="integer",
+ *         example=1
+ *     ),
+ *     @OA\Property(
+ *         property="id_festividad",
+ *         type="integer",
+ *         example=1
+ *     ),
+ *     @OA\Property(
+ *         property="id_horarios",
+ *         type="integer",
+ *         example=1
+ *     ),
+ * )
+ */
 class FestividadesDetalles extends Model
 {
     use HasFactory,SoftDeletes;
-    protected $table = 'servicio_detalles';
+    protected $table = 'festividades_detalles';
     protected $fillable = [
         'dias_servicio',
         'precios',

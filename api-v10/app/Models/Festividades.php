@@ -44,7 +44,7 @@ class Festividades extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $table = 'servicios';
+    protected $table = 'festividades';
     protected $fillable = [
         'id_direccion',
         'id_usuario',
