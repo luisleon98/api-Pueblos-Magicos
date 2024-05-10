@@ -67,7 +67,7 @@ class Festividades extends Model
     {
         return $this->belongsTo(PueblosMagicos::class, 'id_pueblo');
     }
-    public function detalleServicio()
+    public function detalleFestividad()
     {
         return $this->hasOne(FestividadesDetalles::class, 'id_festividad');
     }
@@ -88,5 +88,23 @@ class Festividades extends Model
     }
     public function estatus(){
         return $this->belongsTo(Estatus::class, 'id_estatus');
+    }
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($servicio) {
+            // Eliminar detalles del servicio
+            // $servicio->detalleServicio()->delete();
+            $detalle = $servicio->detalleServicio()->first();
+            $detalle->delete();
+            // Eliminar imágenes asociadas al servicio
+            
+            $servicio->imagenes()->delete();
+            // Eliminar la dirección asociada
+            $servicio->direccion()->delete();
+            $servicio->solicitud()->delete();
+            
+        });
     }
 }
