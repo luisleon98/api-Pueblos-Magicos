@@ -35,7 +35,7 @@ Route::get('cattiposUsers', [TipoUserController::class, 'index']);
 // Route::get('catservicios', [CatServiciosController::class, 'index']);
 Route::get('tiposervicios', [TiposServiciosController::class, 'index']);
 Route::get('pueblosmagicos', [PueblosMagicosController::class, 'index']);
-// Route::post('festividades', [FestividadesController::class, 'store']);
+Route::post('festividades', [FestividadesController::class, 'store']);
 // Route::put('observaciones', [ObservacionesController::class, 'edit']);
 // Route::get('festividades', [FestividadesController::class, 'showAll']);
 // Route::get('festividades/{id}', [ServiciosController::class, 'show']);
