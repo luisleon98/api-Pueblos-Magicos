@@ -32,16 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('catestados', [StateController::class, 'index']);
 Route::get('cattiposUsers', [TipoUserController::class, 'index']);
-// Route::get('catservicios', [CatServiciosController::class, 'index']);
 Route::get('tiposervicios', [TiposServiciosController::class, 'index']);
 Route::get('pueblosmagicos', [PueblosMagicosController::class, 'index']);
-Route::post('festividades', [FestividadesController::class, 'store']);
-// Route::put('observaciones', [ObservacionesController::class, 'edit']);
-// Route::get('festividades', [FestividadesController::class, 'showAll']);
-// Route::get('festividades/{id}', [ServiciosController::class, 'show']);
-// Route::get('festividades/filtrar/estatus/{id_estatus}', [ServiciosController::class, 'getFestividadesByEstatus']);
-// Route::get('festividades/filtrar/pueblo/magico/{id_pueblo}', [ServiciosController::class, 'getFestividadesByPueblo']);
-// Route::get('festividades/filtrar/{id_estatus}/{id_pueblo}/{id_categoria}', [ServiciosController::class, 'getFestividadesFiltradoEspecifico']);
-// Route::get('festividades/filtrar/categoria/{id_categoria}', [ServiciosController::class, 'getFestividadesByCategoria']);
+Route::post('festividades/registrar', [FestividadesController::class, 'store']);
 Route::post('users/registrar', [UserController::class, 'create']);
 Route::post('users/login', [UserController::class, 'login']);

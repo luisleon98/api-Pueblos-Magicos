@@ -27,41 +27,36 @@ class ServiciosController extends Controller
      *          tags={"Servicios"},
      * *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 @OA\Property(
-     *                     property="data",
-     *                     type="object",
-     *                     @OA\Property(
-     *                         property="user_name",
-     *                         type="string"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="password",
-     *                         type="string"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="nombre",
-     *                         type="string"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="apellido_pat",
-     *                         type="string"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="apellido_mat",
-     *                         type="string"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="id_tipo_user",
-     *                         type="integer"
-     *                     )
-     *                 ),
-     *                 example={"data": {"user_name":"lleon@ipn.mx","password":"pruebas1","nombre":"Luis","apellido_pat":"Leon","apellido_mat":"HDZ","id_tipo_usuario":2}}
-     *             )
-     *         )
-     *     ),
+ *         description="Datos necesarios para crear una nueva festividad",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(property="id_tipo_servicio", type="integer", example=1),
+ *                 @OA\Property(property="calle", type="string", example="Calle 123"),
+ *                 @OA\Property(property="municipio", type="string", example="Ciudad de México"),
+ *                 @OA\Property(property="CP", type="string", example="06720"),
+ *                 @OA\Property(property="int", type="string", example="1"),
+ *                 @OA\Property(property="ext", type="string", example="2"),
+ *                 @OA\Property(property="colonia", type="string", example="Roma Norte"),
+ *                 @OA\Property(property="dias_servicio", type="string", example="Lunes a Viernes"),
+ *                 @OA\Property(property="horario_inicio", type="string", example="09:00"),
+ *                 @OA\Property(property="horario_fin", type="string", example="18:00"),
+ *                 @OA\Property(property="precio", type="string", example="100-200"),
+ *                 @OA\Property(property="titulo", type="string", example="Fiesta de la Primavera"),
+ *                 @OA\Property(property="descripcion", type="string", example="Una descripción detallada de la festividad"),
+ *                 @OA\Property(property="latitud", type="string", example="19.4326"),
+ *                 @OA\Property(property="longitud", type="string", example="99.1332"),
+ *                 @OA\Property(property="imgPrincipal", type="string", format="binary"),
+ *                 @OA\Property(property="arrayGaleria", type="array", @OA\Items(type="string", format="binary")),
+ *                 @OA\Property(property="id_estado", type="integer", example=1),
+ *                 @OA\Property(property="id_usuario", type="integer", example=1),
+ *                 @OA\Property(property="id_pueblo", type="integer", example=1),
+ *             )
+ *         )
+ *     ),
      *     @OA\Response(
      *         response=200,
      *         description="OK",

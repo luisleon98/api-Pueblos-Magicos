@@ -134,6 +134,143 @@
                 }
             }
         },
+        "/api/festividades/registrar": {
+            "post": {
+                "tags": [
+                    "Festividades"
+                ],
+                "summary": "Crea una nueva festividad",
+                "description": "Este método crea una nueva festividad con los detalles proporcionados en la solicitud.",
+                "operationId": "b1d92cc3c7d31858955118bb8b0b550e",
+                "requestBody": {
+                    "description": "Datos necesarios para crear una nueva festividad",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "properties": {
+                                            "id_tipo_servicio": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "calle": {
+                                                "type": "string",
+                                                "example": "Calle 123"
+                                            },
+                                            "municipio": {
+                                                "type": "string",
+                                                "example": "Ciudad de México"
+                                            },
+                                            "CP": {
+                                                "type": "string",
+                                                "example": "06720"
+                                            },
+                                            "int": {
+                                                "type": "string",
+                                                "example": "1"
+                                            },
+                                            "ext": {
+                                                "type": "string",
+                                                "example": "2"
+                                            },
+                                            "colonia": {
+                                                "type": "string",
+                                                "example": "Roma Norte"
+                                            },
+                                            "dias_servicio": {
+                                                "type": "string",
+                                                "example": "Lunes a Viernes"
+                                            },
+                                            "horario_inicio": {
+                                                "type": "string",
+                                                "example": "09:00"
+                                            },
+                                            "horario_fin": {
+                                                "type": "string",
+                                                "example": "18:00"
+                                            },
+                                            "precio": {
+                                                "type": "string",
+                                                "example": "100-200"
+                                            },
+                                            "titulo": {
+                                                "type": "string",
+                                                "example": "Fiesta de la Primavera"
+                                            },
+                                            "descripcion": {
+                                                "type": "string",
+                                                "example": "Una descripción detallada de la festividad"
+                                            },
+                                            "latitud": {
+                                                "type": "string",
+                                                "example": "19.4326"
+                                            },
+                                            "longitud": {
+                                                "type": "string",
+                                                "example": "99.1332"
+                                            },
+                                            "imgPrincipal": {
+                                                "type": "string",
+                                                "format": "binary"
+                                            },
+                                            "arrayGaleria": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                }
+                                            },
+                                            "id_estado": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "id_usuario": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "id_pueblo": {
+                                                "type": "integer",
+                                                "example": 1
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Festividad creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "success": {
+                                                    "type": "string",
+                                                    "example": "ok"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida"
+                    }
+                }
+            }
+        },
         "/api/observaciones": {
             "post": {
                 "tags": [
@@ -213,45 +350,102 @@
                 "summary": "Crea un nuevo servicio",
                 "operationId": "49e6388e29991bd7f2d22c505cde4d8d",
                 "requestBody": {
+                    "description": "Datos necesarios para crear una nueva festividad",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
                                     "data": {
                                         "properties": {
-                                            "user_name": {
-                                                "type": "string"
+                                            "id_tipo_servicio": {
+                                                "type": "integer",
+                                                "example": 1
                                             },
-                                            "password": {
-                                                "type": "string"
+                                            "calle": {
+                                                "type": "string",
+                                                "example": "Calle 123"
                                             },
-                                            "nombre": {
-                                                "type": "string"
+                                            "municipio": {
+                                                "type": "string",
+                                                "example": "Ciudad de México"
                                             },
-                                            "apellido_pat": {
-                                                "type": "string"
+                                            "CP": {
+                                                "type": "string",
+                                                "example": "06720"
                                             },
-                                            "apellido_mat": {
-                                                "type": "string"
+                                            "int": {
+                                                "type": "string",
+                                                "example": "1"
                                             },
-                                            "id_tipo_user": {
-                                                "type": "integer"
+                                            "ext": {
+                                                "type": "string",
+                                                "example": "2"
+                                            },
+                                            "colonia": {
+                                                "type": "string",
+                                                "example": "Roma Norte"
+                                            },
+                                            "dias_servicio": {
+                                                "type": "string",
+                                                "example": "Lunes a Viernes"
+                                            },
+                                            "horario_inicio": {
+                                                "type": "string",
+                                                "example": "09:00"
+                                            },
+                                            "horario_fin": {
+                                                "type": "string",
+                                                "example": "18:00"
+                                            },
+                                            "precio": {
+                                                "type": "string",
+                                                "example": "100-200"
+                                            },
+                                            "titulo": {
+                                                "type": "string",
+                                                "example": "Fiesta de la Primavera"
+                                            },
+                                            "descripcion": {
+                                                "type": "string",
+                                                "example": "Una descripción detallada de la festividad"
+                                            },
+                                            "latitud": {
+                                                "type": "string",
+                                                "example": "19.4326"
+                                            },
+                                            "longitud": {
+                                                "type": "string",
+                                                "example": "99.1332"
+                                            },
+                                            "imgPrincipal": {
+                                                "type": "string",
+                                                "format": "binary"
+                                            },
+                                            "arrayGaleria": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "format": "binary"
+                                                }
+                                            },
+                                            "id_estado": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "id_usuario": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "id_pueblo": {
+                                                "type": "integer",
+                                                "example": 1
                                             }
                                         },
                                         "type": "object"
                                     }
                                 },
-                                "type": "object",
-                                "example": {
-                                    "data": {
-                                        "user_name": "lleon@ipn.mx",
-                                        "password": "pruebas1",
-                                        "nombre": "Luis",
-                                        "apellido_pat": "Leon",
-                                        "apellido_mat": "HDZ",
-                                        "id_tipo_usuario": 2
-                                    }
-                                }
+                                "type": "object"
                             }
                         }
                     }
@@ -1116,6 +1310,56 @@
                         "example": 1
                     },
                     "id_estatus": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "FestividadesDetalles": {
+                "title": "FestividadesDetalles",
+                "description": "Modelo para representar los detalles de las Festividades",
+                "properties": {
+                    "dias_servicio": {
+                        "type": "string",
+                        "example": "Lunes a Viernes"
+                    },
+                    "precios": {
+                        "type": "string",
+                        "example": "100-200"
+                    },
+                    "titulo": {
+                        "type": "string",
+                        "example": "Fiesta de la Primavera"
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "example": "Una descripción detallada de la festividad"
+                    },
+                    "id_coordenadas": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_festividad": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_horarios": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "FestividadesImagenes": {
+                "title": "FestividadesImagenes",
+                "description": "Modelo para representar las Imágenes de las Festividades",
+                "properties": {
+                    "id_servicio": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "id_imagen": {
                         "type": "integer",
                         "example": 1
                     }
