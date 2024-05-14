@@ -1,0 +1,49 @@
+name: pueblos_magicos
+channels:
+  - hcc
+  - pwwang
+  - conda-forge
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=2_gnu
+  - bzip2=1.0.8=h5eee18b_6
+  - c-ares=1.19.1=h5eee18b_0
+  - ca-certificates=2024.3.11=h06a4308_0
+  - composer=1.2.1=0
+  - curl=8.7.1=hdbd6064_0
+  - icu=73.2=h59595ed_0
+  - krb5=1.20.1=h143b758_1
+  - ld_impl_linux-64=2.38=h1181459_1
+  - libcurl=8.7.1=h251f7ec_0
+  - libcurl-static=8.7.1=h251f7ec_0
+  - libedit=3.1.20230828=h5eee18b_0
+  - libev=4.33=h7f8727e_1
+  - libffi=3.4.4=h6a678d5_1
+  - libgcc-ng=13.2.0=h77fa898_7
+  - libgomp=13.2.0=h77fa898_7
+  - libiconv=1.17=hd590300_2
+  - libnghttp2=1.57.0=h2d74bed_0
+  - libsqlite=3.45.3=h2797004_0
+  - libssh2=1.11.0=h251f7ec_0
+  - libstdcxx-ng=13.2.0=hc0a3c3a_7
+  - libuv=1.48.0=hd590300_0
+  - libxml2=2.10.4=hfdd30dd_2
+  - libzlib=1.2.13=hd590300_5
+  - ncurses=6.4=h6a678d5_0
+  - nodejs=20.12.2=hb753e55_0
+  - openssl=3.3.0=hd590300_0
+  - pcre2=10.40=hc3806b6_0
+  - php=8.1.13=h64b3e26_0
+  - php-composer=2.5.4=h121872b_0
+  - pip=24.0=py39h06a4308_0
+  - python=3.9.19=h955ad1f_1
+  - readline=8.2=h5eee18b_0
+  - setuptools=69.5.1=py39h06a4308_0
+  - sqlite=3.45.3=h5eee18b_0
+  - tk=8.6.14=h39e8969_0
+  - tzdata=2024a=h04d1e81_0
+  - wheel=0.43.0=py39h06a4308_0
+  - xz=5.4.6=h5eee18b_1
+  - zlib=1.2.13=hd590300_5
+prefix: /home/gsoto/miniconda3/envs/pueblos_magicos
