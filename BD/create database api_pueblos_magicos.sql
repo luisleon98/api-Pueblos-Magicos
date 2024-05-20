@@ -1,28 +1,35 @@
-create domain cardinal_number as integer
+create database api_pueblos_magicos
+    with owner sail;
+
+create sequence public.pesonas_id_seq;
+
+alter sequence public.pesonas_id_seq owner to sail;
+
+create domain information_schema.cardinal_number as integer
     constraint cardinal_number_domain_check check (VALUE >= 0);
 
-alter domain cardinal_number owner to sail;
+alter domain information_schema.cardinal_number owner to sail;
 
-create domain character_data as varchar;
+create domain information_schema.character_data as varchar;
 
-alter domain character_data owner to sail;
+alter domain information_schema.character_data owner to sail;
 
-create domain sql_identifier as name;
+create domain information_schema.sql_identifier as name;
 
-alter domain sql_identifier owner to sail;
+alter domain information_schema.sql_identifier owner to sail;
 
-create domain time_stamp as timestamp(2) with time zone
+create domain information_schema.time_stamp as timestamp(2) with time zone
     default CURRENT_TIMESTAMP(2);
 
-alter domain time_stamp owner to sail;
+alter domain information_schema.time_stamp owner to sail;
 
-create domain yes_or_no as varchar(3)
+create domain information_schema.yes_or_no as varchar(3)
     constraint yes_or_no_check check ((VALUE)::text = ANY
                                       ((ARRAY ['YES'::character varying, 'NO'::character varying])::text[]));
 
-alter domain yes_or_no owner to sail;
+alter domain information_schema.yes_or_no owner to sail;
 
-create table sql_features
+create table information_schema.sql_features
 (
     feature_id       information_schema.character_data,
     feature_name     information_schema.character_data,
@@ -33,12 +40,12 @@ create table sql_features
     comments         information_schema.character_data
 );
 
-alter table sql_features
+alter table information_schema.sql_features
     owner to sail;
 
-grant select on sql_features to public;
+grant select on information_schema.sql_features to public;
 
-create table sql_implementation_info
+create table information_schema.sql_implementation_info
 (
     implementation_info_id   information_schema.character_data,
     implementation_info_name information_schema.character_data,
@@ -47,12 +54,12 @@ create table sql_implementation_info
     comments                 information_schema.character_data
 );
 
-alter table sql_implementation_info
+alter table information_schema.sql_implementation_info
     owner to sail;
 
-grant select on sql_implementation_info to public;
+grant select on information_schema.sql_implementation_info to public;
 
-create table sql_parts
+create table information_schema.sql_parts
 (
     feature_id     information_schema.character_data,
     feature_name   information_schema.character_data,
@@ -61,10 +68,10 @@ create table sql_parts
     comments       information_schema.character_data
 );
 
-alter table sql_parts
+alter table information_schema.sql_parts
     owner to sail;
 
-create table sql_sizing
+create table information_schema.sql_sizing
 (
     sizing_id       information_schema.cardinal_number,
     sizing_name     information_schema.character_data,
@@ -72,20 +79,586 @@ create table sql_sizing
     comments        information_schema.character_data
 );
 
-alter table sql_sizing
+alter table information_schema.sql_sizing
     owner to sail;
 
-grant select on sql_sizing to public;
+grant select on information_schema.sql_sizing to public;
 
-create view information_schema_catalog_name(catalog_name) as
+create table public.migrations
+(
+    id        serial
+        primary key,
+    migration varchar(255) not null,
+    batch     integer      not null
+);
+
+alter table public.migrations
+    owner to sail;
+
+create table public.password_reset_tokens
+(
+    email      varchar(255) not null
+        primary key,
+    token      varchar(255) not null,
+    created_at timestamp(0)
+);
+
+alter table public.password_reset_tokens
+    owner to sail;
+
+create table public.sessions
+(
+    id            varchar(255) not null
+        primary key,
+    user_id       bigint,
+    ip_address    varchar(45),
+    user_agent    text,
+    payload       text         not null,
+    last_activity integer      not null
+);
+
+alter table public.sessions
+    owner to sail;
+
+create index sessions_user_id_index
+    on public.sessions (user_id);
+
+create index sessions_last_activity_index
+    on public.sessions (last_activity);
+
+create table public.cache
+(
+    key        varchar(255) not null
+        primary key,
+    value      text         not null,
+    expiration integer      not null
+);
+
+alter table public.cache
+    owner to sail;
+
+create table public.cache_locks
+(
+    key        varchar(255) not null
+        primary key,
+    owner      varchar(255) not null,
+    expiration integer      not null
+);
+
+alter table public.cache_locks
+    owner to sail;
+
+create table public.jobs
+(
+    id           bigserial
+        primary key,
+    queue        varchar(255) not null,
+    payload      text         not null,
+    attempts     smallint     not null,
+    reserved_at  integer,
+    available_at integer      not null,
+    created_at   integer      not null
+);
+
+alter table public.jobs
+    owner to sail;
+
+create index jobs_queue_index
+    on public.jobs (queue);
+
+create table public.job_batches
+(
+    id             varchar(255) not null
+        primary key,
+    name           varchar(255) not null,
+    total_jobs     integer      not null,
+    pending_jobs   integer      not null,
+    failed_jobs    integer      not null,
+    failed_job_ids text         not null,
+    options        text,
+    cancelled_at   integer,
+    created_at     integer      not null,
+    finished_at    integer
+);
+
+alter table public.job_batches
+    owner to sail;
+
+create table public.failed_jobs
+(
+    id         bigserial
+        primary key,
+    uuid       varchar(255)                           not null
+        constraint failed_jobs_uuid_unique
+            unique,
+    connection text                                   not null,
+    queue      text                                   not null,
+    payload    text                                   not null,
+    exception  text                                   not null,
+    failed_at  timestamp(0) default CURRENT_TIMESTAMP not null
+);
+
+alter table public.failed_jobs
+    owner to sail;
+
+create table public.estados
+(
+    id         bigserial
+        primary key,
+    nombre     varchar(255) not null,
+    created_at timestamp(0),
+    updated_at timestamp(0),
+    deleted_at timestamp(0)
+);
+
+alter table public.estados
+    owner to sail;
+
+create table public.personal_access_tokens
+(
+    id             bigserial
+        primary key,
+    tokenable_type varchar(255) not null,
+    tokenable_id   bigint       not null,
+    name           varchar(255) not null,
+    token          varchar(64)  not null
+        constraint personal_access_tokens_token_unique
+            unique,
+    abilities      text,
+    last_used_at   timestamp(0),
+    expires_at     timestamp(0),
+    created_at     timestamp(0),
+    updated_at     timestamp(0)
+);
+
+alter table public.personal_access_tokens
+    owner to sail;
+
+create index personal_access_tokens_tokenable_type_tokenable_id_index
+    on public.personal_access_tokens (tokenable_type, tokenable_id);
+
+create table public.tipos_usuarios
+(
+    id           bigserial
+        primary key,
+    tipo_usuario varchar(255) not null,
+    created_at   timestamp(0),
+    updated_at   timestamp(0),
+    deleted_at   timestamp(0)
+);
+
+alter table public.tipos_usuarios
+    owner to sail;
+
+create table public.usuarios
+(
+    id              bigserial
+        primary key,
+    user_name       varchar(255) not null
+        constraint usuarios_user_name_unique
+            unique,
+    password        varchar(255) not null,
+    remember_token  varchar(100),
+    created_at      timestamp(0),
+    updated_at      timestamp(0),
+    deleted_at      timestamp(0),
+    id_tipo_usuario bigint       not null
+        constraint usuarios_id_tipo_usuario_foreign
+            references public.tipos_usuarios
+);
+
+alter table public.usuarios
+    owner to sail;
+
+create table public.personas
+(
+    id           bigint default nextval('pesonas_id_seq'::regclass) not null
+        constraint pesonas_pkey
+            primary key,
+    nombre       varchar(255)                                       not null,
+    apellido_pat varchar(255)                                       not null,
+    apellido_mat varchar(255)                                       not null,
+    id_usuario   bigint                                             not null
+        constraint pesonas_id_usuario_foreign
+            references public.usuarios,
+    created_at   timestamp(0),
+    updated_at   timestamp(0),
+    deleted_at   timestamp(0)
+);
+
+alter table public.personas
+    owner to sail;
+
+alter sequence public.pesonas_id_seq owned by public.personas.id;
+
+create table public.direcciones
+(
+    id         bigserial
+        primary key,
+    calle      varchar(255)                                 not null,
+    municipio  varchar(255)                                 not null,
+    "CP"       integer                                      not null,
+    int        varchar(255)                                 not null,
+    ext        varchar(255) default 'SN'::character varying not null,
+    id_estado  bigint                                       not null
+        constraint direcciones_id_estado_foreign
+            references public.estados,
+    created_at timestamp(0),
+    updated_at timestamp(0),
+    deleted_at timestamp(0),
+    colonia    varchar(255)                                 not null
+);
+
+alter table public.direcciones
+    owner to sail;
+
+create table public.coordenadas
+(
+    id         bigserial
+        primary key,
+    longitud   varchar(255) not null,
+    latitud    varchar(255) not null,
+    created_at timestamp(0),
+    updated_at timestamp(0),
+    deleted_at timestamp(0)
+);
+
+alter table public.coordenadas
+    owner to sail;
+
+create table public.tipos_servicios
+(
+    id         bigserial
+        primary key,
+    servicio   varchar(255) not null,
+    estatus    boolean      not null,
+    created_at timestamp(0),
+    updated_at timestamp(0),
+    deleted_at timestamp(0)
+);
+
+alter table public.tipos_servicios
+    owner to sail;
+
+create table public.pueblos_magicos
+(
+    id           bigserial
+        primary key,
+    nombre       varchar(255) not null,
+    descripcion  varchar(255) not null,
+    id_direccion bigint       not null
+        constraint pueblos_magicos_id_direccion_foreign
+            references public.direcciones,
+    created_at   timestamp(0),
+    updated_at   timestamp(0),
+    deleted_at   timestamp(0)
+);
+
+alter table public.pueblos_magicos
+    owner to sail;
+
+create table public.festividades
+(
+    id           bigserial
+        primary key,
+    id_direccion bigint not null
+        constraint festividades_id_direccion_foreign
+            references public.direcciones
+            on delete cascade,
+    id_usuario   bigint not null
+        constraint festividades_id_usuario_foreign
+            references public.usuarios
+            on delete cascade,
+    id_pueblo    bigint not null
+        constraint festividades_id_pueblo_foreign
+            references public.pueblos_magicos,
+    created_at   timestamp(0),
+    updated_at   timestamp(0),
+    deleted_at   timestamp(0)
+);
+
+alter table public.festividades
+    owner to sail;
+
+create table public.tipos_imagenes
+(
+    id         bigserial
+        primary key,
+    tipo       varchar(255) not null,
+    created_at timestamp(0),
+    updated_at timestamp(0),
+    deleted_at timestamp(0)
+);
+
+alter table public.tipos_imagenes
+    owner to sail;
+
+create table public.imagenes
+(
+    id             bigserial
+        primary key,
+    nombre         varchar(255) not null,
+    id_tipo_imagen bigint       not null
+        constraint imagenes_id_tipo_imagen_foreign
+            references public.tipos_imagenes,
+    created_at     timestamp(0),
+    updated_at     timestamp(0),
+    deleted_at     timestamp(0)
+);
+
+alter table public.imagenes
+    owner to sail;
+
+create table public.festividades_imagenes
+(
+    id            bigserial
+        primary key,
+    id_festividad bigint not null
+        constraint festividades_imagenes_id_festividad_foreign
+            references public.festividades
+            on delete cascade,
+    id_imagen     bigint not null
+        constraint festividades_imagenes_id_imagen_foreign
+            references public.imagenes
+            on delete cascade,
+    created_at    timestamp(0),
+    updated_at    timestamp(0),
+    deleted_at    timestamp(0)
+);
+
+alter table public.festividades_imagenes
+    owner to sail;
+
+create table public.pueblos_magicos_imagenes
+(
+    id               bigserial
+        primary key,
+    id_pueblo_magico bigint not null
+        constraint pueblos_magicos_imagenes_id_pueblo_magico_foreign
+            references public.pueblos_magicos
+            on delete cascade,
+    id_imagen        bigint not null
+        constraint pueblos_magicos_imagenes_id_imagen_foreign
+            references public.imagenes
+            on delete cascade,
+    created_at       timestamp(0),
+    updated_at       timestamp(0),
+    deleted_at       timestamp(0)
+);
+
+alter table public.pueblos_magicos_imagenes
+    owner to sail;
+
+create table public.bitacora
+(
+    id                   bigserial
+        primary key,
+    movimiento           varchar(255) not null,
+    tabla_afectada       varchar(255) not null,
+    id_registro_afectado integer      not null,
+    id_usuario           bigint       not null
+        constraint bitacora_id_usuario_foreign
+            references public.usuarios,
+    created_at           timestamp(0),
+    updated_at           timestamp(0),
+    deleted_at           timestamp(0)
+);
+
+alter table public.bitacora
+    owner to sail;
+
+create table public.horarios
+(
+    id             bigserial
+        primary key,
+    horario_inicio time(0) not null,
+    horario_fin    time(0) not null,
+    created_at     timestamp(0),
+    updated_at     timestamp(0),
+    deleted_at     timestamp(0)
+);
+
+alter table public.horarios
+    owner to sail;
+
+create table public.estatus
+(
+    id         bigserial
+        primary key,
+    estado     varchar(255) not null,
+    created_at timestamp(0),
+    updated_at timestamp(0),
+    deleted_at timestamp(0)
+);
+
+alter table public.estatus
+    owner to sail;
+
+create table public.servicios
+(
+    id               bigserial
+        primary key,
+    id_tipo_servicio bigint not null
+        constraint servicios_id_tipo_servicio_foreign
+            references public.tipos_servicios,
+    id_direccion     bigint not null
+        constraint servicios_id_direccion_foreign
+            references public.direcciones
+            on delete cascade,
+    id_usuario       bigint not null
+        constraint servicios_id_usuario_foreign
+            references public.usuarios,
+    id_pueblo        bigint not null
+        constraint servicios_id_pueblo_foreign
+            references public.pueblos_magicos,
+    created_at       timestamp(0),
+    updated_at       timestamp(0),
+    deleted_at       timestamp(0),
+    id_estatus       bigint not null
+        constraint servicios_id_estatus_foreign
+            references public.estatus
+);
+
+alter table public.servicios
+    owner to sail;
+
+create table public.servicio_detalles
+(
+    id             bigserial
+        primary key,
+    dias_servicio  varchar(255) not null,
+    precios        varchar(255) not null,
+    titulo         varchar(255) not null,
+    descripcion    text         not null,
+    id_coordenadas bigint       not null
+        constraint servicio_detalles_id_coordenadas_foreign
+            references public.coordenadas
+            on delete cascade,
+    id_servicio    bigint       not null
+        constraint servicio_detalles_id_servicio_foreign
+            references public.servicios
+            on delete cascade,
+    created_at     timestamp(0),
+    updated_at     timestamp(0),
+    deleted_at     timestamp(0),
+    id_horarios    bigint       not null
+        constraint servicio_detalles_id_horarios_foreign
+            references public.horarios
+            on delete cascade
+);
+
+alter table public.servicio_detalles
+    owner to sail;
+
+create table public.festividades_detalles
+(
+    id             bigserial
+        primary key,
+    dias_servicio  varchar(255) not null,
+    horarios       varchar(255) not null,
+    precios        varchar(255) not null,
+    nombre         varchar(255) not null,
+    descripcion    varchar(255) not null,
+    id_coordenadas bigint       not null
+        constraint festividades_detalles_id_coordenadas_foreign
+            references public.coordenadas
+            on delete cascade,
+    id_servicio    bigint       not null
+        constraint festividades_detalles_id_servicio_foreign
+            references public.servicios
+            on delete cascade,
+    created_at     timestamp(0),
+    updated_at     timestamp(0),
+    deleted_at     timestamp(0)
+);
+
+alter table public.festividades_detalles
+    owner to sail;
+
+create table public.ratings
+(
+    id          bigserial
+        primary key,
+    rating      varchar(255) not null,
+    comentario  varchar(255) not null,
+    id_servicio bigint       not null
+        constraint ratings_id_servicio_foreign
+            references public.servicios
+            on delete cascade,
+    created_at  timestamp(0),
+    updated_at  timestamp(0),
+    deleted_at  timestamp(0)
+);
+
+alter table public.ratings
+    owner to sail;
+
+create table public.servicios_imagenes
+(
+    id          bigserial
+        primary key,
+    id_servicio bigint not null
+        constraint servicios_imagenes_id_servicio_foreign
+            references public.servicios
+            on delete cascade,
+    id_imagen   bigint not null
+        constraint servicios_imagenes_id_imagen_foreign
+            references public.imagenes
+            on delete cascade,
+    created_at  timestamp(0),
+    updated_at  timestamp(0),
+    deleted_at  timestamp(0)
+);
+
+alter table public.servicios_imagenes
+    owner to sail;
+
+create table public.pueblos_solicitudes
+(
+    id               bigserial
+        primary key,
+    id_servicio      bigint not null
+        constraint pueblos_solicitudes_id_servicio_foreign
+            references public.servicios
+            on delete cascade,
+    id_pueblo_magico bigint not null
+        constraint pueblos_solicitudes_id_pueblo_magico_foreign
+            references public.pueblos_magicos,
+    id_tipo_servicio bigint not null
+        constraint pueblos_solicitudes_id_tipo_servicio_foreign
+            references public.tipos_servicios,
+    created_at       timestamp(0),
+    updated_at       timestamp(0),
+    deleted_at       timestamp(0)
+);
+
+alter table public.pueblos_solicitudes
+    owner to sail;
+
+create table public.observaciones
+(
+    id          bigserial
+        primary key,
+    id_servicio bigint not null,
+    id_usuario  bigint not null,
+    id_estatus  bigint not null,
+    observacion text   not null,
+    created_at  timestamp(0),
+    updated_at  timestamp(0)
+);
+
+alter table public.observaciones
+    owner to sail;
+
+create view information_schema.information_schema_catalog_name(catalog_name) as
 SELECT current_database()::information_schema.sql_identifier AS catalog_name;
 
-alter table information_schema_catalog_name
+alter table information_schema.information_schema_catalog_name
     owner to sail;
 
-grant select on information_schema_catalog_name to public;
+grant select on information_schema.information_schema_catalog_name to public;
 
-create view applicable_roles(grantee, role_name, is_grantable) as
+create view information_schema.applicable_roles(grantee, role_name, is_grantable) as
 SELECT a.rolname::information_schema.sql_identifier AS grantee,
        b.rolname::information_schema.sql_identifier AS role_name,
        CASE
@@ -108,24 +681,24 @@ FROM (SELECT pg_auth_members.member,
          JOIN pg_authid b ON m.roleid = b.oid
 WHERE pg_has_role(a.oid, 'USAGE'::text);
 
-alter table applicable_roles
+alter table information_schema.applicable_roles
     owner to sail;
 
-grant select on applicable_roles to public;
+grant select on information_schema.applicable_roles to public;
 
-create view administrable_role_authorizations(grantee, role_name, is_grantable) as
+create view information_schema.administrable_role_authorizations(grantee, role_name, is_grantable) as
 SELECT applicable_roles.grantee,
        applicable_roles.role_name,
        applicable_roles.is_grantable
 FROM information_schema.applicable_roles
 WHERE applicable_roles.is_grantable::text = 'YES'::text;
 
-alter table administrable_role_authorizations
+alter table information_schema.administrable_role_authorizations
     owner to sail;
 
-grant select on administrable_role_authorizations to public;
+grant select on information_schema.administrable_role_authorizations to public;
 
-create view attributes
+create view information_schema.attributes
             (udt_catalog, udt_schema, udt_name, attribute_name, ordinal_position, attribute_default, is_nullable,
              data_type, character_maximum_length, character_octet_length, character_set_catalog, character_set_schema,
              character_set_name, collation_catalog, collation_schema, collation_name, numeric_precision,
@@ -195,12 +768,12 @@ WHERE a.attnum > 0
   AND c.relkind = 'c'::"char"
   AND (pg_has_role(c.relowner, 'USAGE'::text) OR has_type_privilege(c.reltype, 'USAGE'::text));
 
-alter table attributes
+alter table information_schema.attributes
     owner to sail;
 
-grant select on attributes to public;
+grant select on information_schema.attributes to public;
 
-create view character_sets
+create view information_schema.character_sets
             (character_set_catalog, character_set_schema, character_set_name, character_repertoire, form_of_use,
              default_collate_catalog, default_collate_schema, default_collate_name)
 as
@@ -222,12 +795,12 @@ WHERE d.datname = current_database()
 ORDER BY (char_length(c.collname::text)) DESC, c.collname
 LIMIT 1;
 
-alter table character_sets
+alter table information_schema.character_sets
     owner to sail;
 
-grant select on character_sets to public;
+grant select on information_schema.character_sets to public;
 
-create view check_constraint_routine_usage
+create view information_schema.check_constraint_routine_usage
             (constraint_catalog, constraint_schema, constraint_name, specific_catalog, specific_schema,
              specific_name) as
 SELECT DISTINCT current_database()::information_schema.sql_identifier              AS constraint_catalog,
@@ -250,12 +823,12 @@ WHERE nc.oid = c.connamespace
   AND p.pronamespace = np.oid
   AND pg_has_role(p.proowner, 'USAGE'::text);
 
-alter table check_constraint_routine_usage
+alter table information_schema.check_constraint_routine_usage
     owner to sail;
 
-grant select on check_constraint_routine_usage to public;
+grant select on information_schema.check_constraint_routine_usage to public;
 
-create view check_constraints(constraint_catalog, constraint_schema, constraint_name, check_clause) as
+create view information_schema.check_constraints(constraint_catalog, constraint_schema, constraint_name, check_clause) as
 SELECT current_database()::information_schema.sql_identifier                              AS constraint_catalog,
        rs.nspname::information_schema.sql_identifier                                      AS constraint_schema,
        con.conname::information_schema.sql_identifier                                     AS constraint_name,
@@ -283,12 +856,12 @@ WHERE n.oid = r.relnamespace
   AND (r.relkind = ANY (ARRAY ['r'::"char", 'p'::"char"]))
   AND pg_has_role(r.relowner, 'USAGE'::text);
 
-alter table check_constraints
+alter table information_schema.check_constraints
     owner to sail;
 
-grant select on check_constraints to public;
+grant select on information_schema.check_constraints to public;
 
-create view collations(collation_catalog, collation_schema, collation_name, pad_attribute) as
+create view information_schema.collations(collation_catalog, collation_schema, collation_name, pad_attribute) as
 SELECT current_database()::information_schema.sql_identifier          AS collation_catalog,
        nc.nspname::information_schema.sql_identifier                  AS collation_schema,
        c.collname::information_schema.sql_identifier                  AS collation_name,
@@ -300,12 +873,12 @@ WHERE c.collnamespace = nc.oid
                                                     FROM pg_database
                                                     WHERE pg_database.datname = current_database())]));
 
-alter table collations
+alter table information_schema.collations
     owner to sail;
 
-grant select on collations to public;
+grant select on information_schema.collations to public;
 
-create view collation_character_set_applicability
+create view information_schema.collation_character_set_applicability
             (collation_catalog, collation_schema, collation_name, character_set_catalog, character_set_schema,
              character_set_name) as
 SELECT current_database()::information_schema.sql_identifier    AS collation_catalog,
@@ -321,12 +894,13 @@ WHERE c.collnamespace = nc.oid
                                                     FROM pg_database
                                                     WHERE pg_database.datname = current_database())]));
 
-alter table collation_character_set_applicability
+alter table information_schema.collation_character_set_applicability
     owner to sail;
 
-grant select on collation_character_set_applicability to public;
+grant select on information_schema.collation_character_set_applicability to public;
 
-create view column_column_usage (table_catalog, table_schema, table_name, column_name, dependent_column) as
+create view information_schema.column_column_usage
+            (table_catalog, table_schema, table_name, column_name, dependent_column) as
 SELECT DISTINCT current_database()::information_schema.sql_identifier AS table_catalog,
                 n.nspname::information_schema.sql_identifier          AS table_schema,
                 c.relname::information_schema.sql_identifier          AS table_name,
@@ -352,12 +926,12 @@ WHERE n.oid = c.relnamespace
   AND ad.attgenerated <> ''::"char"
   AND pg_has_role(c.relowner, 'USAGE'::text);
 
-alter table column_column_usage
+alter table information_schema.column_column_usage
     owner to sail;
 
-grant select on column_column_usage to public;
+grant select on information_schema.column_column_usage to public;
 
-create view column_domain_usage
+create view information_schema.column_domain_usage
             (domain_catalog, domain_schema, domain_name, table_catalog, table_schema, table_name, column_name) as
 SELECT current_database()::information_schema.sql_identifier AS domain_catalog,
        nt.nspname::information_schema.sql_identifier         AS domain_schema,
@@ -381,12 +955,12 @@ WHERE t.typnamespace = nt.oid
   AND NOT a.attisdropped
   AND pg_has_role(t.typowner, 'USAGE'::text);
 
-alter table column_domain_usage
+alter table information_schema.column_domain_usage
     owner to sail;
 
-grant select on column_domain_usage to public;
+grant select on information_schema.column_domain_usage to public;
 
-create view column_privileges
+create view information_schema.column_privileges
             (grantor, grantee, table_catalog, table_schema, table_name, column_name, privilege_type, is_grantable) as
 SELECT u_grantor.rolname::information_schema.sql_identifier  AS grantor,
        grantee.rolname::information_schema.sql_identifier    AS grantee,
@@ -469,12 +1043,12 @@ WHERE x.relnamespace = nc.oid
   AND (pg_has_role(u_grantor.oid, 'USAGE'::text) OR pg_has_role(grantee.oid, 'USAGE'::text) OR
        grantee.rolname = 'PUBLIC'::name);
 
-alter table column_privileges
+alter table information_schema.column_privileges
     owner to sail;
 
-grant select on column_privileges to public;
+grant select on information_schema.column_privileges to public;
 
-create view column_udt_usage
+create view information_schema.column_udt_usage
             (udt_catalog, udt_schema, udt_name, table_catalog, table_schema, table_name, column_name) as
 SELECT current_database()::information_schema.sql_identifier                AS udt_catalog,
        COALESCE(nbt.nspname, nt.nspname)::information_schema.sql_identifier AS udt_schema,
@@ -498,12 +1072,12 @@ WHERE a.attrelid = c.oid
   AND (c.relkind = ANY (ARRAY ['r'::"char", 'v'::"char", 'f'::"char", 'p'::"char"]))
   AND pg_has_role(COALESCE(bt.typowner, t.typowner), 'USAGE'::text);
 
-alter table column_udt_usage
+alter table information_schema.column_udt_usage
     owner to sail;
 
-grant select on column_udt_usage to public;
+grant select on information_schema.column_udt_usage to public;
 
-create view columns
+create view information_schema.columns
             (table_catalog, table_schema, table_name, column_name, ordinal_position, column_default, is_nullable,
              data_type, character_maximum_length, character_octet_length, numeric_precision, numeric_precision_radix,
              numeric_scale, datetime_precision, interval_type, interval_precision, character_set_catalog,
@@ -638,12 +1212,12 @@ WHERE NOT pg_is_other_temp_schema(nc.oid)
   AND (pg_has_role(c.relowner, 'USAGE'::text) OR
        has_column_privilege(c.oid, a.attnum, 'SELECT, INSERT, UPDATE, REFERENCES'::text));
 
-alter table columns
+alter table information_schema.columns
     owner to sail;
 
-grant select on columns to public;
+grant select on information_schema.columns to public;
 
-create view constraint_column_usage
+create view information_schema.constraint_column_usage
             (table_catalog, table_schema, table_name, column_name, constraint_catalog, constraint_schema,
              constraint_name) as
 SELECT current_database()::information_schema.sql_identifier AS table_catalog,
@@ -706,12 +1280,12 @@ FROM (SELECT DISTINCT nr.nspname,
         AND (r.relkind = ANY (ARRAY ['r'::"char", 'p'::"char"]))) x(tblschema, tblname, tblowner, colname, cstrschema, cstrname)
 WHERE pg_has_role(x.tblowner, 'USAGE'::text);
 
-alter table constraint_column_usage
+alter table information_schema.constraint_column_usage
     owner to sail;
 
-grant select on constraint_column_usage to public;
+grant select on information_schema.constraint_column_usage to public;
 
-create view constraint_table_usage
+create view information_schema.constraint_table_usage
             (table_catalog, table_schema, table_name, constraint_catalog, constraint_schema, constraint_name) as
 SELECT current_database()::information_schema.sql_identifier AS table_catalog,
        nr.nspname::information_schema.sql_identifier         AS table_schema,
@@ -730,12 +1304,12 @@ WHERE c.connamespace = nc.oid
   AND (r.relkind = ANY (ARRAY ['r'::"char", 'p'::"char"]))
   AND pg_has_role(r.relowner, 'USAGE'::text);
 
-alter table constraint_table_usage
+alter table information_schema.constraint_table_usage
     owner to sail;
 
-grant select on constraint_table_usage to public;
+grant select on information_schema.constraint_table_usage to public;
 
-create view domain_constraints
+create view information_schema.domain_constraints
             (constraint_catalog, constraint_schema, constraint_name, domain_catalog, domain_schema, domain_name,
              is_deferrable, initially_deferred)
 as
@@ -762,12 +1336,13 @@ WHERE rs.oid = con.connamespace
   AND t.oid = con.contypid
   AND (pg_has_role(t.typowner, 'USAGE'::text) OR has_type_privilege(t.oid, 'USAGE'::text));
 
-alter table domain_constraints
+alter table information_schema.domain_constraints
     owner to sail;
 
-grant select on domain_constraints to public;
+grant select on information_schema.domain_constraints to public;
 
-create view domain_udt_usage (udt_catalog, udt_schema, udt_name, domain_catalog, domain_schema, domain_name) as
+create view information_schema.domain_udt_usage
+            (udt_catalog, udt_schema, udt_name, domain_catalog, domain_schema, domain_name) as
 SELECT current_database()::information_schema.sql_identifier AS udt_catalog,
        nbt.nspname::information_schema.sql_identifier        AS udt_schema,
        bt.typname::information_schema.sql_identifier         AS udt_name,
@@ -784,12 +1359,12 @@ WHERE t.typnamespace = nt.oid
   AND t.typtype = 'd'::"char"
   AND pg_has_role(bt.typowner, 'USAGE'::text);
 
-alter table domain_udt_usage
+alter table information_schema.domain_udt_usage
     owner to sail;
 
-grant select on domain_udt_usage to public;
+grant select on information_schema.domain_udt_usage to public;
 
-create view domains
+create view information_schema.domains
             (domain_catalog, domain_schema, domain_name, data_type, character_maximum_length, character_octet_length,
              character_set_catalog, character_set_schema, character_set_name, collation_catalog, collation_schema,
              collation_name, numeric_precision, numeric_precision_radix, numeric_scale, datetime_precision,
@@ -844,22 +1419,22 @@ FROM pg_type t
 WHERE pg_has_role(t.typowner, 'USAGE'::text)
    OR has_type_privilege(t.oid, 'USAGE'::text);
 
-alter table domains
+alter table information_schema.domains
     owner to sail;
 
-grant select on domains to public;
+grant select on information_schema.domains to public;
 
-create view enabled_roles(role_name) as
+create view information_schema.enabled_roles(role_name) as
 SELECT a.rolname::information_schema.sql_identifier AS role_name
 FROM pg_authid a
 WHERE pg_has_role(a.oid, 'USAGE'::text);
 
-alter table enabled_roles
+alter table information_schema.enabled_roles
     owner to sail;
 
-grant select on enabled_roles to public;
+grant select on information_schema.enabled_roles to public;
 
-create view key_column_usage
+create view information_schema.key_column_usage
             (constraint_catalog, constraint_schema, constraint_name, table_catalog, table_schema, table_name,
              column_name, ordinal_position, position_in_unique_constraint)
 as
@@ -904,12 +1479,12 @@ WHERE ss.roid = a.attrelid
   AND (pg_has_role(ss.relowner, 'USAGE'::text) OR
        has_column_privilege(ss.roid, a.attnum, 'SELECT, INSERT, UPDATE, REFERENCES'::text));
 
-alter table key_column_usage
+alter table information_schema.key_column_usage
     owner to sail;
 
-grant select on key_column_usage to public;
+grant select on information_schema.key_column_usage to public;
 
-create view parameters
+create view information_schema.parameters
             (specific_catalog, specific_schema, specific_name, ordinal_position, parameter_mode, is_result, as_locator,
              parameter_name, data_type, character_maximum_length, character_octet_length, character_set_catalog,
              character_set_schema, character_set_name, collation_catalog, collation_schema, collation_name,
@@ -980,12 +1555,12 @@ FROM pg_type t,
 WHERE t.oid = (ss.x).x
   AND t.typnamespace = nt.oid;
 
-alter table parameters
+alter table information_schema.parameters
     owner to sail;
 
-grant select on parameters to public;
+grant select on information_schema.parameters to public;
 
-create view referential_constraints
+create view information_schema.referential_constraints
             (constraint_catalog, constraint_schema, constraint_name, unique_constraint_catalog,
              unique_constraint_schema, unique_constraint_name, match_option, update_rule, delete_rule)
 as
@@ -1036,12 +1611,12 @@ WHERE pg_has_role(c.relowner, 'USAGE'::text)
    OR has_table_privilege(c.oid, 'INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'::text)
    OR has_any_column_privilege(c.oid, 'INSERT, UPDATE, REFERENCES'::text);
 
-alter table referential_constraints
+alter table information_schema.referential_constraints
     owner to sail;
 
-grant select on referential_constraints to public;
+grant select on information_schema.referential_constraints to public;
 
-create view role_column_grants
+create view information_schema.role_column_grants
             (grantor, grantee, table_catalog, table_schema, table_name, column_name, privilege_type, is_grantable) as
 SELECT column_privileges.grantor,
        column_privileges.grantee,
@@ -1057,12 +1632,12 @@ WHERE (column_privileges.grantor::name IN (SELECT enabled_roles.role_name
    OR (column_privileges.grantee::name IN (SELECT enabled_roles.role_name
                                            FROM information_schema.enabled_roles));
 
-alter table role_column_grants
+alter table information_schema.role_column_grants
     owner to sail;
 
-grant select on role_column_grants to public;
+grant select on information_schema.role_column_grants to public;
 
-create view routine_column_usage
+create view information_schema.routine_column_usage
             (specific_catalog, specific_schema, specific_name, routine_catalog, routine_schema, routine_name,
              table_catalog, table_schema, table_name, column_name)
 as
@@ -1093,12 +1668,12 @@ WHERE np.oid = p.pronamespace
   AND d.refobjsubid = a.attnum
   AND pg_has_role(t.relowner, 'USAGE'::text);
 
-alter table routine_column_usage
+alter table information_schema.routine_column_usage
     owner to sail;
 
-grant select on routine_column_usage to public;
+grant select on information_schema.routine_column_usage to public;
 
-create view routine_privileges
+create view information_schema.routine_privileges
             (grantor, grantee, specific_catalog, specific_schema, specific_name, routine_catalog, routine_schema,
              routine_name, privilege_type, is_grantable)
 as
@@ -1142,12 +1717,12 @@ WHERE p.pronamespace = n.oid
   AND (pg_has_role(u_grantor.oid, 'USAGE'::text) OR pg_has_role(grantee.oid, 'USAGE'::text) OR
        grantee.rolname = 'PUBLIC'::name);
 
-alter table routine_privileges
+alter table information_schema.routine_privileges
     owner to sail;
 
-grant select on routine_privileges to public;
+grant select on information_schema.routine_privileges to public;
 
-create view role_routine_grants
+create view information_schema.role_routine_grants
             (grantor, grantee, specific_catalog, specific_schema, specific_name, routine_catalog, routine_schema,
              routine_name, privilege_type, is_grantable)
 as
@@ -1167,12 +1742,12 @@ WHERE (routine_privileges.grantor::name IN (SELECT enabled_roles.role_name
    OR (routine_privileges.grantee::name IN (SELECT enabled_roles.role_name
                                             FROM information_schema.enabled_roles));
 
-alter table role_routine_grants
+alter table information_schema.role_routine_grants
     owner to sail;
 
-grant select on role_routine_grants to public;
+grant select on information_schema.role_routine_grants to public;
 
-create view routine_routine_usage
+create view information_schema.routine_routine_usage
             (specific_catalog, specific_schema, specific_name, routine_catalog, routine_schema, routine_name) as
 SELECT DISTINCT current_database()::information_schema.sql_identifier                AS specific_catalog,
                 np.nspname::information_schema.sql_identifier                        AS specific_schema,
@@ -1195,12 +1770,12 @@ WHERE np.oid = p.pronamespace
   AND (p1.prokind = ANY (ARRAY ['f'::"char", 'p'::"char"]))
   AND pg_has_role(p1.proowner, 'USAGE'::text);
 
-alter table routine_routine_usage
+alter table information_schema.routine_routine_usage
     owner to sail;
 
-grant select on routine_routine_usage to public;
+grant select on information_schema.routine_routine_usage to public;
 
-create view routine_sequence_usage
+create view information_schema.routine_sequence_usage
             (specific_catalog, specific_schema, specific_name, routine_catalog, routine_schema, routine_name,
              sequence_catalog, sequence_schema, sequence_name)
 as
@@ -1227,12 +1802,12 @@ WHERE np.oid = p.pronamespace
   AND s.relkind = 'S'::"char"
   AND pg_has_role(s.relowner, 'USAGE'::text);
 
-alter table routine_sequence_usage
+alter table information_schema.routine_sequence_usage
     owner to sail;
 
-grant select on routine_sequence_usage to public;
+grant select on information_schema.routine_sequence_usage to public;
 
-create view routine_table_usage
+create view information_schema.routine_table_usage
             (specific_catalog, specific_schema, specific_name, routine_catalog, routine_schema, routine_name,
              table_catalog, table_schema, table_name)
 as
@@ -1259,12 +1834,12 @@ WHERE np.oid = p.pronamespace
   AND (t.relkind = ANY (ARRAY ['r'::"char", 'v'::"char", 'f'::"char", 'p'::"char"]))
   AND pg_has_role(t.relowner, 'USAGE'::text);
 
-alter table routine_table_usage
+alter table information_schema.routine_table_usage
     owner to sail;
 
-grant select on routine_table_usage to public;
+grant select on information_schema.routine_table_usage to public;
 
-create view routines
+create view information_schema.routines
             (specific_catalog, specific_schema, specific_name, routine_catalog, routine_schema, routine_name,
              routine_type, module_catalog, module_schema, module_name, udt_catalog, udt_schema, udt_name, data_type,
              character_maximum_length, character_octet_length, character_set_catalog, character_set_schema,
@@ -1412,12 +1987,12 @@ FROM pg_namespace n
 WHERE pg_has_role(p.proowner, 'USAGE'::text)
    OR has_function_privilege(p.oid, 'EXECUTE'::text);
 
-alter table routines
+alter table information_schema.routines
     owner to sail;
 
-grant select on routines to public;
+grant select on information_schema.routines to public;
 
-create view schemata
+create view information_schema.schemata
             (catalog_name, schema_name, schema_owner, default_character_set_catalog, default_character_set_schema,
              default_character_set_name, sql_path)
 as
@@ -1433,12 +2008,12 @@ FROM pg_namespace n,
 WHERE n.nspowner = u.oid
   AND (pg_has_role(n.nspowner, 'USAGE'::text) OR has_schema_privilege(n.oid, 'CREATE, USAGE'::text));
 
-alter table schemata
+alter table information_schema.schemata
     owner to sail;
 
-grant select on schemata to public;
+grant select on information_schema.schemata to public;
 
-create view sequences
+create view information_schema.sequences
             (sequence_catalog, sequence_schema, sequence_name, data_type, numeric_precision, numeric_precision_radix,
              numeric_scale, start_value, minimum_value, maximum_value, increment, cycle_option)
 as
@@ -1471,12 +2046,12 @@ WHERE c.relnamespace = nc.oid
   AND c.oid = s.seqrelid
   AND (pg_has_role(c.relowner, 'USAGE'::text) OR has_sequence_privilege(c.oid, 'SELECT, UPDATE, USAGE'::text));
 
-alter table sequences
+alter table information_schema.sequences
     owner to sail;
 
-grant select on sequences to public;
+grant select on information_schema.sequences to public;
 
-create view table_constraints
+create view information_schema.table_constraints
             (constraint_catalog, constraint_schema, constraint_name, table_catalog, table_schema, table_name,
              constraint_type, is_deferrable, initially_deferred, enforced, nulls_distinct)
 as
@@ -1552,12 +2127,12 @@ WHERE nr.oid = r.relnamespace
        has_table_privilege(r.oid, 'INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'::text) OR
        has_any_column_privilege(r.oid, 'INSERT, UPDATE, REFERENCES'::text));
 
-alter table table_constraints
+alter table information_schema.table_constraints
     owner to sail;
 
-grant select on table_constraints to public;
+grant select on information_schema.table_constraints to public;
 
-create view table_privileges
+create view information_schema.table_privileges
             (grantor, grantee, table_catalog, table_schema, table_name, privilege_type, is_grantable, with_hierarchy) as
 SELECT u_grantor.rolname::information_schema.sql_identifier  AS grantor,
        grantee.rolname::information_schema.sql_identifier    AS grantee,
@@ -1603,12 +2178,12 @@ WHERE c.relnamespace = nc.oid
   AND (pg_has_role(u_grantor.oid, 'USAGE'::text) OR pg_has_role(grantee.oid, 'USAGE'::text) OR
        grantee.rolname = 'PUBLIC'::name);
 
-alter table table_privileges
+alter table information_schema.table_privileges
     owner to sail;
 
-grant select on table_privileges to public;
+grant select on information_schema.table_privileges to public;
 
-create view role_table_grants
+create view information_schema.role_table_grants
             (grantor, grantee, table_catalog, table_schema, table_name, privilege_type, is_grantable, with_hierarchy) as
 SELECT table_privileges.grantor,
        table_privileges.grantee,
@@ -1624,12 +2199,12 @@ WHERE (table_privileges.grantor::name IN (SELECT enabled_roles.role_name
    OR (table_privileges.grantee::name IN (SELECT enabled_roles.role_name
                                           FROM information_schema.enabled_roles));
 
-alter table role_table_grants
+alter table information_schema.role_table_grants
     owner to sail;
 
-grant select on role_table_grants to public;
+grant select on information_schema.role_table_grants to public;
 
-create view tables
+create view information_schema.tables
             (table_catalog, table_schema, table_name, table_type, self_referencing_column_name, reference_generation,
              user_defined_type_catalog, user_defined_type_schema, user_defined_type_name, is_insertable_into, is_typed,
              commit_action)
@@ -1673,12 +2248,12 @@ WHERE (c.relkind = ANY (ARRAY ['r'::"char", 'v'::"char", 'f'::"char", 'p'::"char
        has_table_privilege(c.oid, 'SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'::text) OR
        has_any_column_privilege(c.oid, 'SELECT, INSERT, UPDATE, REFERENCES'::text));
 
-alter table tables
+alter table information_schema.tables
     owner to sail;
 
-grant select on tables to public;
+grant select on information_schema.tables to public;
 
-create view transforms
+create view information_schema.transforms
             (udt_catalog, udt_schema, udt_name, specific_catalog, specific_schema, specific_name, group_name,
              transform_type) as
 SELECT current_database()::information_schema.sql_identifier              AS udt_catalog,
@@ -1712,10 +2287,10 @@ FROM pg_type t
          JOIN pg_namespace np ON p.pronamespace = np.oid
 ORDER BY 1, 2, 3, 7, 8;
 
-alter table transforms
+alter table information_schema.transforms
     owner to sail;
 
-create view triggered_update_columns
+create view information_schema.triggered_update_columns
             (trigger_catalog, trigger_schema, trigger_name, event_object_catalog, event_object_schema,
              event_object_table, event_object_column)
 as
@@ -1746,12 +2321,12 @@ WHERE n.oid = c.relnamespace
   AND (pg_has_role(c.relowner, 'USAGE'::text) OR
        has_column_privilege(c.oid, a.attnum, 'INSERT, UPDATE, REFERENCES'::text));
 
-alter table triggered_update_columns
+alter table information_schema.triggered_update_columns
     owner to sail;
 
-grant select on triggered_update_columns to public;
+grant select on information_schema.triggered_update_columns to public;
 
-create view triggers
+create view information_schema.triggers
             (trigger_catalog, trigger_schema, trigger_name, event_manipulation, event_object_catalog,
              event_object_schema, event_object_table, action_order, action_condition, action_statement,
              action_orientation, action_timing, action_reference_old_table, action_reference_new_table,
@@ -1801,12 +2376,13 @@ WHERE n.oid = c.relnamespace
        has_table_privilege(c.oid, 'INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'::text) OR
        has_any_column_privilege(c.oid, 'INSERT, UPDATE, REFERENCES'::text));
 
-alter table triggers
+alter table information_schema.triggers
     owner to sail;
 
-grant select on triggers to public;
+grant select on information_schema.triggers to public;
 
-create view udt_privileges (grantor, grantee, udt_catalog, udt_schema, udt_name, privilege_type, is_grantable) as
+create view information_schema.udt_privileges
+            (grantor, grantee, udt_catalog, udt_schema, udt_name, privilege_type, is_grantable) as
 SELECT u_grantor.rolname::information_schema.sql_identifier               AS grantor,
        grantee.rolname::information_schema.sql_identifier                 AS grantee,
        current_database()::information_schema.sql_identifier              AS udt_catalog,
@@ -1846,12 +2422,13 @@ WHERE t.typnamespace = n.oid
   AND (pg_has_role(u_grantor.oid, 'USAGE'::text) OR pg_has_role(grantee.oid, 'USAGE'::text) OR
        grantee.rolname = 'PUBLIC'::name);
 
-alter table udt_privileges
+alter table information_schema.udt_privileges
     owner to sail;
 
-grant select on udt_privileges to public;
+grant select on information_schema.udt_privileges to public;
 
-create view role_udt_grants (grantor, grantee, udt_catalog, udt_schema, udt_name, privilege_type, is_grantable) as
+create view information_schema.role_udt_grants
+            (grantor, grantee, udt_catalog, udt_schema, udt_name, privilege_type, is_grantable) as
 SELECT udt_privileges.grantor,
        udt_privileges.grantee,
        udt_privileges.udt_catalog,
@@ -1865,12 +2442,12 @@ WHERE (udt_privileges.grantor::name IN (SELECT enabled_roles.role_name
    OR (udt_privileges.grantee::name IN (SELECT enabled_roles.role_name
                                         FROM information_schema.enabled_roles));
 
-alter table role_udt_grants
+alter table information_schema.role_udt_grants
     owner to sail;
 
-grant select on role_udt_grants to public;
+grant select on information_schema.role_udt_grants to public;
 
-create view usage_privileges
+create view information_schema.usage_privileges
             (grantor, grantee, object_catalog, object_schema, object_name, object_type, privilege_type, is_grantable) as
 SELECT u.rolname::information_schema.sql_identifier                      AS grantor,
        'PUBLIC'::name::information_schema.sql_identifier                 AS grantee,
@@ -2039,12 +2616,12 @@ WHERE c.relnamespace = n.oid
   AND (pg_has_role(u_grantor.oid, 'USAGE'::text) OR pg_has_role(grantee.oid, 'USAGE'::text) OR
        grantee.rolname = 'PUBLIC'::name);
 
-alter table usage_privileges
+alter table information_schema.usage_privileges
     owner to sail;
 
-grant select on usage_privileges to public;
+grant select on information_schema.usage_privileges to public;
 
-create view role_usage_grants
+create view information_schema.role_usage_grants
             (grantor, grantee, object_catalog, object_schema, object_name, object_type, privilege_type, is_grantable) as
 SELECT usage_privileges.grantor,
        usage_privileges.grantee,
@@ -2060,12 +2637,12 @@ WHERE (usage_privileges.grantor::name IN (SELECT enabled_roles.role_name
    OR (usage_privileges.grantee::name IN (SELECT enabled_roles.role_name
                                           FROM information_schema.enabled_roles));
 
-alter table role_usage_grants
+alter table information_schema.role_usage_grants
     owner to sail;
 
-grant select on role_usage_grants to public;
+grant select on information_schema.role_usage_grants to public;
 
-create view user_defined_types
+create view information_schema.user_defined_types
             (user_defined_type_catalog, user_defined_type_schema, user_defined_type_name, user_defined_type_category,
              is_instantiable, is_final, ordering_form, ordering_category, ordering_routine_catalog,
              ordering_routine_schema, ordering_routine_name, reference_type, data_type, character_maximum_length,
@@ -2110,12 +2687,12 @@ WHERE n.oid = c.relnamespace
   AND c.relkind = 'c'::"char"
   AND (pg_has_role(t.typowner, 'USAGE'::text) OR has_type_privilege(t.oid, 'USAGE'::text));
 
-alter table user_defined_types
+alter table information_schema.user_defined_types
     owner to sail;
 
-grant select on user_defined_types to public;
+grant select on information_schema.user_defined_types to public;
 
-create view view_column_usage
+create view information_schema.view_column_usage
             (view_catalog, view_schema, view_name, table_catalog, table_schema, table_name, column_name) as
 SELECT DISTINCT current_database()::information_schema.sql_identifier AS view_catalog,
                 nv.nspname::information_schema.sql_identifier         AS view_schema,
@@ -2148,12 +2725,12 @@ WHERE nv.oid = v.relnamespace
   AND dt.refobjsubid = a.attnum
   AND pg_has_role(t.relowner, 'USAGE'::text);
 
-alter table view_column_usage
+alter table information_schema.view_column_usage
     owner to sail;
 
-grant select on view_column_usage to public;
+grant select on information_schema.view_column_usage to public;
 
-create view view_routine_usage
+create view information_schema.view_routine_usage
             (table_catalog, table_schema, table_name, specific_catalog, specific_schema, specific_name) as
 SELECT DISTINCT current_database()::information_schema.sql_identifier              AS table_catalog,
                 nv.nspname::information_schema.sql_identifier                      AS table_schema,
@@ -2180,12 +2757,13 @@ WHERE nv.oid = v.relnamespace
   AND p.pronamespace = np.oid
   AND pg_has_role(p.proowner, 'USAGE'::text);
 
-alter table view_routine_usage
+alter table information_schema.view_routine_usage
     owner to sail;
 
-grant select on view_routine_usage to public;
+grant select on information_schema.view_routine_usage to public;
 
-create view view_table_usage (view_catalog, view_schema, view_name, table_catalog, table_schema, table_name) as
+create view information_schema.view_table_usage
+            (view_catalog, view_schema, view_name, table_catalog, table_schema, table_name) as
 SELECT DISTINCT current_database()::information_schema.sql_identifier AS view_catalog,
                 nv.nspname::information_schema.sql_identifier         AS view_schema,
                 v.relname::information_schema.sql_identifier          AS view_name,
@@ -2213,12 +2791,12 @@ WHERE nv.oid = v.relnamespace
   AND (t.relkind = ANY (ARRAY ['r'::"char", 'v'::"char", 'f'::"char", 'p'::"char"]))
   AND pg_has_role(t.relowner, 'USAGE'::text);
 
-alter table view_table_usage
+alter table information_schema.view_table_usage
     owner to sail;
 
-grant select on view_table_usage to public;
+grant select on information_schema.view_table_usage to public;
 
-create view views
+create view information_schema.views
             (table_catalog, table_schema, table_name, view_definition, check_option, is_updatable, is_insertable_into,
              is_trigger_updatable, is_trigger_deletable, is_trigger_insertable_into)
 as
@@ -2272,12 +2850,13 @@ WHERE c.relnamespace = nc.oid
        has_table_privilege(c.oid, 'SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER'::text) OR
        has_any_column_privilege(c.oid, 'SELECT, INSERT, UPDATE, REFERENCES'::text));
 
-alter table views
+alter table information_schema.views
     owner to sail;
 
-grant select on views to public;
+grant select on information_schema.views to public;
 
-create view data_type_privileges (object_catalog, object_schema, object_name, object_type, dtd_identifier) as
+create view information_schema.data_type_privileges
+            (object_catalog, object_schema, object_name, object_type, dtd_identifier) as
 SELECT current_database()::information_schema.sql_identifier AS object_catalog,
        x.objschema                                           AS object_schema,
        x.objname                                             AS object_name,
@@ -2313,12 +2892,12 @@ FROM (SELECT attributes.udt_schema,
              routines.dtd_identifier
       FROM information_schema.routines) x(objschema, objname, objtype, objdtdid);
 
-alter table data_type_privileges
+alter table information_schema.data_type_privileges
     owner to sail;
 
-grant select on data_type_privileges to public;
+grant select on information_schema.data_type_privileges to public;
 
-create view element_types
+create view information_schema.element_types
             (object_catalog, object_schema, object_name, object_type, collection_type_identifier, data_type,
              character_maximum_length, character_octet_length, character_set_catalog, character_set_schema,
              character_set_name, collation_catalog, collation_schema, collation_name, numeric_precision,
@@ -2425,12 +3004,12 @@ WHERE n.oid = x.objschema
                data_type_privileges.dtd_identifier
         FROM information_schema.data_type_privileges));
 
-alter table element_types
+alter table information_schema.element_types
     owner to sail;
 
-grant select on element_types to public;
+grant select on information_schema.element_types to public;
 
-create view _pg_foreign_table_columns(nspname, relname, attname, attfdwoptions) as
+create view information_schema._pg_foreign_table_columns(nspname, relname, attname, attfdwoptions) as
 SELECT n.nspname,
        c.relname,
        a.attname,
@@ -2449,10 +3028,11 @@ WHERE u.oid = c.relowner
   AND a.attrelid = c.oid
   AND a.attnum > 0;
 
-alter table _pg_foreign_table_columns
+alter table information_schema._pg_foreign_table_columns
     owner to sail;
 
-create view column_options (table_catalog, table_schema, table_name, column_name, option_name, option_value) as
+create view information_schema.column_options
+            (table_catalog, table_schema, table_name, column_name, option_name, option_value) as
 SELECT current_database()::information_schema.sql_identifier                                  AS table_catalog,
        c.nspname::information_schema.sql_identifier                                           AS table_schema,
        c.relname::information_schema.sql_identifier                                           AS table_name,
@@ -2461,12 +3041,12 @@ SELECT current_database()::information_schema.sql_identifier                    
        (pg_options_to_table(c.attfdwoptions)).option_value::information_schema.character_data AS option_value
 FROM information_schema._pg_foreign_table_columns c;
 
-alter table column_options
+alter table information_schema.column_options
     owner to sail;
 
-grant select on column_options to public;
+grant select on information_schema.column_options to public;
 
-create view _pg_foreign_data_wrappers
+create view information_schema._pg_foreign_data_wrappers
             (oid, fdwowner, fdwoptions, foreign_data_wrapper_catalog, foreign_data_wrapper_name,
              authorization_identifier, foreign_data_wrapper_language)
 as
@@ -2482,10 +3062,10 @@ FROM pg_foreign_data_wrapper w,
 WHERE u.oid = w.fdwowner
   AND (pg_has_role(w.fdwowner, 'USAGE'::text) OR has_foreign_data_wrapper_privilege(w.oid, 'USAGE'::text));
 
-alter table _pg_foreign_data_wrappers
+alter table information_schema._pg_foreign_data_wrappers
     owner to sail;
 
-create view foreign_data_wrapper_options
+create view information_schema.foreign_data_wrapper_options
             (foreign_data_wrapper_catalog, foreign_data_wrapper_name, option_name, option_value) as
 SELECT w.foreign_data_wrapper_catalog,
        w.foreign_data_wrapper_name,
@@ -2493,12 +3073,12 @@ SELECT w.foreign_data_wrapper_catalog,
        (pg_options_to_table(w.fdwoptions)).option_value::information_schema.character_data AS option_value
 FROM information_schema._pg_foreign_data_wrappers w;
 
-alter table foreign_data_wrapper_options
+alter table information_schema.foreign_data_wrapper_options
     owner to sail;
 
-grant select on foreign_data_wrapper_options to public;
+grant select on information_schema.foreign_data_wrapper_options to public;
 
-create view foreign_data_wrappers
+create view information_schema.foreign_data_wrappers
             (foreign_data_wrapper_catalog, foreign_data_wrapper_name, authorization_identifier, library_name,
              foreign_data_wrapper_language)
 as
@@ -2509,12 +3089,12 @@ SELECT w.foreign_data_wrapper_catalog,
        w.foreign_data_wrapper_language
 FROM information_schema._pg_foreign_data_wrappers w;
 
-alter table foreign_data_wrappers
+alter table information_schema.foreign_data_wrappers
     owner to sail;
 
-grant select on foreign_data_wrappers to public;
+grant select on information_schema.foreign_data_wrappers to public;
 
-create view _pg_foreign_servers
+create view information_schema._pg_foreign_servers
             (oid, srvoptions, foreign_server_catalog, foreign_server_name, foreign_data_wrapper_catalog,
              foreign_data_wrapper_name, foreign_server_type, foreign_server_version, authorization_identifier)
 as
@@ -2534,22 +3114,23 @@ WHERE w.oid = s.srvfdw
   AND u.oid = s.srvowner
   AND (pg_has_role(s.srvowner, 'USAGE'::text) OR has_server_privilege(s.oid, 'USAGE'::text));
 
-alter table _pg_foreign_servers
+alter table information_schema._pg_foreign_servers
     owner to sail;
 
-create view foreign_server_options (foreign_server_catalog, foreign_server_name, option_name, option_value) as
+create view information_schema.foreign_server_options
+            (foreign_server_catalog, foreign_server_name, option_name, option_value) as
 SELECT s.foreign_server_catalog,
        s.foreign_server_name,
        (pg_options_to_table(s.srvoptions)).option_name::information_schema.sql_identifier  AS option_name,
        (pg_options_to_table(s.srvoptions)).option_value::information_schema.character_data AS option_value
 FROM information_schema._pg_foreign_servers s;
 
-alter table foreign_server_options
+alter table information_schema.foreign_server_options
     owner to sail;
 
-grant select on foreign_server_options to public;
+grant select on information_schema.foreign_server_options to public;
 
-create view foreign_servers
+create view information_schema.foreign_servers
             (foreign_server_catalog, foreign_server_name, foreign_data_wrapper_catalog, foreign_data_wrapper_name,
              foreign_server_type, foreign_server_version, authorization_identifier)
 as
@@ -2562,12 +3143,12 @@ SELECT _pg_foreign_servers.foreign_server_catalog,
        _pg_foreign_servers.authorization_identifier
 FROM information_schema._pg_foreign_servers;
 
-alter table foreign_servers
+alter table information_schema.foreign_servers
     owner to sail;
 
-grant select on foreign_servers to public;
+grant select on information_schema.foreign_servers to public;
 
-create view _pg_foreign_tables
+create view information_schema._pg_foreign_tables
             (foreign_table_catalog, foreign_table_schema, foreign_table_name, ftoptions, foreign_server_catalog,
              foreign_server_name, authorization_identifier)
 as
@@ -2594,10 +3175,10 @@ WHERE w.oid = s.srvfdw
   AND c.relkind = 'f'::"char"
   AND s.oid = t.ftserver;
 
-alter table _pg_foreign_tables
+alter table information_schema._pg_foreign_tables
     owner to sail;
 
-create view foreign_table_options
+create view information_schema.foreign_table_options
             (foreign_table_catalog, foreign_table_schema, foreign_table_name, option_name, option_value) as
 SELECT t.foreign_table_catalog,
        t.foreign_table_schema,
@@ -2606,12 +3187,12 @@ SELECT t.foreign_table_catalog,
        (pg_options_to_table(t.ftoptions)).option_value::information_schema.character_data AS option_value
 FROM information_schema._pg_foreign_tables t;
 
-alter table foreign_table_options
+alter table information_schema.foreign_table_options
     owner to sail;
 
-grant select on foreign_table_options to public;
+grant select on information_schema.foreign_table_options to public;
 
-create view foreign_tables
+create view information_schema.foreign_tables
             (foreign_table_catalog, foreign_table_schema, foreign_table_name, foreign_server_catalog,
              foreign_server_name) as
 SELECT _pg_foreign_tables.foreign_table_catalog,
@@ -2621,12 +3202,12 @@ SELECT _pg_foreign_tables.foreign_table_catalog,
        _pg_foreign_tables.foreign_server_name
 FROM information_schema._pg_foreign_tables;
 
-alter table foreign_tables
+alter table information_schema.foreign_tables
     owner to sail;
 
-grant select on foreign_tables to public;
+grant select on information_schema.foreign_tables to public;
 
-create view _pg_user_mappings
+create view information_schema._pg_user_mappings
             (oid, umoptions, umuser, authorization_identifier, foreign_server_catalog, foreign_server_name, srvowner) as
 SELECT um.oid,
        um.umoptions,
@@ -2640,10 +3221,10 @@ FROM pg_user_mapping um
      information_schema._pg_foreign_servers s
 WHERE s.oid = um.umserver;
 
-alter table _pg_user_mappings
+alter table information_schema._pg_user_mappings
     owner to sail;
 
-create view user_mapping_options
+create view information_schema.user_mapping_options
             (authorization_identifier, foreign_server_catalog, foreign_server_name, option_name, option_value) as
 SELECT um.authorization_identifier,
        um.foreign_server_catalog,
@@ -2660,23 +3241,23 @@ SELECT um.authorization_identifier,
 FROM information_schema._pg_user_mappings um,
      LATERAL pg_options_to_table(um.umoptions) opts(option_name, option_value);
 
-alter table user_mapping_options
+alter table information_schema.user_mapping_options
     owner to sail;
 
-grant select on user_mapping_options to public;
+grant select on information_schema.user_mapping_options to public;
 
-create view user_mappings(authorization_identifier, foreign_server_catalog, foreign_server_name) as
+create view information_schema.user_mappings(authorization_identifier, foreign_server_catalog, foreign_server_name) as
 SELECT _pg_user_mappings.authorization_identifier,
        _pg_user_mappings.foreign_server_catalog,
        _pg_user_mappings.foreign_server_name
 FROM information_schema._pg_user_mappings;
 
-alter table user_mappings
+alter table information_schema.user_mappings
     owner to sail;
 
-grant select on user_mappings to public;
+grant select on information_schema.user_mappings to public;
 
-create function _pg_expandarray(anyarray, OUT x anyelement, OUT n integer) returns SETOF record
+create function information_schema._pg_expandarray(anyarray, OUT x anyelement, OUT n integer) returns SETOF record
     immutable
     strict
     parallel safe
@@ -2688,9 +3269,9 @@ $$select $1[s],
                                         pg_catalog.array_upper($1,1),
                                         1) as g(s)$$;
 
-alter function _pg_expandarray(anyarray, out anyelement, out integer) owner to sail;
+alter function information_schema._pg_expandarray(anyarray, out anyelement, out integer) owner to sail;
 
-create function _pg_index_position(oid, smallint) returns integer
+create function information_schema._pg_index_position(oid, smallint) returns integer
     stable
     strict
     language sql
@@ -2702,87 +3283,86 @@ BEGIN ATOMIC
    WHERE ((ss.a).x = $2);
 END;
 
-alter function _pg_index_position(oid, smallint) owner to sail;
+alter function information_schema._pg_index_position(oid, smallint) owner to sail;
 
-create function _pg_truetypid(pg_attribute, pg_type) returns oid
+create function information_schema._pg_truetypid(pg_attribute, pg_type) returns oid
     immutable
     strict
     parallel safe
     language sql
 RETURN CASE WHEN (($2).typtype = 'd'::"char") THEN ($2).typbasetype ELSE ($1).atttypid END;
 
-alter function _pg_truetypid(pg_attribute, pg_type) owner to sail;
+alter function information_schema._pg_truetypid(pg_attribute, pg_type) owner to sail;
 
-create function _pg_truetypmod(pg_attribute, pg_type) returns integer
+create function information_schema._pg_truetypmod(pg_attribute, pg_type) returns integer
     immutable
     strict
     parallel safe
     language sql
 RETURN CASE WHEN (($2).typtype = 'd'::"char") THEN ($2).typtypmod ELSE ($1).atttypmod END;
 
-alter function _pg_truetypmod(pg_attribute, pg_type) owner to sail;
+alter function information_schema._pg_truetypmod(pg_attribute, pg_type) owner to sail;
 
-create function _pg_char_max_length(typid oid, typmod integer) returns integer
+create function information_schema._pg_char_max_length(typid oid, typmod integer) returns integer
     immutable
     strict
     parallel safe
     language sql
 RETURN CASE WHEN (typmod = '-1'::integer) THEN NULL::integer WHEN (typid = ANY (ARRAY[(1042)::oid, (1043)::oid])) THEN (typmod - 4) WHEN (typid = ANY (ARRAY[(1560)::oid, (1562)::oid])) THEN typmod ELSE NULL::integer END;
 
-alter function _pg_char_max_length(oid, integer) owner to sail;
+alter function information_schema._pg_char_max_length(oid, integer) owner to sail;
 
-create function _pg_char_octet_length(typid oid, typmod integer) returns integer
+create function information_schema._pg_char_octet_length(typid oid, typmod integer) returns integer
     immutable
     strict
     parallel safe
     language sql
 RETURN CASE WHEN (typid = ANY (ARRAY[(25)::oid, (1042)::oid, (1043)::oid])) THEN CASE WHEN (typmod = '-1'::integer) THEN (((2)::double precision ^ (30)::double precision))::integer ELSE (information_schema._pg_char_max_length(typid, typmod) * pg_encoding_max_length((SELECT pg_database.encoding FROM pg_database WHERE (pg_database.datname = current_database())))) END ELSE NULL::integer END;
 
-alter function _pg_char_octet_length(oid, integer) owner to sail;
+alter function information_schema._pg_char_octet_length(oid, integer) owner to sail;
 
-create function _pg_numeric_precision(typid oid, typmod integer) returns integer
+create function information_schema._pg_numeric_precision(typid oid, typmod integer) returns integer
     immutable
     strict
     parallel safe
     language sql
 RETURN CASE typid WHEN 21 THEN 16 WHEN 23 THEN 32 WHEN 20 THEN 64 WHEN 1700 THEN CASE WHEN (typmod = '-1'::integer) THEN NULL::integer ELSE (((typmod - 4) >> 16) & 65535) END WHEN 700 THEN 24 WHEN 701 THEN 53 ELSE NULL::integer END;
 
-alter function _pg_numeric_precision(oid, integer) owner to sail;
+alter function information_schema._pg_numeric_precision(oid, integer) owner to sail;
 
-create function _pg_numeric_precision_radix(typid oid, typmod integer) returns integer
+create function information_schema._pg_numeric_precision_radix(typid oid, typmod integer) returns integer
     immutable
     strict
     parallel safe
     language sql
 RETURN CASE WHEN (typid = ANY (ARRAY[(21)::oid, (23)::oid, (20)::oid, (700)::oid, (701)::oid])) THEN 2 WHEN (typid = (1700)::oid) THEN 10 ELSE NULL::integer END;
 
-alter function _pg_numeric_precision_radix(oid, integer) owner to sail;
+alter function information_schema._pg_numeric_precision_radix(oid, integer) owner to sail;
 
-create function _pg_numeric_scale(typid oid, typmod integer) returns integer
+create function information_schema._pg_numeric_scale(typid oid, typmod integer) returns integer
     immutable
     strict
     parallel safe
     language sql
 RETURN CASE WHEN (typid = ANY (ARRAY[(21)::oid, (23)::oid, (20)::oid])) THEN 0 WHEN (typid = (1700)::oid) THEN CASE WHEN (typmod = '-1'::integer) THEN NULL::integer ELSE ((typmod - 4) & 65535) END ELSE NULL::integer END;
 
-alter function _pg_numeric_scale(oid, integer) owner to sail;
+alter function information_schema._pg_numeric_scale(oid, integer) owner to sail;
 
-create function _pg_datetime_precision(typid oid, typmod integer) returns integer
+create function information_schema._pg_datetime_precision(typid oid, typmod integer) returns integer
     immutable
     strict
     parallel safe
     language sql
 RETURN CASE WHEN (typid = (1082)::oid) THEN 0 WHEN (typid = ANY (ARRAY[(1083)::oid, (1114)::oid, (1184)::oid, (1266)::oid])) THEN CASE WHEN (typmod < 0) THEN 6 ELSE typmod END WHEN (typid = (1186)::oid) THEN CASE WHEN ((typmod < 0) OR ((typmod & 65535) = 65535)) THEN 6 ELSE (typmod & 65535) END ELSE NULL::integer END;
 
-alter function _pg_datetime_precision(oid, integer) owner to sail;
+alter function information_schema._pg_datetime_precision(oid, integer) owner to sail;
 
-create function _pg_interval_type(typid oid, mod integer) returns text
+create function information_schema._pg_interval_type(typid oid, mod integer) returns text
     immutable
     strict
     parallel safe
     language sql
 RETURN CASE WHEN (typid = (1186)::oid) THEN upper(SUBSTRING(format_type(typid, mod) SIMILAR 'interval[()0-9]* #"%#"'::text ESCAPE '#'::text)) ELSE NULL::text END;
 
-alter function _pg_interval_type(oid, integer) owner to sail;
-
+alter function information_schema._pg_interval_type(oid, integer) owner to sail;
 
