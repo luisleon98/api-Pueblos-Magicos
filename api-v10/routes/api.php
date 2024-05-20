@@ -34,6 +34,5 @@ Route::get('catestados', [StateController::class, 'index']);
 Route::get('cattiposUsers', [TipoUserController::class, 'index']);
 Route::get('tiposervicios', [TiposServiciosController::class, 'index']);
 Route::get('pueblosmagicos', [PueblosMagicosController::class, 'index']);
-Route::post('festividades/registrar', [FestividadesController::class, 'store']);
 Route::post('users/registrar', [UserController::class, 'create']);
 Route::post('users/login', [UserController::class, 'login']);
