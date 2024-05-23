@@ -4,10 +4,13 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+
 /**
  * @OA\Schema(
  *     schema="User",
@@ -75,7 +78,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable,HasApiTokens,SoftDeletes;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes,CanResetPassword ;
 
     protected $table = 'usuarios';
     /**
@@ -110,7 +113,25 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function tipo(){
+    public function tipo()
+    {
         return $this->belongsTo(Tipo_User::class);
+    }
+    public function findForPassport($username)
+    {
+        
+        return $this->where('user_name', $username)->first();
+    }
+    public function getEmailForPasswordReset()
+    {
+        return $this->user_name;
+    }
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \Illuminate\Auth\Notifications\ResetPassword($token));
+    }
+    public function routeNotificationForMail($notification)
+    {
+        return $this->user_name;
     }
 }

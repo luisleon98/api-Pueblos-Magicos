@@ -9,6 +9,7 @@ use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\CatServiciosController;
 use App\Http\Controllers\FestividadesController;
 use App\Http\Controllers\ObservacionesController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PueblosMagicosController;
 use App\Http\Controllers\TiposServiciosController;
 
@@ -34,5 +35,8 @@ Route::get('catestados', [StateController::class, 'index']);
 Route::get('cattiposUsers', [TipoUserController::class, 'index']);
 Route::get('tiposervicios', [TiposServiciosController::class, 'index']);
 Route::get('pueblosmagicos', [PueblosMagicosController::class, 'index']);
+Route::post('/forgot-password', [PasswordResetController::class, 'forgot'])->name('password.request');
+Route::post('/password/reset',[PasswordResetController::class,'reset'])->name('password.reset');
+
 Route::post('users/registrar', [UserController::class, 'create']);
 Route::post('users/login', [UserController::class, 'login']);
