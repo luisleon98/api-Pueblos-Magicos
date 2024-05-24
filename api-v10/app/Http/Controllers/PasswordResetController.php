@@ -51,7 +51,7 @@ public function forgot(Request $request)
 {
     $request->validate(['data.user_name' => 'required|email|exists:usuarios,user_name']);
     $status = Password::sendResetLink(
-        $request->only('data.user_name')
+        ['user_name' => $request->input('data')['user_name']]
     );
     return $status === Password::RESET_LINK_SENT
                 ? response()->json(["data" => ["status" => __($status)]], 200)

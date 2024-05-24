@@ -219,10 +219,15 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "user_name": {
-                                        "description": "El correo electrónico del usuario",
-                                        "type": "string",
-                                        "format": "email"
+                                    "data": {
+                                        "properties": {
+                                            "user_name": {
+                                                "description": "El correo electrónico del usuario",
+                                                "type": "string",
+                                                "format": "email"
+                                            }
+                                        },
+                                        "type": "object"
                                     }
                                 },
                                 "type": "object"
@@ -237,9 +242,14 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "status": {
-                                            "description": "Estado del envío del enlace de restablecimiento de contraseña",
-                                            "type": "string"
+                                        "data": {
+                                            "properties": {
+                                                "status": {
+                                                    "description": "Estado del envío del enlace de restablecimiento de contraseña",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -253,9 +263,14 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "user_name": {
-                                            "description": "Estado del envío del enlace de restablecimiento de contraseña",
-                                            "type": "string"
+                                        "data": {
+                                            "properties": {
+                                                "user_name": {
+                                                    "description": "Estado del envío del enlace de restablecimiento de contraseña",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -285,24 +300,29 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "token": {
-                                        "description": "El token de restablecimiento de contraseña",
-                                        "type": "string"
-                                    },
-                                    "user_name": {
-                                        "description": "El correo electrónico del usuario",
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "description": "La nueva contraseña",
-                                        "type": "string",
-                                        "format": "password"
-                                    },
-                                    "password_confirmation": {
-                                        "description": "Confirmación de la nueva contraseña",
-                                        "type": "string",
-                                        "format": "password"
+                                    "data": {
+                                        "properties": {
+                                            "token": {
+                                                "description": "El token de restablecimiento de contraseña",
+                                                "type": "string"
+                                            },
+                                            "user_name": {
+                                                "description": "El correo electrónico del usuario",
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "password": {
+                                                "description": "La nueva contraseña",
+                                                "type": "string",
+                                                "format": "password"
+                                            },
+                                            "password_confirmation": {
+                                                "description": "Confirmación de la nueva contraseña",
+                                                "type": "string",
+                                                "format": "password"
+                                            }
+                                        },
+                                        "type": "object"
                                     }
                                 },
                                 "type": "object"
@@ -338,12 +358,17 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "user_name": {
-                                            "type": "array",
-                                            "items": {
-                                                "description": "Estado del restablecimiento de contraseña",
-                                                "type": "string"
-                                            }
+                                        "data": {
+                                            "properties": {
+                                                "user_name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "description": "Estado del restablecimiento de contraseña",
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
