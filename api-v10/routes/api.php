@@ -25,10 +25,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('servicios/filtrar/categoria/{id_categoria}', [ServiciosController::class, 'getServiciosByCategoria']);
     Route::get('servicios/filtrar/{id_estatus}/{id_pueblo}/{id_categoria}', [ServiciosController::class, 'getServiciosFiltradoEspecifico']);
     Route::get('users',[UserController::class,'index']);
+    Route::get('users/{id_usuario}',[UserController::class,'show']);
     Route::post('users/logout', [UserController::class, 'logout']);
     Route::post('servicios/registrar', [ServiciosController::class, 'store']);
     Route::post('observaciones', [ObservacionesController::class, 'store']);
     Route::delete('/servicios/{servicio}', [ServiciosController::class, 'destroy']);
+    Route::delete('users/{usuario}',[UserController::class,'destroy']);
     Route::put('servicios/{servicio}', [ServiciosController::class, 'updateServicio']);
 });
 

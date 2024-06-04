@@ -28,21 +28,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  *         example="Pérez"
  *     ),
  *     @OA\Property(
- *         property="direccion",
- *         type="string",
- *         example="Calle 123"
- *     ),
- *     @OA\Property(
- *         property="ciudad",
- *         type="string",
- *         example="Ciudad de México"
- *     ),
- *     @OA\Property(
- *         property="cp",
- *         type="integer",
- *         example=12345
- *     ),
- *     @OA\Property(
  *         property="id_tipo_user",
  *         type="integer",
  *         example=1

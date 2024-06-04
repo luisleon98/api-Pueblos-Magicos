@@ -1312,13 +1312,99 @@
                 ]
             }
         },
+        "/api/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Mostrar un usuario específico",
+                "operationId": "36a33ff774d5cba33c039dec2c3e0287",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario a mostrar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        {
+                                            "type": "boolean"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Eliminar un usuario específico",
+                "operationId": "fa56cffde745d3f152f95cbacd936c0b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        {
+                                            "type": "boolean"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/sanctum/csrf-cookie": {
             "get": {
                 "tags": [
                     "Autenticación"
                 ],
                 "summary": "Obtiene los tokens CSRF y de sesión",
-                "operationId": "79fca2da22bba201dfdb4ed40de92eff",
+                "operationId": "1aa7dca26fad8d2dbbe4ad2e85f94824",
                 "responses": {
                     "204": {
                         "description": "Operación exitosa",
@@ -1644,18 +1730,6 @@
                         "type": "string",
                         "example": "Pérez"
                     },
-                    "direccion": {
-                        "type": "string",
-                        "example": "Calle 123"
-                    },
-                    "ciudad": {
-                        "type": "string",
-                        "example": "Ciudad de México"
-                    },
-                    "cp": {
-                        "type": "integer",
-                        "example": 12345
-                    },
                     "id_tipo_user": {
                         "type": "integer",
                         "example": 1
@@ -1684,12 +1758,6 @@
                     }
                 },
                 "type": "object"
-            }
-        },
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer"
             }
         }
     }

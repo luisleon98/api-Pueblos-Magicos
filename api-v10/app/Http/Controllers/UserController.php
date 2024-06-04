@@ -14,230 +14,273 @@ use Illuminate\Auth\AuthenticationException;
 class UserController extends Controller
 {
     /**
-* @OA\Get(
-*     path="/api/users",
-*     summary="Obtiene una lista de usuarios",
-*     tags={"Users"},
-*     @OA\Response(
-*         response=200,
-*         description="OK",
-*         @OA\JsonContent(
-*             type="object",
-*             @OA\Property(
-*                 property="data",
-*                 type="object",
-*                 @OA\Property(
-*                     property="usuarios",
-*                     type="array",
-*                     @OA\Items(ref="#/components/schemas/User")
-*                 )
-*             )
-*         )
-*     ),
-*     @OA\Response(
-*         response=401,
-*         description="No autorizado",
-*         @OA\JsonContent(
-*             type="object",
-*             @OA\Property(
-*                 property="data",
-*                 type="object",
-*                 @OA\Property(
-*                     property="Error",
-*                     type="string",
-*                     example="No tienes permisos para realizar esta accion"
-*                 )
-*             )
-*         )
-*     ),
-*     security={{"bearerAuth":{}}}
-* )
-*/
+     * @OA\Get(
+     *     path="/api/users",
+     *     summary="Obtiene una lista de usuarios",
+     *     tags={"Users"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="OK",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="usuarios",
+     *                     type="array",
+     *                     @OA\Items(ref="#/components/schemas/User")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="Error",
+     *                     type="string",
+     *                     example="No tienes permisos para realizar esta accion"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     security={{"bearerAuth":{}}}
+     * )
+     */
     public function index(Request $request)
     {
         $user = $request->user();
         $query = User::with([
-            'tipo'=>function ($query){
-                $query->select('id','tipo_usuario');
+            'tipo' => function ($query) {
+                $query->select('id', 'tipo_usuario');
             },
-            'persona' => function($query){
-                $query->select('id','nombre','apellido_pat','apellido_mat','id_usuario');
+            'persona' => function ($query) {
+                $query->select('id', 'nombre', 'apellido_pat', 'apellido_mat', 'id_usuario');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[1,2])){
+        if (in_array($user->id_tipo_usuario, [1, 2])) {
             $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
-            
+
             return response()->json([
                 "data" => ["usuarios" => $usuarios]
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 "data" => ["Error" => 'No tienes permisos para realizar esta accion ']
-            ],401);
+            ], 401);
         }
-
     }
 
-  /**
-* @OA\Post(
-*     path="/api/users/registrar",
-*     summary="Crea un nuevo usuario",
-*          tags={"Users"},
-*     @OA\RequestBody(
-*         @OA\MediaType(
-*             mediaType="application/json",
-*             @OA\Schema(
-*                 @OA\Property(
-*                     property="data",
-*                     type="object",
-*                     @OA\Property(
-*                         property="user_name",
-*                         type="string"
-*                     ),
-*                     @OA\Property(
-*                         property="password",
-*                         type="string"
-*                     ),
-*                     @OA\Property(
-*                         property="nombre",
-*                         type="string"
-*                     ),
-*                     @OA\Property(
-*                         property="apellido_pat",
-*                         type="string"
-*                     ),
-*                     @OA\Property(
-*                         property="apellido_mat",
-*                         type="string"
-*                     ),
-*                     @OA\Property(
-*                         property="id_tipo_user",
-*                         type="integer"
-*                     )
-*                 ),
-*                 example={"data": {"user_name":"lleon@ipn.mx","password":"pruebas1","nombre":"Luis","apellido_pat":"Leon","apellido_mat":"HDZ","id_tipo_usuario":2}}
-*             )
-*         )
-*     ),
-*     @OA\Response(
-*         response=200,
-*         description="OK",
-*         @OA\JsonContent(
-*             oneOf={
-*                 @OA\Schema(ref="#/components/schemas/User"),
-*                 @OA\Schema(type="boolean")
-*             },
-*             
-*         )
-*     )
-* )
-*/
+    /**
+     * @OA\Post(
+     *     path="/api/users/registrar",
+     *     summary="Crea un nuevo usuario",
+     *          tags={"Users"},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="data",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="user_name",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="password",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="nombre",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="apellido_pat",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="apellido_mat",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="id_tipo_user",
+     *                         type="integer"
+     *                     )
+     *                 ),
+     *                 example={"data": {"user_name":"lleon@ipn.mx","password":"pruebas1","nombre":"Luis","apellido_pat":"Leon","apellido_mat":"HDZ","id_tipo_usuario":2}}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OK",
+     *         @OA\JsonContent(
+     *             oneOf={
+     *                 @OA\Schema(ref="#/components/schemas/User"),
+     *                 @OA\Schema(type="boolean")
+     *             },
+     *             
+     *         )
+     *     )
+     * )
+     */
     public function create(RegistroRequest $request)
     {
         $data = $request->validated();
         $data = $data['data'];
         $data['password'] = Hash::make($data['password']);
         $user = User::create([
-            'user_name'=>$data['user_name'],
-            'password'=>$data['password'],
-            'id_tipo_usuario'=>$data['id_tipo_usuario']
+            'user_name' => $data['user_name'],
+            'password' => $data['password'],
+            'id_tipo_usuario' => $data['id_tipo_usuario']
         ]);
         $persona = Personas::create([
-            'nombre'=>$data['nombre'],
-            'apellido_pat'=>$data['apellido_pat'],
-            'apellido_mat'=>$data['apellido_mat'],
-            'id_usuario'=>$user->id
+            'nombre' => $data['nombre'],
+            'apellido_pat' => $data['apellido_pat'],
+            'apellido_mat' => $data['apellido_mat'],
+            'id_usuario' => $user->id
         ]);
 
-          // Generar el token de acceso
-    $token = $user->createToken('authToken')->plainTextToken;
-
-    return response()->json([
-        'data' => [
-            'success' => true,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'user' => [
-                'id' => $user->id,
-                'user_name' => $user->user_name,
-                'id_tipo_usuario' => $user->id_tipo_usuario
-            ],
-            'persona' => [
-                'id' => $persona->id,
-                'nombre' => $persona->nombre,
-                'apellido_pat' => $persona->apellido_pat,
-                'apellido_mat' => $persona->apellido_mat
-            ]
-        ]
-    ]);
-    }
-
-  /**
-* @OA\Post(
-*     path="/api/users/login",
-*     summary="Inicio de session de un usuario",
-*          tags={"Users"},
-*     @OA\RequestBody(
-*         @OA\MediaType(
-*             mediaType="application/json",
-*             @OA\Schema(
-*                 @OA\Property(
-*                     property="data",
-*                     type="object",
-*                     @OA\Property(
-*                         property="user_name",
-*                         type="string"
-*                     ),
-*                     @OA\Property(
-*                         property="password",
-*                         type="string"
-*                     )
-*                 ),
-*                 example={"data": {"user_name":"bajimeneza@ipn.mx","password":"Pruebas1"}}
-*             )
-*         )
-*     ),
-
-*     @OA\Response(
-*         response=200,
-*         description="OK",
-*         @OA\JsonContent(
-*             oneOf={
-*                 @OA\Schema(ref="#/components/schemas/User"),
-*                 @OA\Schema(type="boolean")
-*             },
-*             
-*         )
-*     )
-* )
-*/
-    public function Login(Request $request)
-    {
-        $data = $request->data;
-    if (Auth::attempt($data)) {
-        $user = Auth::user();
+        // Generar el token de acceso
         $token = $user->createToken('authToken')->plainTextToken;
 
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'user' => [
-                'id' => $user->id,
-                'user_name' => $user->user_name,
-                 'id_tipo_usuario'=>$user->id_tipo_usuario
+            'data' => [
+                'success' => true,
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'user' => [
+                    'id' => $user->id,
+                    'user_name' => $user->user_name,
+                    'id_tipo_usuario' => $user->id_tipo_usuario
+                ],
+                'persona' => [
+                    'id' => $persona->id,
+                    'nombre' => $persona->nombre,
+                    'apellido_pat' => $persona->apellido_pat,
+                    'apellido_mat' => $persona->apellido_mat
+                ]
             ]
         ]);
-    } else {
-        return response()->json(['error' => 'Credenciales incorrectas'], 401);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/users/login",
+     *     summary="Inicio de session de un usuario",
+     *          tags={"Users"},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="data",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="user_name",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="password",
+     *                         type="string"
+     *                     )
+     *                 ),
+     *                 example={"data": {"user_name":"bajimeneza@ipn.mx","password":"Pruebas1"}}
+     *             )
+     *         )
+     *     ),
+
+     *     @OA\Response(
+     *         response=200,
+     *         description="OK",
+     *         @OA\JsonContent(
+     *             oneOf={
+     *                 @OA\Schema(ref="#/components/schemas/User"),
+     *                 @OA\Schema(type="boolean")
+     *             },
+     *             
+     *         )
+     *     )
+     * )
+     */
+    public function Login(Request $request)
+    {
+        $data = $request->data;
+        if (Auth::attempt($data)) {
+            $user = Auth::user();
+            $token = $user->createToken('authToken')->plainTextToken;
+
+            return response()->json([
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'user' => [
+                    'id' => $user->id,
+                    'user_name' => $user->user_name,
+                    'id_tipo_usuario' => $user->id_tipo_usuario
+                ]
+            ]);
+        } else {
+            return response()->json(['error' => 'Credenciales incorrectas'], 401);
+        }
     }
-      /**
- * @OA\Post(
- *     path="/api/users/logout",
- *     summary="Cerrar sesión de un usuario",
+    /**
+     * @OA\Post(
+     *     path="/api/users/logout",
+     *     summary="Cerrar sesión de un usuario",
+     *     tags={"Users"},
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="OK",
+     *         @OA\JsonContent(
+     *             oneOf={
+     *                 @OA\Schema(ref="#/components/schemas/User"),
+     *                 @OA\Schema(type="boolean")
+     *             },
+     *         )
+     *     )
+     * )
+     *
+\
+     */
+
+    public function logout(Request $request)
+    {
+        try {
+            // Verifica si el usuario está autenticado
+            if ($request->user()) {
+                // Si el usuario está autenticado, revoca todos los tokens de acceso
+                $request->user()->currentAccessToken()->delete();
+                return response()->json([
+                    'data' => ['mensaje' => 'Cierre de sesión exitoso']
+                ]);
+            }
+        } catch (AuthenticationException $e) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+    }
+    /**
+ * @OA\Get(
+ *     path="/api/users/{id}",
+ *     summary="Mostrar un usuario específico",
  *     tags={"Users"},
  *     security={{"bearerAuth":{}}},
+ *
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID del usuario a mostrar",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
  *
  *     @OA\Response(
  *         response=200,
@@ -251,38 +294,49 @@ class UserController extends Controller
  *     )
  * )
  *
- * @OA\SecurityScheme(
- *     securityScheme="bearerAuth",
- *     type="http",
- *     scheme="bearer"
- * )
- */
 
-    public function logout(Request $request)
-{
-    try{
-    // Verifica si el usuario está autenticado
-    if ($request->user()) {
-        // Si el usuario está autenticado, revoca todos los tokens de acceso
-        $request->user()->currentAccessToken()->delete();
-        return response()->json([
-            'data' => ['mensaje'=>'Cierre de sesión exitoso']
-        ]);
-    } 
-}catch(AuthenticationException $e) {
-    return response()->json(['error' => 'Unauthorized'], 401);
-}
-}
-    /**
-     * Display the specified resource.
-     */
+ */
     public function show(string $id)
     {
-        //
+        $usuario = User::where('id', $id)->with([
+            'tipo' => function ($query) {
+                $query->select('id', 'tipo_usuario');
+            },
+            'persona' => function ($query) {
+                $query->select('id', 'nombre', 'apellido_pat', 'apellido_mat', 'id_usuario');
+            }
+        ])->get();
+        return response()->json([
+            "data" => ["servicio" => $usuario]
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
+   /**
+     * @OA\Get(
+     *     path="/sanctum/csrf-cookie",
+     *     summary="Obtiene los tokens CSRF y de sesión",
+     *     tags={"Autenticación"},
+     *     @OA\Response(
+     *         response=204,
+     *         description="Operación exitosa",
+     *         @OA\Header(
+     *             header="Set-Cookie",
+     *             @OA\Schema(
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="XSRF-TOKEN=eyJpdiI6IktmZkhXWVlLS1VQTW1STXE4VG1UbHc9PSIsInZhbHVlIjoiSTNSVExZRkpBMjlzdG1jNWlOUW1SVTVYeVFmQ09xQW9TVkFDREhCaGYra3VCOUxyVkM4dUE1S0h3WVBqMDVyS2F5anNqL1Y2UGNOUkxiWjZmWTdjTTYvYmJUMk00dnRIMDBucXdSSkFTR1JZTWF1TlNacHFPOEZkYmt0RWhzMUEiLCJtYWMiOiI3ZGFkODRhZTYzZjUwMzM1Mjg3MmQ0YTljZDZiZDc1ZDU4NjY3ZjVmNWI5YzBiOTA0Yzk2NTE0OTY3MGFmYTdlIiwidGFnIjoiIn0%3D; expires=Thu, 11 Apr 2024 21:43:15 GMT; Max-Age=7200; path=/; samesite=lax"
+     *                     ),
+     *                     @OA\Schema(
+     *                         type="string",
+     *                         example="laravel_session=eyJpdiI6IlNzVklsYndhOWZseDk1NnNLeWJhM1E9PSIsInZhbHVlIjoicHZsakxmOVVxdmJMY0ZVdDJNbUxnclJqejFlTzFHWXZ6Y1VZSGI4V2FxZndlUnJ0L3hSZmgwM3JGNGcrQjljdWI3VjVCWW9XaWx1Lzczc2VjbkN5ekIvQ3lvZmpxNWxxeDVUbWsrbVZPT3ZwTnJMWDRzSnVOWHNSVHAzUlg0bzAiLCJtYWMiOiIyMmUwNWFhM2I0Yjk2ZjM2OWNhNDE1ZDAyOGEzM2ZmZDhhMzAzZjI2ODExZGJkZmNhNDFjODkzMmNhZmE0ZTUzIiwidGFnIjoiIn0%3D; expires=Thu, 11 Apr 2024 21:43:15 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function edit(string $id)
     {
@@ -296,36 +350,42 @@ class UserController extends Controller
     {
         //
     }
-
 /**
- * @OA\Get(
- *     path="/sanctum/csrf-cookie",
- *     summary="Obtiene los tokens CSRF y de sesión",
- *     tags={"Autenticación"},
+ * @OA\Delete(
+ *     path="/api/users/{id}",
+ *     summary="Eliminar un usuario específico",
+ *     tags={"Users"},
+ *     security={{"bearerAuth":{}}},
+ *
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID del usuario a eliminar",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *
  *     @OA\Response(
- *         response=204,
- *         description="Operación exitosa",
- *         @OA\Header(
- *             header="Set-Cookie",
- *             @OA\Schema(
- *                 type="array",
- *                 @OA\Items(
- *                     @OA\Schema(
- *                         type="string",
- *                         example="XSRF-TOKEN=eyJpdiI6IktmZkhXWVlLS1VQTW1STXE4VG1UbHc9PSIsInZhbHVlIjoiSTNSVExZRkpBMjlzdG1jNWlOUW1SVTVYeVFmQ09xQW9TVkFDREhCaGYra3VCOUxyVkM4dUE1S0h3WVBqMDVyS2F5anNqL1Y2UGNOUkxiWjZmWTdjTTYvYmJUMk00dnRIMDBucXdSSkFTR1JZTWF1TlNacHFPOEZkYmt0RWhzMUEiLCJtYWMiOiI3ZGFkODRhZTYzZjUwMzM1Mjg3MmQ0YTljZDZiZDc1ZDU4NjY3ZjVmNWI5YzBiOTA0Yzk2NTE0OTY3MGFmYTdlIiwidGFnIjoiIn0%3D; expires=Thu, 11 Apr 2024 21:43:15 GMT; Max-Age=7200; path=/; samesite=lax"
- *                     ),
- *                     @OA\Schema(
- *                         type="string",
- *                         example="laravel_session=eyJpdiI6IlNzVklsYndhOWZseDk1NnNLeWJhM1E9PSIsInZhbHVlIjoicHZsakxmOVVxdmJMY0ZVdDJNbUxnclJqejFlTzFHWXZ6Y1VZSGI4V2FxZndlUnJ0L3hSZmgwM3JGNGcrQjljdWI3VjVCWW9XaWx1Lzczc2VjbkN5ekIvQ3lvZmpxNWxxeDVUbWsrbVZPT3ZwTnJMWDRzSnVOWHNSVHAzUlg0bzAiLCJtYWMiOiIyMmUwNWFhM2I0Yjk2ZjM2OWNhNDE1ZDAyOGEzM2ZmZDhhMzAzZjI2ODExZGJkZmNhNDFjODkzMmNhZmE0ZTUzIiwidGFnIjoiIn0%3D; expires=Thu, 11 Apr 2024 21:43:15 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
- *                     )
- *                 )
- *             )
+ *         response=200,
+ *         description="OK",
+ *         @OA\JsonContent(
+ *             oneOf={
+ *                 @OA\Schema(ref="#/components/schemas/User"),
+ *                 @OA\Schema(type="boolean")
+ *             },
  *         )
  *     )
  * )
+ *
+
  */
-    public function destroy(string $id)
+    
+    public function destroy(User $usuario)
     {
-        //
+        $usuario->persona->delete();
+        $usuario->delete();
+        return response()->json([
+            "data" => ["usuario" => $usuario]
+        ]);
     }
 }
