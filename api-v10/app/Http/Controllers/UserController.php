@@ -14,8 +14,45 @@ use Illuminate\Auth\AuthenticationException;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+* @OA\Get(
+*     path="/api/users",
+*     summary="Obtiene una lista de usuarios",
+*     tags={"Users"},
+*     @OA\Response(
+*         response=200,
+*         description="OK",
+*         @OA\JsonContent(
+*             type="object",
+*             @OA\Property(
+*                 property="data",
+*                 type="object",
+*                 @OA\Property(
+*                     property="usuarios",
+*                     type="array",
+*                     @OA\Items(ref="#/components/schemas/User")
+*                 )
+*             )
+*         )
+*     ),
+*     @OA\Response(
+*         response=401,
+*         description="No autorizado",
+*         @OA\JsonContent(
+*             type="object",
+*             @OA\Property(
+*                 property="data",
+*                 type="object",
+*                 @OA\Property(
+*                     property="Error",
+*                     type="string",
+*                     example="No tienes permisos para realizar esta accion"
+*                 )
+*             )
+*         )
+*     ),
+*     security={{"bearerAuth":{}}}
+* )
+*/
     public function index(Request $request)
     {
         $user = $request->user();
