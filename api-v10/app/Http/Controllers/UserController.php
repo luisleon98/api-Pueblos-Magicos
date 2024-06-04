@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Personas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegistroRequest;
@@ -15,9 +16,30 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = $request->user();
+        $query = User::with([
+            'tipo'=>function ($query){
+                $query->select('id','tipo_usuario');
+            },
+            'persona' => function($query){
+                $query->select('id','nombre','apellido_pat','apellido_mat','id_usuario');
+            }
+        ]);
+        if(in_array($user->id_tipo_usuario,[1,2])){
+            $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
+            
+            return response()->json([
+                "data" => ["usuarios" => $usuarios]
+            ]);
+        }
+        else{
+            return response()->json([
+                "data" => ["Error" => 'No tienes permisos para realizar esta accion ']
+            ],401);
+        }
+
     }
 
   /**

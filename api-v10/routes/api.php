@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('servicios/filtrar/pueblo/magico/{id_pueblo}', [ServiciosController::class, 'getServiciosByPueblo']);
     Route::get('servicios/filtrar/categoria/{id_categoria}', [ServiciosController::class, 'getServiciosByCategoria']);
     Route::get('servicios/filtrar/{id_estatus}/{id_pueblo}/{id_categoria}', [ServiciosController::class, 'getServiciosFiltradoEspecifico']);
+    Route::get('users',[UserController::class,'index']);
     Route::post('users/logout', [UserController::class, 'logout']);
     Route::post('servicios/registrar', [ServiciosController::class, 'store']);
     Route::post('observaciones', [ObservacionesController::class, 'store']);
@@ -35,6 +36,7 @@ Route::get('catestados', [StateController::class, 'index']);
 Route::get('cattiposUsers', [TipoUserController::class, 'index']);
 Route::get('tiposervicios', [TiposServiciosController::class, 'index']);
 Route::get('pueblosmagicos', [PueblosMagicosController::class, 'index']);
+
 Route::post('/forgot-password', [PasswordResetController::class, 'forgot'])->name('password.request');
 Route::post('/password/reset',[PasswordResetController::class,'reset'])->name('password.reset');
 

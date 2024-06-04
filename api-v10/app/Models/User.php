@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Personas;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Notifications\Notifiable;
@@ -78,7 +79,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, SoftDeletes,CanResetPassword ;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes, CanResetPassword;
 
     protected $table = 'usuarios';
     /**
@@ -115,11 +116,15 @@ class User extends Authenticatable
     }
     public function tipo()
     {
-        return $this->belongsTo(Tipo_User::class);
+        return $this->belongsTo(Tipo_User::class, 'id_tipo_usuario');
+    }
+    public function persona()
+    {
+        return $this->hasOne(Personas::class, 'id_usuario');
     }
     public function findForPassport($username)
     {
-        
+
         return $this->where('user_name', $username)->first();
     }
     public function getEmailForPasswordReset()
