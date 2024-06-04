@@ -1355,6 +1355,117 @@
                     }
                 ]
             },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Actualizar un usuario específico",
+                "operationId": "b9091397c8b25f12c6adb74be6ce3a5a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Datos del usuario a actualizar",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "data"
+                                ],
+                                "properties": {
+                                    "data": {
+                                        "required": [
+                                            "user",
+                                            "datosP"
+                                        ],
+                                        "properties": {
+                                            "user": {
+                                                "required": [
+                                                    "user_name",
+                                                    "password",
+                                                    "id_tipo_usuario"
+                                                ],
+                                                "properties": {
+                                                    "user_name": {
+                                                        "description": "El correo electrónico del usuario",
+                                                        "type": "string"
+                                                    },
+                                                    "password": {
+                                                        "description": "La contraseña del usuario",
+                                                        "type": "string"
+                                                    },
+                                                    "id_tipo_usuario": {
+                                                        "description": "El ID del tipo de usuario",
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "datosP": {
+                                                "required": [
+                                                    "nombre",
+                                                    "apellido_pat",
+                                                    "apellido_mat"
+                                                ],
+                                                "properties": {
+                                                    "nombre": {
+                                                        "description": "El nombre del usuario",
+                                                        "type": "string"
+                                                    },
+                                                    "apellido_pat": {
+                                                        "description": "El apellido paterno del usuario",
+                                                        "type": "string"
+                                                    },
+                                                    "apellido_mat": {
+                                                        "description": "El apellido materno del usuario",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        {
+                                            "type": "boolean"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
             "delete": {
                 "tags": [
                     "Users"

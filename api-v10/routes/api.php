@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/servicios/{servicio}', [ServiciosController::class, 'destroy']);
     Route::delete('users/{usuario}',[UserController::class,'destroy']);
     Route::put('servicios/{servicio}', [ServiciosController::class, 'updateServicio']);
+    Route::put('users/{usuario}',[UserController::class,'update']);
 });
 
 Route::get('catestados', [StateController::class, 'index']);

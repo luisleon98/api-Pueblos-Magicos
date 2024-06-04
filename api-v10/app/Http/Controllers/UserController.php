@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegistroRequest;
+use App\Http\Requests\UpdateUsuarioRequest;
 use Illuminate\Auth\AuthenticationException;
 
 class UserController extends Controller
@@ -343,12 +344,105 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+/**
+ * @OA\Put(
+ *     path="/api/users/{id}",
+ *     summary="Actualizar un usuario específico",
+ *     tags={"Users"},
+ *     security={{"bearerAuth":{}}},
+ *
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID del usuario a actualizar",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *
+ *     @OA\RequestBody(
+ *         description="Datos del usuario a actualizar",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             required={"data"},
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 required={"user", "datosP"},
+ *                 @OA\Property(
+ *                     property="user",
+ *                     type="object",
+ *                     required={"user_name", "password", "id_tipo_usuario"},
+ *                     @OA\Property(
+ *                         property="user_name",
+ *                         type="string",
+ *                         description="El correo electrónico del usuario",
+ *                     ),
+ *                     @OA\Property(
+ *                         property="password",
+ *                         type="string",
+ *                         description="La contraseña del usuario",
+ *                     ),
+ *                     @OA\Property(
+ *                         property="id_tipo_usuario",
+ *                         type="integer",
+ *                         description="El ID del tipo de usuario",
+ *                     ),
+ *                 ),
+ *                 @OA\Property(
+ *                     property="datosP",
+ *                     type="object",
+ *                     required={"nombre", "apellido_pat", "apellido_mat"},
+ *                     @OA\Property(
+ *                         property="nombre",
+ *                         type="string",
+ *                         description="El nombre del usuario",
+ *                     ),
+ *                     @OA\Property(
+ *                         property="apellido_pat",
+ *                         type="string",
+ *                         description="El apellido paterno del usuario",
+ *                     ),
+ *                     @OA\Property(
+ *                         property="apellido_mat",
+ *                         type="string",
+ *                         description="El apellido materno del usuario",
+ *                     ),
+ *                 ),
+ *             ),
+ *         ),
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="OK",
+ *         @OA\JsonContent(
+ *             oneOf={
+ *                 @OA\Schema(ref="#/components/schemas/User"),
+ *                 @OA\Schema(type="boolean")
+ *             },
+ *         )
+ *     )
+ * )
+ */
+    public function update(UpdateUsuarioRequest $request, User $usuario)
     {
-        //
+        $data = $request->validated();
+
+            $data = $data['data'];
+        if(isset($data['user'])){
+            if(isset($data['user']['password'])){
+                $data['user']['password'] = Hash::make($data['user']['password']);
+            }
+            $usuario->update($data['user']);
+        }
+        if(isset($data['datosP'])){
+            $persona = $usuario->persona();
+            $persona->update($data['datosP']);
+        }
+        return response()->json([
+            "data" => ["usuario" => $usuario]
+        ]);
     }
 /**
  * @OA\Delete(
