@@ -13,7 +13,7 @@ class Status extends Seeder
      */
     public function run(): void
     {
-        $estados = ['En Validación','Aceptado','Con Observaciones','Inactivo','En Revisión','Atendidas'];
+        $estados = ['En Validación','Aceptado','Con Observaciones','Inactivo','En Revisión','Atendidas','Activo'];
         foreach ($estados as  $estado) {
             DB::table('estatus')->insert([
                 'estado' => $estado,
