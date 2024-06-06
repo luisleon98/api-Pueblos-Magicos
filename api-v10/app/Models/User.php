@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Estatus;
 use App\Models\Personas;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Log;
@@ -112,6 +113,9 @@ class User extends Authenticatable
     {
 
         return $this->where('user_name', $username)->first();
+    }
+    public function estatus(){
+        return $this->belongsTo(Estatus::class, 'id_estatus');
     }
     public function getEmailForPasswordReset()
     {

@@ -63,9 +63,15 @@ class UserController extends Controller
             },
             'persona' => function ($query) {
                 $query->select('id', 'nombre', 'apellido_pat', 'apellido_mat', 'id_usuario');
+            },
+            'estatus' => function($query){
+                $query->select('id', 'estado');
             }
         ]);
         if (in_array($user->id_tipo_usuario, [1, 2])) {
+            if ($user->id_tipo_usuario == 2) {
+                $query->where('id', '<>', 1);
+            }
             $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
 
             return response()->json([
