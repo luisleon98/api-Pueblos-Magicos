@@ -70,7 +70,7 @@ class UserController extends Controller
         ]);
         if (in_array($user->id_tipo_usuario, [1, 2])) {
             if ($user->id_tipo_usuario == 2) {
-                $query->where('id', '<>', 1);
+                $query->where('id_tipo_usuario', '<>', 1);
             }
             $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
 
