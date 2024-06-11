@@ -1222,6 +1222,77 @@
                 ]
             }
         },
+        "/api/users/filtrar/estatus/{status}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Obtiene una lista de usuarios filtrada por estado",
+                "operationId": "4ac027a2b6b5171b0759f55f1d84dbf5",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "description": "El estado de usuario para filtrar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "usuarios": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/User"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "Error": {
+                                                    "type": "string",
+                                                    "example": "No tienes permisos para realizar esta acción"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users/registrar": {
             "post": {
                 "tags": [
