@@ -83,6 +83,86 @@ class UserController extends Controller
             ], 401);
         }
     }
+    /**
+ * @OA\Get(
+ *     path="/api/users/filtrar/tipo/usuario/{tipo}",
+ *     summary="Obtiene una lista de usuarios filtrada por tipo",
+ *     tags={"Users"},
+ *     @OA\Parameter(
+ *         name="tipo",
+ *         in="path",
+ *         description="El tipo de usuario para filtrar",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="OK",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="usuarios",
+ *                     type="array",
+ *                     @OA\Items(ref="#/components/schemas/User")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autorizado",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="Error",
+ *                     type="string",
+ *                     example="No tienes permisos para realizar esta acción"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     security={{"bearerAuth":{}}}
+ * )
+ */
+    public function filtroByTipoUser(Request $request, $tipo){
+        $user = $request->user();
+        $query = User::with([
+            'tipo' => function ($query) {
+                $query->select('id', 'tipo_usuario');
+            },
+            'persona' => function ($query) {
+                $query->select('id', 'nombre', 'apellido_pat', 'apellido_mat', 'id_usuario');
+            },
+            'estatus' => function($query){
+                $query->select('id', 'estado');
+            }
+        ]);
+        if (in_array($user->id_tipo_usuario, [1, 2])) {
+            if ($user->id_tipo_usuario == 2 && $tipo == 1) {
+                return response()->json([
+                    "data" => ["Error" => 'No tienes permisos para realizar esta acción ']
+                ], 401);
+            }
+            $query->where('id_tipo_usuario', $tipo);
+            $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
+
+            return response()->json([
+                "data" => ["usuarios" => $usuarios]
+            ]);
+        } else {
+            return response()->json([
+                "data" => ["Error" => 'No tienes permisos para realizar esta accion ']
+            ], 401);
+        }
+    }
 
     /**
      * @OA\Post(
@@ -489,4 +569,5 @@ class UserController extends Controller
             "data" => ["usuario" => $usuario]
         ]);
     }
+
 }

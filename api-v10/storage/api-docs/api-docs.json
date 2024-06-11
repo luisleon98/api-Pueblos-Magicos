@@ -1151,6 +1151,77 @@
                 ]
             }
         },
+        "/api/users/filtrar/tipo/usuario/{tipo}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Obtiene una lista de usuarios filtrada por tipo",
+                "operationId": "961fd839fc2dfcdf98d2a02a7d72c924",
+                "parameters": [
+                    {
+                        "name": "tipo",
+                        "in": "path",
+                        "description": "El tipo de usuario para filtrar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "usuarios": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/User"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "Error": {
+                                                    "type": "string",
+                                                    "example": "No tienes permisos para realizar esta acción"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users/registrar": {
             "post": {
                 "tags": [
