@@ -47,4 +47,7 @@ class Observaciones extends Model
         'observacion',
         'id_usuario'
     ];
+    public function servicio(){
+        return $this->belongsTo(Servicios::class,'id_servicio');
+    }
 }

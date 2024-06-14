@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Seeders\Status;
+use App\Models\Observaciones;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -91,7 +92,9 @@ class Servicios extends Model
     public function estatus(){
         return $this->belongsTo(Estatus::class, 'id_estatus');
     }
-
+    public function observaciones(){
+        return $this->hasOne(Observaciones::class,'id_servicio');
+    }
     public static function boot()
     {
         parent::boot();

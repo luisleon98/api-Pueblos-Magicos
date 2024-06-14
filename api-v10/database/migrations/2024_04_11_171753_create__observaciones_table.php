@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('id_estatus');
             $table->longText('observacion');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
