@@ -48,6 +48,7 @@ class PutServicioRequest extends FormRequest
             'data.direccion.ext' => ['sometimes','nullable'],
             'data.direccion.colonia' => ['sometimes','required'],
             'data.direccion.id_estado' => ['sometimes','required','exists:estados,id'],
+            'data.observaciones.observacion' => ['sometimes','boolean']
         ];
     }
     public function messages(): array

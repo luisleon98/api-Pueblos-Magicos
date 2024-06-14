@@ -864,6 +864,12 @@ class ServiciosController extends Controller
             $direccion = $servicio->direccion();
             $direccion->update($data['direccion']);
         }
+        if(isset($data['observaciones'])){
+            $observacion = $servicio->observaciones();
+            $observacion->update(['id_estatus' => '6']);
+            $observacion->delete();
+            $servicio->update(['id_estatus'=>'1']);
+        }
         return response()->json([
             "data" => ["servicio" => $servicio]
         ]);
