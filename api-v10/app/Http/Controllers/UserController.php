@@ -414,7 +414,6 @@ class UserController extends Controller
      *     )
      * )
      *
-\
      */
 
     public function logout(Request $request)
@@ -646,5 +645,114 @@ class UserController extends Controller
             "data" => ["usuario" => $usuario]
         ]);
     }
+    /**
+ * @OA\Get(
+ *     path="/api/users/buscador/user",
+ *     summary="Buscar usuarios",
+ *     tags={"Users"},
+ *     security={{"bearerAuth":{}}},
+ *
+ *     @OA\Parameter(
+ *         name="buscar",
+ *         in="query",
+ *         description="Término de búsqueda para los usuarios",
+ *         required=false,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Parameter(
+ *         name="conTurista",
+ *         in="query",
+ *         description="Filtro para incluir o no turistas",
+ *         required=false,
+ *         @OA\Schema(type="boolean")
+ *     ),
+ *     @OA\Parameter(
+ *         name="estatusUser",
+ *         in="query",
+ *         description="Filtro por estatus del usuario",
+ *         required=false,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Parameter(
+ *         name="tipoUser",
+ *         in="query",
+ *         description="Filtro por tipo de usuario",
+ *         required=false,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *
+ *     @OA\Response(
+ *         response=200,
+ *         description="OK",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="consulta",
+ *                     type="string"
+ *                 ),
+*                  @OA\Property(
+*                      property="usuarios",
+*                      type="array",
+*                      @OA\Items(ref="#/components/schemas/User")
+*                  )
+*              )
+*          )
+*      ),
+*      @OA\Response(
+*          response=401,
+*          description="Unauthorized"
+*      )
+*  )
+*/
+    public function buscarUsuarios(Request $request)
+{
+    $user = $request->user();
+    if (in_array($user->id_tipo_usuario, [1, 2])) {
+        $buscar = $request->input('buscar');
+    $fTurista = $request->input('conTurista');
+    $fStatus = $request->input('estatusUser');
+    $fTipoUsuer = $request->input('tipoUser');
+    $query = User::whereHas('persona', function ($query) use ($buscar) {
+        $query->where('nombre', 'like', '%' . $buscar . '%')
+            ->orWhere('apellido_pat', 'like', '%' . $buscar . '%')
+            ->orWhere('apellido_mat', 'like', '%' . $buscar . '%');
+    })->with([
+        'tipo' => function ($query) {
+            $query->select('id', 'tipo_usuario');
+        },
+        'persona' => function ($query) {
+            $query->select('id', 'nombre', 'apellido_pat', 'apellido_mat', 'id_usuario');
+        },
+        'estatus' => function($query){
+            $query->select('id', 'estado');
+        }
+    ]);
+    if($fTurista == null && $fTipoUsuer == null){
+        $query->where('id_tipo_usuario','<>','6');
+    }
+    if($fStatus != null){
+        $query->where('id_estatus',$fStatus);
+    }
+    if($fTipoUsuer != null){
+        $query->where('id_tipo_usuario',$fTipoUsuer);
+    }
+    if($user->id_tipo_usuario != 1){
+        $query->where('id_tipo_usuario','<>','1');
+    }
+    $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
+
+    return response()->json([
+        "data" => ["consulta"=>$query->toSql(),"usuarios"=> $usuarios]
+    ]);
+    }else{
+        return response()->json([
+            "data" => ["Error" => 'No tienes permisos para realizar esta accion ']
+        ], 401);
+    }
+    
+}
 
 }

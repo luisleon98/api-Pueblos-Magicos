@@ -1672,6 +1672,89 @@
                     }
                 }
             }
+        },
+        "/api/users/buscador/user": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Buscar usuarios",
+                "operationId": "41380e799ff177d8a1c399515950317f",
+                "parameters": [
+                    {
+                        "name": "buscar",
+                        "in": "query",
+                        "description": "Término de búsqueda para los usuarios",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "conTurista",
+                        "in": "query",
+                        "description": "Filtro para incluir o no turistas",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "estatusUser",
+                        "in": "query",
+                        "description": "Filtro por estatus del usuario",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "tipoUser",
+                        "in": "query",
+                        "description": "Filtro por tipo de usuario",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "consulta": {
+                                                    "type": "string"
+                                                },
+                                                "usuarios": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/User"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {

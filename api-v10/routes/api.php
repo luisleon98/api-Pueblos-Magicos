@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/filtrar/estatus/{estatus}',[UserController::class,'filtroByStatusUser']);
     Route::get('users/{id_usuario}',[UserController::class,'show']);
     Route::post('users/logout', [UserController::class, 'logout']);
+    Route::get('users/buscador/user', [UserController::class, 'buscarUsuarios']);
     Route::post('servicios/registrar', [ServiciosController::class, 'store']);
     Route::post('observaciones', [ObservacionesController::class, 'store']);
     Route::delete('/servicios/{servicio}', [ServiciosController::class, 'destroy']);
