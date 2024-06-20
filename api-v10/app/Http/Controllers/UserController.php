@@ -57,6 +57,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $fTurista = $request->input('conTurista');
         $query = User::with([
             'tipo' => function ($query) {
                 $query->select('id', 'tipo_usuario');
@@ -71,6 +72,9 @@ class UserController extends Controller
         if (in_array($user->id_tipo_usuario, [1, 2])) {
             if ($user->id_tipo_usuario == 2) {
                 $query->where('id_tipo_usuario', '<>', 1);
+            }
+            if($fTurista == null){
+                $query->where('id_tipo_usuario', '<>', 6);
             }
             $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
 
@@ -380,7 +384,10 @@ class UserController extends Controller
         $data = $request->data;
         if (Auth::attempt($data)) {
             $user = Auth::user();
-            $token = $user->createToken('authToken')->plainTextToken;
+            if($user->id_estatus == 4){
+                return response()->json(['error' => 'Cuenta desactivada'], 403);
+            }else{
+                $token = $user->createToken('authToken')->plainTextToken;
 
             return response()->json([
                 'access_token' => $token,
@@ -391,6 +398,8 @@ class UserController extends Controller
                     'id_tipo_usuario' => $user->id_tipo_usuario
                 ]
             ]);
+            }
+            
         } else {
             return response()->json(['error' => 'Credenciales incorrectas'], 401);
         }
