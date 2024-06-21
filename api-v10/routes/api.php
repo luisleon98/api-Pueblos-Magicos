@@ -25,8 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('servicios/filtrar/categoria/{id_categoria}', [ServiciosController::class, 'getServiciosByCategoria']);
     Route::get('servicios/filtrar/{id_estatus}/{id_pueblo}/{id_categoria}', [ServiciosController::class, 'getServiciosFiltradoEspecifico']);
     Route::get('users',[UserController::class,'index']);
-    Route::get('users/filtrar/tipo/usuario/{tipo}',[UserController::class,'filtroByTipoUser']);
-    Route::get('users/filtrar/estatus/{estatus}',[UserController::class,'filtroByStatusUser']);
+    // Route::get('users/filtrar/tipo/usuario/{tipo}',[UserController::class,'filtroByTipoUser']);
+    // Route::get('users/filtrar/estatus/{estatus}',[UserController::class,'filtroByStatusUser']);
     Route::get('users/{id_usuario}',[UserController::class,'show']);
     Route::post('users/logout', [UserController::class, 'logout']);
     Route::get('users/buscador/user', [UserController::class, 'buscarUsuarios']);

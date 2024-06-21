@@ -14,48 +14,69 @@ use Illuminate\Auth\AuthenticationException;
 
 class UserController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/users",
-     *     summary="Obtiene una lista de usuarios",
-     *     tags={"Users"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="OK",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="usuarios",
-     *                     type="array",
-     *                     @OA\Items(ref="#/components/schemas/User")
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="No autorizado",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="Error",
-     *                     type="string",
-     *                     example="No tienes permisos para realizar esta accion"
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     security={{"bearerAuth":{}}}
-     * )
-     */
+ /**
+ * @OA\Get(
+ *     path="/api/users",
+ *     summary="Obtiene una lista de usuarios",
+ *     tags={"Users"},
+ *     @OA\Parameter(
+ *         name="conTurista",
+ *         in="query",
+ *         description="Filtrar por turistas",
+ *         @OA\Schema(type="boolean")
+ *     ),
+ *     @OA\Parameter(
+ *         name="estatusUser",
+ *         in="query",
+ *         description="Filtrar por estado de usuario",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Parameter(
+ *         name="tipoUser",
+ *         in="query",
+ *         description="Filtrar por tipo de usuario",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="OK",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="usuarios",
+ *                     type="array",
+ *                     @OA\Items(ref="#/components/schemas/User")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autorizado",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="Error",
+ *                     type="string",
+ *                     example="No tienes permisos para realizar esta accion"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     security={{"bearerAuth":{}}}
+ * )
+ */
     public function index(Request $request)
     {
+        $fTurista = $request->input('conTurista');
+        $fStatus = $request->input('estatusUser');
+        $fTipoUsuer = $request->input('tipoUser');
         $user = $request->user();
         $fTurista = $request->input('conTurista');
         $query = User::with([
@@ -73,9 +94,15 @@ class UserController extends Controller
             if ($user->id_tipo_usuario == 2) {
                 $query->where('id_tipo_usuario', '<>', 1);
             }
-            if($fTurista == null){
+            if($fTurista == null && $fTipoUsuer != 6){
                 $query->where('id_tipo_usuario', '<>', 6);
             }
+            if($fStatus != null){
+                $query->where('id_estatus',$fStatus);
+            }
+            if($fTipoUsuer != null){
+                $query->where('id_tipo_usuario',$fTipoUsuer);
+            }
             $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
 
             return response()->json([
@@ -87,164 +114,8 @@ class UserController extends Controller
             ], 401);
         }
     }
-    /**
- * @OA\Get(
- *     path="/api/users/filtrar/tipo/usuario/{tipo}",
- *     summary="Obtiene una lista de usuarios filtrada por tipo",
- *     tags={"Users"},
- *     @OA\Parameter(
- *         name="tipo",
- *         in="path",
- *         description="El tipo de usuario para filtrar",
- *         required=true,
- *         @OA\Schema(
- *             type="integer"
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="OK",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="data",
- *                 type="object",
- *                 @OA\Property(
- *                     property="usuarios",
- *                     type="array",
- *                     @OA\Items(ref="#/components/schemas/User")
- *                 )
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="No autorizado",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="data",
- *                 type="object",
- *                 @OA\Property(
- *                     property="Error",
- *                     type="string",
- *                     example="No tienes permisos para realizar esta acción"
- *                 )
- *             )
- *         )
- *     ),
- *     security={{"bearerAuth":{}}}
- * )
- */
-    public function filtroByTipoUser(Request $request, $tipo){
-        $user = $request->user();
-        $query = User::with([
-            'tipo' => function ($query) {
-                $query->select('id', 'tipo_usuario');
-            },
-            'persona' => function ($query) {
-                $query->select('id', 'nombre', 'apellido_pat', 'apellido_mat', 'id_usuario');
-            },
-            'estatus' => function($query){
-                $query->select('id', 'estado');
-            }
-        ]);
-        if (in_array($user->id_tipo_usuario, [1, 2])) {
-            if ($user->id_tipo_usuario == 2 && $tipo == 1) {
-                return response()->json([
-                    "data" => ["Error" => 'No tienes permisos para realizar esta acción ']
-                ], 401);
-            }
-            $query->where('id_tipo_usuario', $tipo);
-            $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
-
-            return response()->json([
-                "data" => ["usuarios" => $usuarios]
-            ]);
-        } else {
-            return response()->json([
-                "data" => ["Error" => 'No tienes permisos para realizar esta accion ']
-            ], 401);
-        }
-    }
-    /**
- * @OA\Get(
- *     path="/api/users/filtrar/estatus/{status}",
- *     summary="Obtiene una lista de usuarios filtrada por estado",
- *     tags={"Users"},
- *     @OA\Parameter(
- *         name="status",
- *         in="path",
- *         description="El estado de usuario para filtrar",
- *         required=true,
- *         @OA\Schema(
- *             type="integer"
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="OK",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="data",
- *                 type="object",
- *                 @OA\Property(
- *                     property="usuarios",
- *                     type="array",
- *                     @OA\Items(ref="#/components/schemas/User")
- *                 )
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="No autorizado",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="data",
- *                 type="object",
- *                 @OA\Property(
- *                     property="Error",
- *                     type="string",
- *                     example="No tienes permisos para realizar esta acción"
- *                 )
- *             )
- *         )
- *     ),
- *     security={{"bearerAuth":{}}}
- * )
- */
-    public function filtroByStatusUser(Request $request, $status){
-        $user = $request->user();
-        $query = User::with([
-            'tipo' => function ($query) {
-                $query->select('id', 'tipo_usuario');
-            },
-            'persona' => function ($query) {
-                $query->select('id', 'nombre', 'apellido_pat', 'apellido_mat', 'id_usuario');
-            },
-            'estatus' => function($query){
-                $query->select('id', 'estado');
-            }
-        ]);
-        if (in_array($user->id_tipo_usuario, [1, 2])) {
-            if ($user->id_tipo_usuario == 2) {
-                $query->where('id_tipo_usuario', '<>', 1);
-            }
-            $query->where('id_estatus', $status);
-            $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
-
-            return response()->json([
-                "data" => ["usuarios" => $usuarios]
-            ]);
-        } else {
-            return response()->json([
-                "data" => ["Error" => 'No tienes permisos para realizar esta accion ']
-            ], 401);
-        }
-    }
+ 
+   
     /**
      * @OA\Post(
      *     path="/api/users/registrar",
