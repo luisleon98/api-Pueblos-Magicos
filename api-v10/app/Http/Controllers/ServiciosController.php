@@ -103,6 +103,8 @@ class ServiciosController extends Controller
             'precios' => $data['precio'],
             'titulo' => $data['titulo'],
             'descripcion' => $data['descripcion'],
+            'telefono' => $data['telefono'],
+            'pagina_web' => $data['pagina_web'],
             'id_coordenadas' => $coordenadas->id,
             'id_servicio' => $servicio->id,
             'id_horarios' => $horarios->id
