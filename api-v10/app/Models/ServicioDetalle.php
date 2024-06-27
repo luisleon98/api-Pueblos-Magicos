@@ -58,7 +58,9 @@ class ServicioDetalle extends Model
         'descripcion',
         'id_coordenadas',
         'id_servicio',
-        'id_horarios'
+        'id_horarios',
+        'pagina_web',
+        'telefono'
     ];
     public function servicio()
     {
