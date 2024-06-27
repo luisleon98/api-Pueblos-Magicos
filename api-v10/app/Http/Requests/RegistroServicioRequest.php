@@ -46,7 +46,7 @@ class RegistroServicioRequest extends FormRequest
             'data.id_estado' => ['required','exists:estados,id'],
             'data.id_usuario' => ['required','exists:usuarios,id'],
             'data.id_pueblo' => ['required','exists:pueblos_magicos,id'],
-            'data.pagina_web' => ['required','url:https'],
+            'data.pagina_web' => ['required','url'],
             'data.telefono' => ['required']
 
         ];
@@ -88,7 +88,7 @@ class RegistroServicioRequest extends FormRequest
         'data.id_usuario.exists' => 'El usuario no existe.',
         'data.id_pueblo.required' => 'El pueblo mágico es requerido.',
         'data.pagina_web.required' => 'La página web es requerida.',
-        'data.pagina_web.url' => 'La página web debe ser una URL válida que comience con "https".',
+        'data.pagina_web.url' => 'La página web debe ser una URL válida',
         'data.telefono.required' => 'El teléfono es requerido.',
     ];
 }
