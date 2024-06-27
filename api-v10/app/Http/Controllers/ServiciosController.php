@@ -319,7 +319,7 @@ class ServiciosController extends Controller
                 $query->select('id', 'servicio');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[3,4,5])){
+        if(in_array($user->id_tipo_usuario,[3,])){
             $query->where('id_usuario',$user->id);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
@@ -411,7 +411,7 @@ class ServiciosController extends Controller
                 $query->select('id', 'servicio');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[3,4,5])){
+        if(in_array($user->id_tipo_usuario,[3,])){
             $query->where('id_usuario',$user->id);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
@@ -486,7 +486,7 @@ class ServiciosController extends Controller
                 $query->select('id', 'servicio');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[3,4,5])){
+        if(in_array($user->id_tipo_usuario,[3,])){
             $query->where('id_usuario',$user->id);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
@@ -561,7 +561,7 @@ class ServiciosController extends Controller
                 $query->select('id', 'servicio');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[3,4,5])){
+        if(in_array($user->id_tipo_usuario,[3,])){
             $query->where('id_usuario',$user->id);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
@@ -654,7 +654,7 @@ class ServiciosController extends Controller
                 $query->select('id', 'servicio');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[3,4,5])){
+        if(in_array($user->id_tipo_usuario,[3,])){
             $query->where('id_usuario',$user->id);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
