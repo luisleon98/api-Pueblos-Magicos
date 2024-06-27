@@ -82,7 +82,7 @@ class UserController extends Controller
         $user = User::create([
             'user_name'=>$data['user_name'],
             'password'=>$data['password'],
-            'id_tipo_usuario'=>$data['id_tipo_usuario']
+            'id_tipo_usuario'=>3
         ]);
         $persona = Personas::create([
             'nombre'=>$data['nombre'],

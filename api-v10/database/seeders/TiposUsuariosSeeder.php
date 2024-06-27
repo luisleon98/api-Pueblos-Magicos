@@ -13,7 +13,7 @@ class TiposUsuariosSeeder extends Seeder
      */
     public function run(): void
     {
-        $tipos = ['Admin_Systema', 'Director_Pueblos_Magicos', 'Hotelero', 'Restaurantero', 'Pueblo_Magico', 'Turista'];
+        $tipos = ['Admin_Systema', 'Director_Pueblos_Magicos', 'Pueblo_Magico', 'Turista'];
         foreach ($tipos as $tipo) {
             DB::table('tipos_usuarios')->insert([
                 'tipo_usuario' => $tipo,
