@@ -2,9 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\Status;
 use Illuminate\Database\Seeder;
+use Database\Seeders\StatesSeeder;
+use Database\Seeders\TiposServicios;
+use Database\Seeders\DireccionesSeeder;
+use Database\Seeders\UsuarioAdminSeeder;
+use Database\Seeders\TiposImagenesSeeder;
+use Database\Seeders\TiposUsuariosSeeder;
+use Database\Seeders\PueblosMagicosSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,7 +33,8 @@ class DatabaseSeeder extends Seeder
         $this->call(DireccionesSeeder::class);
         $this->call(PueblosMagicosSeeder::class);
         $this->call(TiposImagenesSeeder::class);
-        $this->call(UsuarioAdminSeeder::class);
         $this->call(Status::class);
+        $this->call(UsuarioAdminSeeder::class);
+        
     }
 }

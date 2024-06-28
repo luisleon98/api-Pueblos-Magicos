@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Estatus;
+use App\Models\Personas;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Notifications\Notifiable;
@@ -25,21 +27,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  *         property="apellido",
  *         type="string",
  *         example="Pérez"
- *     ),
- *     @OA\Property(
- *         property="direccion",
- *         type="string",
- *         example="Calle 123"
- *     ),
- *     @OA\Property(
- *         property="ciudad",
- *         type="string",
- *         example="Ciudad de México"
- *     ),
- *     @OA\Property(
- *         property="cp",
- *         type="integer",
- *         example=12345
  *     ),
  *     @OA\Property(
  *         property="id_tipo_user",
@@ -78,7 +65,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, SoftDeletes,CanResetPassword ;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes, CanResetPassword;
 
     protected $table = 'usuarios';
     /**
@@ -89,7 +76,8 @@ class User extends Authenticatable
     protected $fillable = [
         'user_name',
         'password',
-        'id_tipo_usuario'
+        'id_tipo_usuario',
+         'id_estatus'
     ];
 
     /**
@@ -115,12 +103,19 @@ class User extends Authenticatable
     }
     public function tipo()
     {
-        return $this->belongsTo(Tipo_User::class);
+        return $this->belongsTo(Tipo_User::class, 'id_tipo_usuario');
+    }
+    public function persona()
+    {
+        return $this->hasOne(Personas::class, 'id_usuario');
     }
     public function findForPassport($username)
     {
-        
+
         return $this->where('user_name', $username)->first();
+    }
+    public function estatus(){
+        return $this->belongsTo(Estatus::class, 'id_estatus');
     }
     public function getEmailForPasswordReset()
     {

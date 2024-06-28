@@ -24,17 +24,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('servicios/filtrar/pueblo/magico/{id_pueblo}', [ServiciosController::class, 'getServiciosByPueblo']);
     Route::get('servicios/filtrar/categoria/{id_categoria}', [ServiciosController::class, 'getServiciosByCategoria']);
     Route::get('servicios/filtrar/{id_estatus}/{id_pueblo}/{id_categoria}', [ServiciosController::class, 'getServiciosFiltradoEspecifico']);
+    Route::get('users',[UserController::class,'index']);
+    // Route::get('users/filtrar/tipo/usuario/{tipo}',[UserController::class,'filtroByTipoUser']);
+    // Route::get('users/filtrar/estatus/{estatus}',[UserController::class,'filtroByStatusUser']);
+    Route::get('users/{id_usuario}',[UserController::class,'show']);
     Route::post('users/logout', [UserController::class, 'logout']);
+    Route::get('users/buscador/user', [UserController::class, 'buscarUsuarios']);
     Route::post('servicios/registrar', [ServiciosController::class, 'store']);
     Route::post('observaciones', [ObservacionesController::class, 'store']);
     Route::delete('/servicios/{servicio}', [ServiciosController::class, 'destroy']);
+    Route::delete('users/{usuario}',[UserController::class,'destroy']);
     Route::put('servicios/{servicio}', [ServiciosController::class, 'updateServicio']);
+    Route::put('users/{usuario}',[UserController::class,'update']);
 });
 
 Route::get('catestados', [StateController::class, 'index']);
 Route::get('cattiposUsers', [TipoUserController::class, 'index']);
 Route::get('tiposervicios', [TiposServiciosController::class, 'index']);
 Route::get('pueblosmagicos', [PueblosMagicosController::class, 'index']);
+
 Route::post('/forgot-password', [PasswordResetController::class, 'forgot'])->name('password.request');
 Route::post('/password/reset',[PasswordResetController::class,'reset'])->name('password.reset');
 

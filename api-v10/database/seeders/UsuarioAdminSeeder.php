@@ -18,6 +18,7 @@ class UsuarioAdminSeeder extends Seeder
             'user_name' => 'bajimeneza@ipn.mx',
             'password'=> Hash::make('Pruebas1'),
             'id_tipo_usuario' => 1,
+            'id_estatus'=>7,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

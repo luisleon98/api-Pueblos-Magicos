@@ -209,7 +209,7 @@ class ServiciosController extends Controller
 
     public function show(string $id)
     {
-        $servicio = Servicios::where('id', $id)->with(['tipoServicio', 'direccion.estado', 'usuario', 'pueblo', 'detalleServicio.coordenada', 'detalleServicio.horario', 'imagenes.tipo', 'estatus'])->get();
+        $servicio = Servicios::where('id', $id)->with(['tipoServicio', 'direccion.estado', 'usuario', 'pueblo', 'detalleServicio.coordenada', 'detalleServicio.horario', 'imagenes.tipo', 'estatus','observaciones'])->get();
         $servicio->transform(function ($servicio) {
             return $this->addFileToImages([$servicio])[0];
         });
@@ -865,6 +865,12 @@ class ServiciosController extends Controller
         if(isset($data['direccion'])){
             $direccion = $servicio->direccion();
             $direccion->update($data['direccion']);
+        }
+        if(isset($data['observaciones'])){
+            $observacion = $servicio->observaciones();
+            $observacion->update(['id_estatus' => '6']);
+            $observacion->delete();
+            $servicio->update(['id_estatus'=>'1']);
         }
         return response()->json([
             "data" => ["servicio" => $servicio]
