@@ -16,7 +16,7 @@ class GenerosSeeder extends Seeder
         $generos = ['Masculino','Femenino','Otro','Prefiero no decirlo'];
         foreach ($generos as $genero) {
             DB::table('generos')->insert([
-                'genero' => $genero[0],
+                'genero' => $genero,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
