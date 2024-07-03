@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pesonas', function (Blueprint $table) {
+        Schema::create('paises', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('apellido_pat');
-            $table->string('apellido_mat')->nullable();
-            $table->integer('edad')->nullable();;
-            $table->foreignId("id_usuario")->constrained('usuarios','id');
+            $table->string('pais');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pesonas');
+        Schema::dropIfExists('paises');
     }
 };
