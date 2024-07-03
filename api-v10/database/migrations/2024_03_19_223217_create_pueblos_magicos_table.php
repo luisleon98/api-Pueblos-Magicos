@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('descripcion');
+            $table->integer('year');
             $table->foreignId('id_direccion')->constrained('direcciones','id');
             $table->timestamps();
             $table->softDeletes();

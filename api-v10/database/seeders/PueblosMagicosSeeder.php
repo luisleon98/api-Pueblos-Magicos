@@ -19,6 +19,7 @@ class PueblosMagicosSeeder extends Seeder
                 'nombre' => $pueblo,
                 'descripcion' => '',
                 'id_direccion' => $index + 1,
+                'year'=> 2017,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
