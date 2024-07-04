@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Paises;
+use App\Models\Generos;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +16,23 @@ class Personas extends Model
         'nombre',
         'apellido_pat',
         'apellido_mat',
-        'id_usuario'
+        'edad',
+        'id_usuario',
+        'id_genero',
+        'id_pais'
     ];
+    // Definir atributos por defecto
+    protected $attributes = [
+        'edad' => null,
+        'id_genero' => 1,
+        'id_pais' => 132
+    ];
+    public function genero()
+    {
+        return $this->belongsTo(Generos::class,'id_genero');
+    }
+    public function pais()
+    {
+        return $this->belongsTo(Paises::class,'id_pais');
+    }
 }
