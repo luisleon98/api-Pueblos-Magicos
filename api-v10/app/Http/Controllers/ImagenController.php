@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Imagen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class ImagenController extends Controller
 {
@@ -34,9 +35,25 @@ class ImagenController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Imagen $imagen)
+    public function show($id)
     {
-        //
+        $imagen = Imagen::find($id);
+
+        if (!$imagen) {
+            return response()->json([
+                'data'=>["error" => "Imagen no encontrada"]
+            ], 404);
+        }
+        $path = storage_path(env('STORAGE_PATH', '../public/uploads/') . $imagen->nombre);
+        if (File::exists($path)) {
+            $contenido = file_get_contents($path);
+            $imagenb64 = base64_encode($contenido);
+        } else {
+            $imagenb64 = null;
+        }
+        return response()->json([
+            "data" => ["imagen" => $imagenb64]
+        ]);
     }
 
     /**
