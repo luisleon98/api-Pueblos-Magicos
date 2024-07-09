@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::table('direcciones', function (Blueprint $table) {
             Schema::table('direcciones', function (Blueprint $table) {
-                $table->string('int')->change(); // Cambia 'int' de integer a string
+                $table->string('int')->change()->nullable(); // Cambia 'int' de integer a string
                 $table->string('ext')->default('SN')->change(); // Cambia 'ext' de integer a string
                 $table->string('colonia'); // Agrega el nuevo campo 'colonia'
             });

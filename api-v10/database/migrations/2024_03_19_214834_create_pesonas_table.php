@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('apellido_pat');
-            $table->string('apellido_mat');
+            $table->string('apellido_mat')->nullable();
+            $table->integer('edad')->nullable();;
             $table->foreignId("id_usuario")->constrained('usuarios','id');
             $table->timestamps();
             $table->softDeletes();

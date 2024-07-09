@@ -23,7 +23,9 @@ class DireccionesSeeder extends Seeder
             ['Pahuatlán', 'Pahuatlán', 73100, 'SN', 'SN', 21, 'Pahuatlán'],
             ['Centro', 'Centro', 73170, 'SN', 'SN', 21, 'Huauchinango'],
             ['Chignahuapan', 'Chignahuapan', 73300, 'SN', 'SN', 21, 'Chignahuapan'],
-            ['Centenario 3-9', 'Centro', 73560, 'SN', 'SN', 21, 'Cdad. de Cuetzalan']
+            ['Centenario 3-9', 'Centro', 73560, 'SN', 'SN', 21, 'Cdad. de Cuetzalan'],
+            ['Pl. Principal 5', 'Primero', 74160, 'SN', 'SN', 21, 'Huejotzingo'],
+            ['Parque Municipal', 'Allende', 73800, 'SN', 'SN', 21, 'Teziutlán'],
         ];
 
         foreach ($direcciones as $direccion) {

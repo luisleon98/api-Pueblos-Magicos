@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
         $this->call(DireccionesSeeder::class);
         $this->call(PueblosMagicosSeeder::class);
         $this->call(TiposImagenesSeeder::class);
+        $this->call(GenerosSeeder::class);
+        $this->call(PaisesSeeder::class);
         $this->call(Status::class);
         $this->call(UsuarioAdminSeeder::class);
         

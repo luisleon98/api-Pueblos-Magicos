@@ -38,6 +38,7 @@ class PueblosMagicos extends Model
     protected $table = 'pueblos_magicos';
     protected $fillable = [
         'nombre',
+        'nombre_clima',
         'descripcion',
         'id_direccion'
     ];

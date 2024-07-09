@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pueblos_magicos', function (Blueprint $table) {
+        Schema::create('generos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('descripcion');
-            $table->string('nombre_clima');
-            $table->integer('year');
-            $table->foreignId('id_direccion')->constrained('direcciones','id');
+            $table->string('genero');
             $table->timestamps();
             $table->softDeletes();
+
         });
+
     }
 
     /**
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pueblos_magicos');
+        Schema::dropIfExists('generos');
     }
 };

@@ -27,6 +27,8 @@ class UsuarioAdminSeeder extends Seeder
             'apellido_pat'=> 'Jimenez',
             'apellido_mat'=> 'Amores',
             'id_usuario' => 1,
+            'id_pais' => 132,
+            'id_genero' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
