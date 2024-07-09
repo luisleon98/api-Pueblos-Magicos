@@ -625,7 +625,7 @@ class UserController extends Controller
     $usuarios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
 
     return response()->json([
-        "data" => ["consulta"=>$query->toSql(),"usuarios"=> $usuarios]
+        "data" => ["usuarios"=> $usuarios]
     ]);
     }else{
         return response()->json([
