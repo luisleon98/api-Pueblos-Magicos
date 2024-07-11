@@ -1091,6 +1091,55 @@
                 ]
             }
         },
+        "/api/servicios/conteo/all": {
+            "get": {
+                "tags": [
+                    "Servicios"
+                ],
+                "summary": "Obtiene el conteo de servicios según su estado",
+                "description": "Obtiene el conteo de servicios según su estado.",
+                "operationId": "49a3a0697a6168f0006ce120ce5c63f0",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "en_validacion": {
+                                                    "description": "Cantidad de servicios en validación",
+                                                    "type": "integer"
+                                                },
+                                                "aceptado": {
+                                                    "description": "Cantidad de servicios aceptados",
+                                                    "type": "integer"
+                                                },
+                                                "con_observaciones": {
+                                                    "description": "Cantidad de servicios con observaciones",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users": {
             "get": {
                 "tags": [

@@ -12,11 +12,12 @@ use Illuminate\Http\Request;
 use App\Models\ServicioDetalle;
 use App\Models\ServiciosImagen;
 use App\Models\PueblosSolicitudes;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use App\Http\Requests\PutServicioRequest;
 use App\Http\Requests\RegistroServicioRequest;
-use Illuminate\Support\Facades\Log;
 
 class ServiciosController extends Controller
 {
@@ -27,36 +28,36 @@ class ServiciosController extends Controller
      *          tags={"Servicios"},
      * *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
- *         description="Datos necesarios para crear una nueva festividad",
- *         required=true,
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="data",
- *                 type="object",
- *                 @OA\Property(property="id_tipo_servicio", type="integer", example=1),
- *                 @OA\Property(property="calle", type="string", example="Calle 123"),
- *                 @OA\Property(property="municipio", type="string", example="Ciudad de México"),
- *                 @OA\Property(property="CP", type="string", example="06720"),
- *                 @OA\Property(property="int", type="string", example="1"),
- *                 @OA\Property(property="ext", type="string", example="2"),
- *                 @OA\Property(property="colonia", type="string", example="Roma Norte"),
- *                 @OA\Property(property="dias_servicio", type="string", example="Lunes a Viernes"),
- *                 @OA\Property(property="horario_inicio", type="string", example="09:00"),
- *                 @OA\Property(property="horario_fin", type="string", example="18:00"),
- *                 @OA\Property(property="precio", type="string", example="100-200"),
- *                 @OA\Property(property="titulo", type="string", example="Fiesta de la Primavera"),
- *                 @OA\Property(property="descripcion", type="string", example="Una descripción detallada de la festividad"),
- *                 @OA\Property(property="latitud", type="string", example="19.4326"),
- *                 @OA\Property(property="longitud", type="string", example="99.1332"),
- *                 @OA\Property(property="imgPrincipal", type="string", format="binary"),
- *                 @OA\Property(property="arrayGaleria", type="array", @OA\Items(type="string", format="binary")),
- *                 @OA\Property(property="id_estado", type="integer", example=1),
- *                 @OA\Property(property="id_usuario", type="integer", example=1),
- *                 @OA\Property(property="id_pueblo", type="integer", example=1),
- *             )
- *         )
- *     ),
+     *         description="Datos necesarios para crear una nueva festividad",
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id_tipo_servicio", type="integer", example=1),
+     *                 @OA\Property(property="calle", type="string", example="Calle 123"),
+     *                 @OA\Property(property="municipio", type="string", example="Ciudad de México"),
+     *                 @OA\Property(property="CP", type="string", example="06720"),
+     *                 @OA\Property(property="int", type="string", example="1"),
+     *                 @OA\Property(property="ext", type="string", example="2"),
+     *                 @OA\Property(property="colonia", type="string", example="Roma Norte"),
+     *                 @OA\Property(property="dias_servicio", type="string", example="Lunes a Viernes"),
+     *                 @OA\Property(property="horario_inicio", type="string", example="09:00"),
+     *                 @OA\Property(property="horario_fin", type="string", example="18:00"),
+     *                 @OA\Property(property="precio", type="string", example="100-200"),
+     *                 @OA\Property(property="titulo", type="string", example="Fiesta de la Primavera"),
+     *                 @OA\Property(property="descripcion", type="string", example="Una descripción detallada de la festividad"),
+     *                 @OA\Property(property="latitud", type="string", example="19.4326"),
+     *                 @OA\Property(property="longitud", type="string", example="99.1332"),
+     *                 @OA\Property(property="imgPrincipal", type="string", format="binary"),
+     *                 @OA\Property(property="arrayGaleria", type="array", @OA\Items(type="string", format="binary")),
+     *                 @OA\Property(property="id_estado", type="integer", example=1),
+     *                 @OA\Property(property="id_usuario", type="integer", example=1),
+     *                 @OA\Property(property="id_pueblo", type="integer", example=1),
+     *             )
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="OK",
@@ -133,12 +134,12 @@ class ServiciosController extends Controller
     public function procesarImagen($imagen)
     {
         // Generar un nombre único para el archivo
-        $nombreImagen = Str::uuid() . ".webp" ;
+        $nombreImagen = Str::uuid() . ".webp";
 
         // Guardar el archivo en la carpeta uploads
         $imagenServidor = Image::make($imagen);
         $imagenPath = public_path('uploads') . '/' . $nombreImagen;
-        $calidad = 60; 
+        $calidad = 60;
         $imagenServidor->save($imagenPath, $calidad, 'webp');
 
         return $nombreImagen;
@@ -209,7 +210,7 @@ class ServiciosController extends Controller
 
     public function show(string $id)
     {
-        $servicio = Servicios::where('id', $id)->with(['tipoServicio', 'direccion.estado', 'usuario', 'pueblo', 'detalleServicio.coordenada', 'detalleServicio.horario', 'imagenes.tipo', 'estatus','observaciones'])->get();
+        $servicio = Servicios::where('id', $id)->with(['tipoServicio', 'direccion.estado', 'usuario', 'pueblo', 'detalleServicio.coordenada', 'detalleServicio.horario', 'imagenes.tipo', 'estatus', 'observaciones'])->get();
         $servicio->transform(function ($servicio) {
             return $this->addFileToImages([$servicio])[0];
         });
@@ -319,8 +320,8 @@ class ServiciosController extends Controller
                 $query->select('id', 'servicio');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[3,])){
-            $query->where('id_usuario',$user->id);
+        if (in_array($user->id_tipo_usuario, [3,])) {
+            $query->where('id_usuario', $user->id);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -391,7 +392,7 @@ class ServiciosController extends Controller
      *     )
      * )
      */
-    public function getServiciosByEstatus(Request $request,$id_estatus)
+    public function getServiciosByEstatus(Request $request, $id_estatus)
     {
         $user = $request->user();
         $query = Servicios::where('id_estatus', $id_estatus)->with([
@@ -411,8 +412,8 @@ class ServiciosController extends Controller
                 $query->select('id', 'servicio');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[3,])){
-            $query->where('id_usuario',$user->id);
+        if (in_array($user->id_tipo_usuario, [3,])) {
+            $query->where('id_usuario', $user->id);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -466,7 +467,7 @@ class ServiciosController extends Controller
      *     )
      * )
      */
-    public function getServiciosByPueblo(Request $request,$id_pueblo)
+    public function getServiciosByPueblo(Request $request, $id_pueblo)
     {
         $user = $request->user();
         $query = Servicios::where('id_pueblo', $id_pueblo)->with([
@@ -486,8 +487,8 @@ class ServiciosController extends Controller
                 $query->select('id', 'servicio');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[3,])){
-            $query->where('id_usuario',$user->id);
+        if (in_array($user->id_tipo_usuario, [3,])) {
+            $query->where('id_usuario', $user->id);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -541,7 +542,7 @@ class ServiciosController extends Controller
      *     )
      * )
      */
-    public function getServiciosByCategoria(Request $request,$id_categoria)
+    public function getServiciosByCategoria(Request $request, $id_categoria)
     {
         $user = $request->user();
         $query = Servicios::where('id_tipo_servicio', $id_categoria)->with([
@@ -561,8 +562,8 @@ class ServiciosController extends Controller
                 $query->select('id', 'servicio');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[3,])){
-            $query->where('id_usuario',$user->id);
+        if (in_array($user->id_tipo_usuario, [3,])) {
+            $query->where('id_usuario', $user->id);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -634,7 +635,7 @@ class ServiciosController extends Controller
      *     )
      * )
      */
-    public function getServiciosFiltradoEspecifico(Request $request,$id_estatus, $id_pueblo, $id_categoria)
+    public function getServiciosFiltradoEspecifico(Request $request, $id_estatus, $id_pueblo, $id_categoria)
     {
         $user = $request->user();
         $query = Servicios::where('id_estatus', $id_estatus)->where('id_pueblo', $id_pueblo)->where('id_tipo_servicio', $id_categoria)->with([
@@ -654,8 +655,8 @@ class ServiciosController extends Controller
                 $query->select('id', 'servicio');
             }
         ]);
-        if(in_array($user->id_tipo_usuario,[3,])){
-            $query->where('id_usuario',$user->id);
+        if (in_array($user->id_tipo_usuario, [3,])) {
+            $query->where('id_usuario', $user->id);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -809,11 +810,11 @@ class ServiciosController extends Controller
      * )
      */
     public function updateServicio(PutServicioRequest $request, Servicios $servicio)
-    {   
-        
+    {
+
         $data = $request->validated();
 
-            $data = $data['data'];
+        $data = $data['data'];
         if (isset($data['servicio'])) {
             $servicio->update($data['servicio']);
         }
@@ -862,18 +863,80 @@ class ServiciosController extends Controller
                 $this->guardarImagenesBD($imagen, 2, $servicio->id);
             }
         }
-        if(isset($data['direccion'])){
+        if (isset($data['direccion'])) {
             $direccion = $servicio->direccion();
             $direccion->update($data['direccion']);
         }
-        if(isset($data['observaciones'])){
+        if (isset($data['observaciones'])) {
             $observacion = $servicio->observaciones();
             $observacion->update(['id_estatus' => '6']);
             $observacion->delete();
-            $servicio->update(['id_estatus'=>'1']);
+            $servicio->update(['id_estatus' => '1']);
         }
         return response()->json([
             "data" => ["servicio" => $servicio]
         ]);
+    }
+
+    /**
+     * Obtiene el conteo de servicios según su estado.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @OA\Get(
+     *     path="/api/servicios/conteo/all",
+     *     summary="Obtiene el conteo de servicios según su estado",
+     *     tags={"Servicios"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operación exitosa",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="en_validacion",
+     *                     type="integer",
+     *                     description="Cantidad de servicios en validación"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="aceptado",
+     *                     type="integer",
+     *                     description="Cantidad de servicios aceptados"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="con_observaciones",
+     *                     type="integer",
+     *                     description="Cantidad de servicios con observaciones"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autenticado"
+     *     )
+     * )
+     */
+    public function getConteoServicios(Request $request)
+    {
+        $user = $request->user();
+
+        $baseQuery = Servicios::query();
+
+        if ($user->id_tipo_usuario == 3) {
+            $baseQuery->where('id_usuario', $user->id);
+        }
+
+        $conteo = [
+            'en_validacion' => (clone $baseQuery)->where('id_estatus', 1)->count(),
+            'aceptado' => (clone $baseQuery)->where('id_estatus', 2)->count(),
+            'con_observaciones' => (clone $baseQuery)->where('id_estatus', 3)->count(),
+        ];
+
+
+        return response()->json(['data' => $conteo]);
     }
 }
