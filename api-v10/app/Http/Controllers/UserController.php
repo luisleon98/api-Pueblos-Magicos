@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Personas;
 use Illuminate\Http\Request;
@@ -258,11 +259,13 @@ class UserController extends Controller
             if($user->id_estatus == 4){
                 return response()->json(['error' => 'Cuenta desactivada'], 403);
             }else{
-                $token = $user->createToken('authToken')->plainTextToken;
+                $tokenResult = $user->createToken('authToken', ['*'], Carbon::now()->addHour());
+                $token = $tokenResult->plainTextToken;
 
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'bearer',
+                'expires_at' => Carbon::parse($tokenResult->accessToken->expires_at)->toDateTimeString(),
                 'user' => [
                     'id' => $user->id,
                     'user_name' => $user->user_name,
@@ -484,7 +487,7 @@ class UserController extends Controller
             $persona->update($data['datosP']);
         }
         return response()->json([
-            "data" => ["usuario" => $usuario]
+            "data" => ["usuario" => $usuario,'data'=>$data]
         ]);
     }
 /**
