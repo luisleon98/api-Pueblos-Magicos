@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Personas;
 use Illuminate\Http\Request;
+use App\Traits\RegistraBitacora;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +16,7 @@ use Illuminate\Auth\AuthenticationException;
 
 class UserController extends Controller
 {
+    use RegistraBitacora;
  /**
  * @OA\Get(
  *     path="/api/users",
@@ -191,6 +193,18 @@ class UserController extends Controller
 
         // Generar el token de acceso
         $token = $user->createToken('authToken')->plainTextToken;
+        $this->registrarEnBitacora([
+            'movimiento' => 'Creacion',
+            'tabla_afectada' => 'Usuarios',
+            'id_registro_afectado' => $user->id,
+            'id_usuario' => $user->id
+        ]);
+        $this->registrarEnBitacora([
+            'movimiento' => 'Creacion',
+            'tabla_afectada' => 'Personas',
+            'id_registro_afectado' => $persona->id,
+            'id_usuario' => $persona->id
+        ]);
 
         return response()->json([
             'data' => [
@@ -487,7 +501,7 @@ class UserController extends Controller
             $persona->update($data['datosP']);
         }
         return response()->json([
-            "data" => ["usuario" => $usuario,'data'=>$data]
+            "data" => ["usuario" => $usuario]
         ]);
     }
 /**
