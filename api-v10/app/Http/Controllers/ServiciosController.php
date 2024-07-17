@@ -132,7 +132,7 @@ class ServiciosController extends Controller
             'titulo' => $data['titulo'],
             'descripcion' => $data['descripcion'],
             'telefono' => $data['telefono'],
-            'pagina_web' => $data['pagina_web'],
+            'pagina_web' => isset($data['pagina_web']) ? $data['pagina_web'] : null,
             'id_coordenadas' => $coordenadas->id,
             'id_servicio' => $servicio->id,
             'id_horarios' => $horarios->id,
