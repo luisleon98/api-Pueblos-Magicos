@@ -102,7 +102,7 @@ class ServiciosController extends Controller
             'calle' => $data['calle'],
             'municipio' => $data['municipio'],
             'CP' => $data['CP'],
-            'int' => $data['int'],
+            'int' => isset($data['int']) ? $data['int'] : null,
             'ext' => $data['ext'],
             'colonia' => $data['colonia'],
             'id_estado' => $data['id_estado'],

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string("calle");
             $table->string("municipio");
             $table->integer("CP");
-            $table->integer("int");
-            $table->integer("ext")->default(0);
+            $table->integer("int")->nullable();
+            $table->integer("ext");
             $table->foreignId("id_estado")->constrained("estados",'id');
             $table->timestamps();
             $table->softDeletes();
