@@ -32,7 +32,7 @@ class RegistroServicioRequest extends FormRequest
             'data.int' => ['sometimes'],
             'data.ext' => ['required'],
             'data.colonia' => ['required'],
-            'data.dias_servicio' => ['required','min:5','max:20'],
+            'data.dias_servicio' => ['sometimes','required','min:5','max:20'],
             'data.horario_inicio' => ['required'],
             'data.horario_fin' => ['required'],
             'data.precio' => ['required'],
@@ -47,8 +47,9 @@ class RegistroServicioRequest extends FormRequest
             'data.id_usuario' => ['required','exists:usuarios,id'],
             'data.id_pueblo' => ['required','exists:pueblos_magicos,id'],
             'data.pagina_web' => ['sometimes','required','url'],
-            'data.telefono' => ['required']
-
+            'data.telefono' => ['required'],
+            'data.fecha_inicio' => ['sometimes','required',],
+            'data.fecha_fin' => ['sometimes','required',],
         ];
     }
     public function messages(): array
@@ -90,6 +91,8 @@ class RegistroServicioRequest extends FormRequest
         'data.pagina_web.required' => 'La página web es requerida',
         'data.pagina_web.url' => 'La página web debe ser una URL válida',
         'data.telefono.required' => 'El teléfono es requerido',
+        'data.fecha_inicio.required' => 'La fecha de inicio es requerida',
+        'data.fecha_fin.required' => 'La fecha de fin es requerida',
     ];
 }
     protected function failedValidation(Validator $validator) {
