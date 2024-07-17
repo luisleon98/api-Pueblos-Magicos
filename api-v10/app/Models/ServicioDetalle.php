@@ -60,7 +60,9 @@ class ServicioDetalle extends Model
         'id_servicio',
         'id_horarios',
         'pagina_web',
-        'telefono'
+        'telefono',
+        'fecha_inicio',
+        'fecha_fin'
     ];
     public function servicio()
     {
