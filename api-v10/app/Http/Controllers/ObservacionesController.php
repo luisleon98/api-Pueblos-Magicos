@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Servicios;
 use Illuminate\Http\Request;
 use App\Models\Observaciones;
+use App\Traits\RegistraBitacora;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\RegistroObservacionRequest;
-use App\Models\Servicios;
 
 class ObservacionesController extends Controller
 {
+    use RegistraBitacora;
     /**
      * Display a listing of the resource.
      */
@@ -83,15 +86,29 @@ class ObservacionesController extends Controller
     {
         $data = $request->validated();
         $data = $data['data'];
+        DB::beginTransaction();
         $servicio = Servicios::findOrFail($data['id_servicio']);
         $servicio->id_estatus = 3;
         $servicio->save();
+        $this->registrarEnBitacora([
+            'movimiento' => 'UPDATE',
+            'tabla_afectada' => 'Servicios',
+            'id_registro_afectado' => $servicio->id,
+            'id_usuario' => $request->user()->id
+        ]);
         $observacion=Observaciones::create([
             'id_servicio' => $data['id_servicio'],
             'id_usuario' => $data['id_usuario'],
             'id_estatus' => 5,
             'observacion' => $data['observacion']
         ]);
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Observaciones',
+            'id_registro_afectado' => $observacion->id,
+            'id_usuario' => $request->user()->id
+        ]);
+        DB::commit();
         return response()->json([
             "data" => ["observacion" => $observacion]
         ]);
