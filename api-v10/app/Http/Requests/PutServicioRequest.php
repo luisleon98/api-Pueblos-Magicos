@@ -25,32 +25,35 @@ class PutServicioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'data.servicio.id_tipo_servicio' => ['sometimes','required','exists:tipos_servicios,id'],
-            'data.servicio.id_usuario' => ['sometimes','required','exists:usuarios,id'],
-            'data.servicio.id_pueblo' => ['sometimes','required','exists:pueblos_magicos,id'],
-            'data.servicio.id_estatus' => ['sometimes','required','exists:estatus,id'],
-            'data.servicio_detalles.dias_servicio' => ['sometimes','required','min:5','max:20'],
-            'data.servicio_detalles.precios' => ['sometimes','required'],
-            'data.servicio_detalles.titulo' => ['sometimes','required','max:100'],
-            'data.servicio_detalles.descripcion' => ['sometimes','required'],
-            'data.servicio_detalles.pagina_web' => ['sometimes','required','url:https'],
-            'data.servicio_detalles.telefono' => ['sometimes','required'],
-            'data.coordenadas.longitud' => ['sometimes','required'],
-            'data.coordenadas.latitud' => ['sometimes','required'],
-            'data.horarios.horario_inicio' => ['sometimes','required'],
-            'data.horarios.horario_fin' => ['sometimes','required'],
-            'data.imagenes_eliminar.*.id' => ['required_with:data.imagenes_eliminar.*.nombre','exists:imagenes,id'],
-            'data.imagenes_eliminar.*.nombre' => ['required_with:data.imagenes_eliminar.*.id','exists:imagenes,nombre'],
-            'data.imagen_principal'=>['sometimes','required', 'mimes:jpg,png', 'max:20480'],
-            'data.imagenes_nuevas.*' => ['sometimes','required', 'mimes:jpg,png', 'max:20480'],
-            'data.direccion.calle' => ['sometimes','required'],
-            'data.direccion.municipio' => ['sometimes','required'],
-            'data.direccion.CP' => ['sometimes','required'],
-            'data.direccion.int' => ['sometimes','required'],
-            'data.direccion.ext' => ['sometimes','nullable'],
-            'data.direccion.colonia' => ['sometimes','required'],
-            'data.direccion.id_estado' => ['sometimes','required','exists:estados,id'],
-            'data.observaciones.observacion' => ['sometimes','boolean']
+            'data.servicio.id_tipo_servicio' => ['sometimes', 'required', 'exists:tipos_servicios,id'],
+            'data.servicio.id_usuario' => ['sometimes', 'required', 'exists:usuarios,id'],
+            'data.servicio.id_pueblo' => ['sometimes', 'required', 'exists:pueblos_magicos,id'],
+            'data.servicio.id_estatus' => ['sometimes', 'required', 'exists:estatus,id'],
+            'data.servicio_detalles.dias_servicio' => ['sometimes', 'required', 'min:5', 'max:20'],
+            'data.servicio_detalles.precios' => ['sometimes', 'required'],
+            'data.servicio_detalles.titulo' => ['sometimes', 'required', 'max:100'],
+            'data.servicio_detalles.descripcion' => ['sometimes', 'required'],
+            'data.servicio_detalles.pagina_web' => ['sometimes', 'required', 'url:https'],
+            'data.servicio_detalles.telefono' => ['sometimes', 'required'],
+            'data.servicio_detalles.fecha_inicio' => ['sometimes', 'required',],
+            'data.servicio_detalles.fecha_fin' => ['sometimes', 'required',],
+            'data.coordenadas.longitud' => ['sometimes', 'required'],
+            'data.coordenadas.latitud' => ['sometimes', 'required'],
+            'data.horarios.horario_inicio' => ['sometimes', 'required'],
+            'data.horarios.horario_fin' => ['sometimes', 'required'],
+            'data.imagenes_eliminar.*.id' => ['required_with:data.imagenes_eliminar.*.nombre', 'exists:imagenes,id'],
+            'data.imagenes_eliminar.*.nombre' => ['required_with:data.imagenes_eliminar.*.id', 'exists:imagenes,nombre'],
+            'data.imagen_principal' => ['sometimes', 'required', 'mimes:jpg,png', 'max:20480'],
+            'data.imagenes_nuevas.*' => ['sometimes', 'required', 'mimes:jpg,png', 'max:20480'],
+            'data.direccion.calle' => ['sometimes', 'required'],
+            'data.direccion.municipio' => ['sometimes', 'required'],
+            'data.direccion.CP' => ['sometimes', 'required'],
+            'data.direccion.int' => ['sometimes', 'required'],
+            'data.direccion.ext' => ['sometimes', 'nullable'],
+            'data.direccion.colonia' => ['sometimes', 'required'],
+            'data.direccion.id_estado' => ['sometimes', 'required', 'exists:estados,id'],
+            'data.observaciones.observacion' => ['sometimes', 'boolean'],
+
         ];
     }
     public function messages(): array
@@ -96,9 +99,12 @@ class PutServicioRequest extends FormRequest
             'data.direccion.colonia.required' => 'La colonia es requerida.',
             'data.direccion.id_estado.required' => 'El estado es requerido.',
             'data.direccion.id_estado.exists' => 'El estado no existe.',
+            'data.fecha_inicio.required' => 'La fecha de inicio es requerida',
+            'data.fecha_fin.required' => 'La fecha de fin es requerida',
         ];
     }
-    protected function failedValidation(Validator $validator) {
+    protected function failedValidation(Validator $validator)
+    {
         throw new HttpResponseException(response()->json([
             'data' => $validator->errors(),
         ], 422));
