@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ServicioDetalle;
 use App\Models\ServiciosImagen;
+use App\Traits\RegistraBitacora;
 use App\Models\PueblosSolicitudes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,7 @@ use App\Http\Requests\RegistroServicioRequest;
 
 class ServiciosController extends Controller
 {
+    use RegistraBitacora;
     /**
      * @OA\Post(
      *     path="/api/servicios/registrar",
@@ -75,13 +77,26 @@ class ServiciosController extends Controller
     {
         $data = $request->validated();
         $data = $data['data'];
+        DB::beginTransaction();
         $coordenadas = Coordenadas::create([
             'longitud' => $data['longitud'],
             'latitud' => $data['latitud']
         ]);
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Coordenadas',
+            'id_registro_afectado' => $coordenadas->id,
+            'id_usuario' => $request->user()->id
+        ]);
         $horarios = Horarios::create([
             'horario_inicio' => $data['horario_inicio'],
             'horario_fin' => $data['horario_fin']
+        ]);
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Horarios',
+            'id_registro_afectado' => $horarios->id,
+            'id_usuario' => $request->user()->id
         ]);
         $direccion = Direcciones::create([
             'calle' => $data['calle'],
@@ -92,6 +107,12 @@ class ServiciosController extends Controller
             'colonia' => $data['colonia'],
             'id_estado' => $data['id_estado'],
         ]);
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Direcciones',
+            'id_registro_afectado' => $direccion->id,
+            'id_usuario' => $request->user()->id
+        ]);
         $servicio = Servicios::create([
             'id_tipo_servicio' => $data['id_tipo_servicio'],
             'id_direccion' => $direccion->id,
@@ -99,8 +120,14 @@ class ServiciosController extends Controller
             'id_pueblo' => $data['id_pueblo'],
             'id_estatus' => 1
         ]);
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Servicios',
+            'id_registro_afectado' => $servicio->id,
+            'id_usuario' => $request->user()->id
+        ]);
         $servicioDetalle = ServicioDetalle::create([
-            'dias_servicio' => $data['dias_servicio'],
+            'dias_servicio' => isset($data['dias_servicio']) ? $data['dias_servicio'] : null,
             'precios' => $data['precio'],
             'titulo' => $data['titulo'],
             'descripcion' => $data['descripcion'],
@@ -108,14 +135,27 @@ class ServiciosController extends Controller
             'pagina_web' => $data['pagina_web'],
             'id_coordenadas' => $coordenadas->id,
             'id_servicio' => $servicio->id,
-            'id_horarios' => $horarios->id
-
+            'id_horarios' => $horarios->id,
+            'fecha_inicio' => isset($data['fecha_inicio']) ? $data['fecha_inicio'] : null,
+            'fecha_fin' => isset($data['fecha_fin']) ? $data['fecha_fin'] : null,
+        ]);
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Servicio_Detalles',
+            'id_registro_afectado' => $servicioDetalle->id,
+            'id_usuario' => $request->user()->id
         ]);
 
         $puebloSolicitud = PueblosSolicitudes::create([
             'id_servicio'  => $servicio->id,
             'id_pueblo_magico' => $data['id_pueblo'],
             'id_tipo_servicio' => $data['id_tipo_servicio']
+        ]);
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Pueblos_Solicitudes',
+            'id_registro_afectado' => $puebloSolicitud->id,
+            'id_usuario' => $request->user()->id
         ]);
 
         $imagenPrincipal = $this->procesarImagen($data['imgPrincipal']);
@@ -126,7 +166,7 @@ class ServiciosController extends Controller
             $this->guardarImagenesBD($imagen, 2, $servicio->id);
         }
 
-
+        DB::commit();
         return response()->json([
             "data" => ["success" => "ok"]
         ]);
@@ -161,10 +201,22 @@ class ServiciosController extends Controller
             'nombre' => $nombreImagen,
             'id_tipo_imagen' => $idTipoImagen
         ]);
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Imagenes',
+            'id_registro_afectado' => $imagen->id,
+            'id_usuario' => auth()->id()
+        ]);
 
-        ServiciosImagen::create([
+        $servicioImagen = ServiciosImagen::create([
             'id_servicio' => $idServicio,
             'id_imagen' => $imagen->id
+        ]);
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Servicios_Imagenes',
+            'id_registro_afectado' => $servicioImagen->id,
+            'id_usuario' => auth()->id()
         ]);
     }
     /**
@@ -260,7 +312,15 @@ class ServiciosController extends Controller
      */
     public function destroy(Servicios $servicio)
     {
+        DB::beginTransaction();
         $servicio->delete();
+        $this->registrarEnBitacora([
+            'movimiento' => 'DELETE',
+            'tabla_afectada' => 'Servicios',
+            'id_registro_afectado' => $servicio->id,
+            'id_usuario' => auth('sanctum')->user()->id
+        ]);
+        DB::commit();
         return response()->json([
             "data" => ["servicio" => $servicio]
         ]);
@@ -815,22 +875,47 @@ class ServiciosController extends Controller
         $data = $request->validated();
 
         $data = $data['data'];
+        DB::beginTransaction();
         if (isset($data['servicio'])) {
             $servicio->update($data['servicio']);
+            $this->registrarEnBitacora([
+                'movimiento' => 'UPDATE',
+                'tabla_afectada' => 'Servicios',
+                'id_registro_afectado' => $servicio->id,
+                'id_usuario' => $request->user()->id
+            ]);
         }
         if (isset($data['servicio_detalles'])) {
-            $detalles = $servicio->detalleServicio();
+            $detalles = $servicio->detalleServicio;
             $detalles->update($data['servicio_detalles']);
+            $this->registrarEnBitacora([
+                'movimiento' => 'UPDATE',
+                'tabla_afectada' => 'Servicios_detalles',
+                'id_registro_afectado' => $detalles->id,
+                'id_usuario' => $request->user()->id
+            ]);
         }
         if (isset($data['coordenadas'])) {
             $detalles = $servicio->detalleServicio;
             $coordenadas = $detalles->coordenada;
             $coordenadas->update($data['coordenadas']);
+            $this->registrarEnBitacora([
+                'movimiento' => 'UPDATE',
+                'tabla_afectada' => 'Coordenadas',
+                'id_registro_afectado' => $coordenadas->id,
+                'id_usuario' => $request->user()->id
+            ]);
         }
         if (isset($data['horarios'])) {
             $detalles = $servicio->detalleServicio;
             $horarios = $detalles->horario;
             $horarios->update($data['horarios']);
+            $this->registrarEnBitacora([
+                'movimiento' => 'UPDATE',
+                'tabla_afectada' => 'Horarios',
+                'id_registro_afectado' => $horarios->id,
+                'id_usuario' => $request->user()->id
+            ]);
         }
         if (isset($data['imagenes_eliminar'])) {
 
@@ -839,13 +924,26 @@ class ServiciosController extends Controller
                 $nombreArchivo = $imagen['nombre'];
 
                 // Eliminar la relación en la tabla intermedia
-                ServiciosImagen::where('id_servicio', $servicio->id)
-                    ->where('id_imagen', $imagenId)
-                    ->delete();
+                $serviciosImagen = ServiciosImagen::where('id_servicio', $servicio->id)
+                    ->where('id_imagen', $imagenId)->first();
+                    
+                $serviciosImagen->delete();
+                $this->registrarEnBitacora([
+                    'movimiento' => 'DELETE',
+                    'tabla_afectada' => 'Servicios_Imagenes',
+                    'id_registro_afectado' => $serviciosImagen->id,
+                    'id_usuario' => $request->user()->id
+                ]);
 
                 // Eliminar la imagen de la tabla 'imagenes'
                 $imagenModel = Imagen::findOrFail($imagenId);
                 $imagenModel->delete();
+                $this->registrarEnBitacora([
+                    'movimiento' => 'DELETE',
+                    'tabla_afectada' => 'Imagen',
+                    'id_registro_afectado' => $imagenModel->id,
+                    'id_usuario' => $request->user()->id
+                ]);
 
                 $path = storage_path(env('STORAGE_PATH', '../public/uploads/') . $nombreArchivo);
                 if (file_exists($path)) {
@@ -864,15 +962,35 @@ class ServiciosController extends Controller
             }
         }
         if (isset($data['direccion'])) {
-            $direccion = $servicio->direccion();
+            $direccion = $servicio->direccion;
             $direccion->update($data['direccion']);
+            $this->registrarEnBitacora([
+                'movimiento' => 'UPDATE',
+                'tabla_afectada' => 'Direcciones',
+                'id_registro_afectado' => $direccion->id,
+                'id_usuario' => $request->user()->id
+            ]);
         }
         if (isset($data['observaciones'])) {
-            $observacion = $servicio->observaciones();
+            $observacion = $servicio->observaciones;
             $observacion->update(['id_estatus' => '6']);
             $observacion->delete();
+            $this->registrarEnBitacora([
+                'movimiento' => 'DELETE',
+                'tabla_afectada' => 'Observaciones',
+                'id_registro_afectado' => $observacion->id,
+                'id_usuario' => $request->user()->id
+            ]);
             $servicio->update(['id_estatus' => '1']);
+            $this->registrarEnBitacora([
+                'movimiento' => 'UPDATE',
+                'tabla_afectada' => 'Servicios',
+                'id_registro_afectado' => $servicio->id,
+                'id_usuario' => $request->user()->id
+            ]);
         }
+
+        DB::commit();
         return response()->json([
             "data" => ["servicio" => $servicio]
         ]);
