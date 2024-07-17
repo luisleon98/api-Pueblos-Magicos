@@ -2,8 +2,10 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -44,5 +46,31 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($request->wantsJson()) {
+            if ($exception instanceof QueryException) {
+                return response()->json([
+                    'error' => 'Error de base de datos',
+                    'message' => 'Ocurrió un error al procesar la solicitud en la base de datos.'
+                ], 500);
+            } elseif ($exception instanceof ValidationException) {
+                return response()->json([
+                    'error' => 'Error de validación',
+                    'message' => $exception->errors()
+                ], 422);
+            } else {
+                return response()->json(
+                    ["data"=>[
+                    'error' => 'Error en el servidor',
+                    'message' => $exception->getMessage()
+                ]]
+                , 500);
+            }
+        }
+
+        return parent::render($request, $exception);
     }
 }
