@@ -141,6 +141,10 @@ class UserController extends Controller
      *                         type="string"
      *                     ),
      *                     @OA\Property(
+     *                         property="password_confirmation",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
      *                         property="nombre",
      *                         type="string"
      *                     ),
@@ -157,7 +161,7 @@ class UserController extends Controller
      *                         type="integer"
      *                     )
      *                 ),
-     *                 example={"data": {"user_name":"lleon@ipn.mx","password":"pruebas1","nombre":"Luis","apellido_pat":"Leon","apellido_mat":"HDZ","id_tipo_usuario":2}}
+     *                 example={"data": {"user_name":"lleon@ipn.mx","password":"pruebas1","password_confirmation":"pruebas1","nombre":"Luis","apellido_pat":"Leon","apellido_mat":"HDZ","id_tipo_usuario":2}}
      *             )
      *         )
      *     ),
@@ -213,6 +217,146 @@ class UserController extends Controller
                 'success' => true,
                 'access_token' => $token,
                 'token_type' => 'bearer',
+                'user' => [
+                    'id' => $user->id,
+                    'user_name' => $user->user_name,
+                    'id_tipo_usuario' => $user->id_tipo_usuario
+                ],
+                'persona' => [
+                    'id' => $persona->id,
+                    'nombre' => $persona->nombre,
+                    'apellido_pat' => $persona->apellido_pat,
+                    'apellido_mat' => $persona->apellido_mat
+                ]
+            ]
+        ]);
+    }
+    /**
+     * @OA\Post(
+     *     path="/api/admin/users/registrar",
+     *     summary="Crea un nuevo usuario por un administrador",
+     *     tags={"Users"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="data",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="user_name",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="password",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="password_confirmation",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="nombre",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="apellido_pat",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="apellido_mat",
+     *                         type="string"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="id_tipo_usuario",
+     *                         type="integer"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="id_estatus",
+     *                         type="integer"
+     *                     )
+     *                 ),
+     *                 example={"data": {"user_name":"admin@example.com","password":"securepass","password_confirmation":"securepass","nombre":"Admin","apellido_pat":"User","apellido_mat":"Test","id_tipo_usuario":1,"id_estatus":1}}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OK",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="success", type="boolean"),
+     *                 @OA\Property(
+     *                     property="user",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="user_name", type="string"),
+     *                     @OA\Property(property="id_tipo_usuario", type="integer")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="persona",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="nombre", type="string"),
+     *                     @OA\Property(property="apellido_pat", type="string"),
+     *                     @OA\Property(property="apellido_mat", type="string")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No autorizado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Datos de entrada inválidos"
+     *     )
+     * )
+     */
+    public function adminCreate(RegistroRequest $request)
+    {
+        $data = $request->validated()['data'];
+        $data['password'] = Hash::make($data['password']);
+
+        DB::beginTransaction();
+        $user = User::create([
+            'user_name' => $data['user_name'],
+            'password' => $data['password'],
+            'id_tipo_usuario' => $data['id_tipo_usuario'] ?? 3,
+            'id_estatus' => $data['id_estatus'] ?? 7
+        ]);
+
+        $persona = Personas::create([
+            'nombre' => $data['nombre'],
+            'apellido_pat' => $data['apellido_pat'],
+            'apellido_mat' => $data['apellido_mat'],
+            'id_usuario' => $user->id
+        ]);
+
+
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Usuarios',
+            'id_registro_afectado' => $user->id,
+            'id_usuario' => $request->user()->id
+        ]);
+
+        $this->registrarEnBitacora([
+            'movimiento' => 'CREATE',
+            'tabla_afectada' => 'Personas',
+            'id_registro_afectado' => $persona->id,
+            'id_usuario' => $request->user()->id
+        ]);
+
+        DB::commit();
+
+        return response()->json([
+            'data' => [
+                'success' => true,
                 'user' => [
                     'id' => $user->id,
                     'user_name' => $user->user_name,
@@ -505,7 +649,7 @@ class UserController extends Controller
         }
         if (isset($data['datosP'])) {
             $persona = $usuario->persona;
-            
+
             $persona->update($data['datosP']);
             $this->registrarEnBitacora([
                 'movimiento' => 'UPDATE',
@@ -515,7 +659,7 @@ class UserController extends Controller
             ]);
         }
 
-        
+
         DB::commit();
         return response()->json([
             "data" => ["usuario" => $usuario]

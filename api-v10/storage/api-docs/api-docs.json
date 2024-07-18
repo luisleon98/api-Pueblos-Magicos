@@ -1246,6 +1246,9 @@
                                             "password": {
                                                 "type": "string"
                                             },
+                                            "password_confirmation": {
+                                                "type": "string"
+                                            },
                                             "nombre": {
                                                 "type": "string"
                                             },
@@ -1267,6 +1270,7 @@
                                     "data": {
                                         "user_name": "lleon@ipn.mx",
                                         "password": "pruebas1",
+                                        "password_confirmation": "pruebas1",
                                         "nombre": "Luis",
                                         "apellido_pat": "Leon",
                                         "apellido_mat": "HDZ",
@@ -1296,6 +1300,131 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/admin/users/registrar": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Crea un nuevo usuario por un administrador",
+                "operationId": "67eea53cf870eb2212523942175ece5c",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "properties": {
+                                            "user_name": {
+                                                "type": "string"
+                                            },
+                                            "password": {
+                                                "type": "string"
+                                            },
+                                            "password_confirmation": {
+                                                "type": "string"
+                                            },
+                                            "nombre": {
+                                                "type": "string"
+                                            },
+                                            "apellido_pat": {
+                                                "type": "string"
+                                            },
+                                            "apellido_mat": {
+                                                "type": "string"
+                                            },
+                                            "id_tipo_usuario": {
+                                                "type": "integer"
+                                            },
+                                            "id_estatus": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "data": {
+                                        "user_name": "admin@example.com",
+                                        "password": "securepass",
+                                        "password_confirmation": "securepass",
+                                        "nombre": "Admin",
+                                        "apellido_pat": "User",
+                                        "apellido_mat": "Test",
+                                        "id_tipo_usuario": 1,
+                                        "id_estatus": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean"
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "user_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "id_tipo_usuario": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "persona": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "nombre": {
+                                                            "type": "string"
+                                                        },
+                                                        "apellido_pat": {
+                                                            "type": "string"
+                                                        },
+                                                        "apellido_mat": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "422": {
+                        "description": "Datos de entrada inválidos"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/users/login": {

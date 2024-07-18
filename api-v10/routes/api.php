@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/buscador/user', [UserController::class, 'buscarUsuarios']);
     Route::post('servicios/registrar', [ServiciosController::class, 'store']);
     Route::post('observaciones', [ObservacionesController::class, 'store']);
+    Route::post('admin/users/registrar', [UserController::class, 'adminCreate']);
     Route::delete('/servicios/{servicio}', [ServiciosController::class, 'destroy']);
     Route::delete('users/{usuario}',[UserController::class,'destroy']);
     Route::put('servicios/{servicio}', [ServiciosController::class, 'updateServicio']);
