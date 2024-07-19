@@ -319,6 +319,13 @@ class UserController extends Controller
      */
     public function adminCreate(RegistroRequest $request)
     {
+        if (!in_array($request->user()->id_tipo_usuario, [1,])) {
+            return response()->json([
+                'data' => [
+                    'error'=>'No tienes permisos para realizar esta acción'
+                ]
+            ],403);
+        }
         $data = $request->validated()['data'];
         $data['password'] = Hash::make($data['password']);
 
@@ -632,6 +639,14 @@ class UserController extends Controller
      */
     public function update(UpdateUsuarioRequest $request, User $usuario)
     {
+        if ($request->user()->id !== $usuario->id && !in_array($request->user()->id_tipo_usuario,[1,2])) {
+            
+                return response()->json([
+                    "data" => ["error" => 'No tienes permisos para realizar esta accion ']
+                ], 403);
+            
+        }
+
         $data = $request->validated();
         $data = $data['data'];
         DB::beginTransaction();
@@ -697,8 +712,21 @@ class UserController extends Controller
 
     public function destroy(User $usuario)
     {
+        if ( !in_array(auth('sanctum')->user()->id_tipo_usuario, [1, 2])) {
+            return response()->json([
+                "data" => ["error" => 'No tienes permisos para realizar esta acción']
+            ], 403);
+        }
+
         DB::beginTransaction();
-        $usuario->persona->delete();
+        $persona=$usuario->persona;
+        $persona->delete();
+        $this->registrarEnBitacora([
+            'movimiento' => 'DELETE',
+            'tabla_afectada' => 'Persona',
+            'id_registro_afectado' => $persona->id,
+            'id_usuario' => auth('sanctum')->user()->id
+        ]);
         $usuario->delete();
         $this->registrarEnBitacora([
             'movimiento' => 'DELETE',
@@ -815,7 +843,7 @@ class UserController extends Controller
             ]);
         } else {
             return response()->json([
-                "data" => ["Error" => 'No tienes permisos para realizar esta accion ']
+                "data" => ["error" => 'No tienes permisos para realizar esta accion ']
             ], 401);
         }
     }
