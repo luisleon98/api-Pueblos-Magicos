@@ -310,7 +310,7 @@ class ServiciosController extends Controller
      *     )
      * )
      */
-    public function destroy(Request $request,Servicios $servicio)
+    public function destroy(Request $request, Servicios $servicio)
     {
         if ($request->user()->id !== $servicio->id_usuario && !in_array($request->user()->id_tipo_usuario, [1, 2])) {
 
@@ -319,6 +319,103 @@ class ServiciosController extends Controller
             ], 403);
         }
         DB::beginTransaction();
+        // Eliminar y registrar detalles del servicio
+        if ($detalle = $servicio->detalleServicio) {
+            // Eliminar y registrar coordenadas
+            if ($coordenada = $detalle->coordenada) {
+                $coordenada->delete();
+                $this->registrarEnBitacora([
+                    'movimiento' => 'DELETE',
+                    'tabla_afectada' => 'Coordenadas',
+                    'id_registro_afectado' => $coordenada->id,
+                    'id_usuario' => auth('sanctum')->user()->id
+                ]);
+            }
+
+            // Eliminar y registrar horarios
+            if ($horario = $detalle->horario) {
+                $horario->delete();
+                $this->registrarEnBitacora([
+                    'movimiento' => 'DELETE',
+                    'tabla_afectada' => 'Horarios',
+                    'id_registro_afectado' => $horario->id,
+                    'id_usuario' => auth('sanctum')->user()->id
+                ]);
+            }
+
+            $detalle->delete();
+            $this->registrarEnBitacora([
+                'movimiento' => 'DELETE',
+                'tabla_afectada' => 'Servicio_Detalles',
+                'id_registro_afectado' => $detalle->id,
+                'id_usuario' => auth('sanctum')->user()->id
+            ]);
+        }
+
+        $imagenesIds = $servicio->imagenes->pluck('id')->toArray();
+        foreach ($imagenesIds as $imagenId) {
+            // Eliminar el registro de la tabla intermedia
+            $servicioImagen = ServiciosImagen::where('id_servicio', $servicio->id)
+                ->where('id_imagen', $imagenId)
+                ->first();
+            if ($servicioImagen) {
+                $servicioImagenId = $servicioImagen->id;
+                $servicioImagen->delete();
+                $this->registrarEnBitacora([
+                    'movimiento' => 'DELETE',
+                    'tabla_afectada' => 'ServiciosImagen',
+                    'id_registro_afectado' => $servicioImagenId,
+                    'id_usuario' => auth('sanctum')->user()->id
+                ]);
+            }
+
+            // Eliminar la imagen
+            $imagen = Imagen::find($imagenId);
+            if ($imagen) {
+                $imagen->delete();
+                $this->registrarEnBitacora([
+                    'movimiento' => 'DELETE',
+                    'tabla_afectada' => 'Imagen',
+                    'id_registro_afectado' => $imagenId,
+                    'id_usuario' => auth('sanctum')->user()->id
+                ]);
+            }
+        }
+
+        // Eliminar y registrar dirección
+        if ($direccion = $servicio->direccion) {
+            $direccion->delete();
+            $this->registrarEnBitacora([
+                'movimiento' => 'DELETE',
+                'tabla_afectada' => 'Direcciones',
+                'id_registro_afectado' => $direccion->id,
+                'id_usuario' => auth('sanctum')->user()->id
+            ]);
+        }
+
+        // Eliminar y registrar solicitud
+        if ($solicitud = $servicio->solicitud) {
+            $solicitud->delete();
+            $this->registrarEnBitacora([
+                'movimiento' => 'DELETE',
+                'tabla_afectada' => 'Pueblos_Solicitudes',
+                'id_registro_afectado' => $solicitud->id,
+                'id_usuario' => auth('sanctum')->user()->id
+            ]);
+        }
+
+        // Eliminar y registrar observaciones
+        if ($observacion = $servicio->observaciones) {
+            $observacion->delete();
+            $this->registrarEnBitacora([
+                'movimiento' => 'DELETE',
+                'tabla_afectada' => 'Observaciones',
+                'id_registro_afectado' => $observacion->id,
+                'id_usuario' => auth('sanctum')->user()->id
+            ]);
+        }
+
+        // Finalmente, eliminar y registrar el servicio
         $servicio->delete();
         $this->registrarEnBitacora([
             'movimiento' => 'DELETE',

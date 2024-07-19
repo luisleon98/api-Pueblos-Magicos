@@ -75,15 +75,15 @@ class ServicioDetalle extends Model
     public function horario(){
         return $this->belongsTo(Horarios::class,'id_horarios');
     }
-    public static function boot()
-    {
-        parent::boot();
+    // public static function boot()
+    // {
+    //     parent::boot();
 
-        static::deleting(function($detalle) {
-            // Eliminar la coordenada asociada
-            $detalle->coordenada()->delete();
-            // Eliminar el horario asociado
-            $detalle->horario()->delete();
-        });
-    }
+    //     static::deleting(function($detalle) {
+    //         // Eliminar la coordenada asociada
+    //         $detalle->coordenada()->delete();
+    //         // Eliminar el horario asociado
+    //         $detalle->horario()->delete();
+    //     });
+    // }
 }

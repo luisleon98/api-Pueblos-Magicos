@@ -95,22 +95,22 @@ class Servicios extends Model
     public function observaciones(){
         return $this->hasOne(Observaciones::class,'id_servicio');
     }
-    public static function boot()
-    {
-        parent::boot();
+    // public static function boot()
+    // {
+    //     parent::boot();
 
-        static::deleting(function($servicio) {
-            // Eliminar detalles del servicio
-            // $servicio->detalleServicio()->delete();
-            $detalle = $servicio->detalleServicio()->first();
-            $detalle->delete();
-            // Eliminar imágenes asociadas al servicio
+    //     static::deleting(function($servicio) {
+    //         // Eliminar detalles del servicio
+    //         // $servicio->detalleServicio()->delete();
+    //         $detalle = $servicio->detalleServicio()->first();
+    //         $detalle->delete();
+    //         // Eliminar imágenes asociadas al servicio
             
-            $servicio->imagenes()->delete();
-            // Eliminar la dirección asociada
-            $servicio->direccion()->delete();
-            $servicio->solicitud()->delete();
+    //         $servicio->imagenes()->delete();
+    //         // Eliminar la dirección asociada
+    //         $servicio->direccion()->delete();
+    //         $servicio->solicitud()->delete();
             
-        });
-    }
+    //     });
+    // }
 }
