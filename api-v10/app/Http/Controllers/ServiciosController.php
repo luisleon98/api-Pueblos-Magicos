@@ -310,8 +310,14 @@ class ServiciosController extends Controller
      *     )
      * )
      */
-    public function destroy(Servicios $servicio)
+    public function destroy(Request $request,Servicios $servicio)
     {
+        if ($request->user()->id !== $servicio->id_usuario && !in_array($request->user()->id_tipo_usuario, [1, 2])) {
+
+            return response()->json([
+                "data" => ["error" => 'No tienes permisos para realizar esta accion ']
+            ], 403);
+        }
         DB::beginTransaction();
         $servicio->delete();
         $this->registrarEnBitacora([
@@ -871,7 +877,12 @@ class ServiciosController extends Controller
      */
     public function updateServicio(PutServicioRequest $request, Servicios $servicio)
     {
+        if ($request->user()->id !== $servicio->id_usuario && !in_array($request->user()->id_tipo_usuario, [1, 2])) {
 
+            return response()->json([
+                "data" => ["error" => 'No tienes permisos para realizar esta accion ']
+            ], 403);
+        }
         $data = $request->validated();
 
         $data = $data['data'];
@@ -926,7 +937,7 @@ class ServiciosController extends Controller
                 // Eliminar la relación en la tabla intermedia
                 $serviciosImagen = ServiciosImagen::where('id_servicio', $servicio->id)
                     ->where('id_imagen', $imagenId)->first();
-                    
+
                 $serviciosImagen->delete();
                 $this->registrarEnBitacora([
                     'movimiento' => 'DELETE',
