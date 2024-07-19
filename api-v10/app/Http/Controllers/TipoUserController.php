@@ -34,13 +34,27 @@ class TipoUserController extends Controller
      *      )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tipos = Tipo_User::all();
+        
+        $user = $request->user();
 
-        return response()->json([
-            'data' => $tipos
-        ]);
+    switch ($user->id_tipo_usuario) {
+        case 1:
+            $tipos = Tipo_User::all();
+            break;
+        case 2:
+            $tipos = Tipo_User::where('id', '!=', 1)->get();
+            break;
+        default:
+            return response()->json([
+                'data' => ['error' => 'No tienes permisos para acceder a este catálogo']
+            ], 403);
+    }
+
+    return response()->json([
+        'data' => $tipos
+    ]);
     }
 
     /**

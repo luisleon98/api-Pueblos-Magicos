@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('servicios/filtrar/{id_estatus}/{id_pueblo}/{id_categoria}', [ServiciosController::class, 'getServiciosFiltradoEspecifico']);
     Route::get('servicios/conteo/all', [ServiciosController::class, 'getConteoServicios']);
     Route::get('users',[UserController::class,'index']);
+    Route::get('cattiposUsers', [TipoUserController::class, 'index']);
     // Route::get('users/filtrar/tipo/usuario/{tipo}',[UserController::class,'filtroByTipoUser']);
     // Route::get('users/filtrar/estatus/{estatus}',[UserController::class,'filtroByStatusUser']);
     Route::get('users/{id_usuario}',[UserController::class,'show']);
@@ -42,7 +43,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('catestados', [StateController::class, 'index']);
-Route::get('cattiposUsers', [TipoUserController::class, 'index']);
 Route::get('tiposervicios', [TiposServiciosController::class, 'index']);
 Route::get('pueblosmagicos', [PueblosMagicosController::class, 'index']);
 
