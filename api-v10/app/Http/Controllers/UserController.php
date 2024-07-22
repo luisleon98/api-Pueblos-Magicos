@@ -194,6 +194,7 @@ class UserController extends Controller
             'nombre' => $data['nombre'],
             'apellido_pat' => $data['apellido_pat'],
             'apellido_mat' => $data['apellido_mat'],
+            'apellido_mat' => isset($data['apellido_mat']) ? $data['apellido_mat'] : "",
             'id_usuario' => $user->id
         ]);
 

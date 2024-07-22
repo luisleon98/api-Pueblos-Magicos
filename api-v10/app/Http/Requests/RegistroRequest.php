@@ -27,7 +27,7 @@ class RegistroRequest extends FormRequest
             'data.user_name'=>['required','email'],
             'data.nombre'=>['required','string'],
             'data.apellido_pat'=>['required','string'],
-            'data.apellido_mat'=>['required','string'],
+            'data.apellido_mat'=>['sometimes','required','string'],
             'data.password' => ['required', 'string', 'confirmed', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*\d).+$/'],
             
         ];
