@@ -7,6 +7,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\Exceptions\MissingAbilityException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -68,7 +69,12 @@ class Handler extends ExceptionHandler
                     'error' => 'Token inválido o expirado',
                     'message' => 'La sesión ha expirado o el token es inválido. Por favor, inicie sesión nuevamente.'
                 ]], 401);
-            } else {
+            } elseif ($exception instanceof ModelNotFoundException) {
+                return response()->json([
+                    'error' => 'Recurso no encontrado',
+                    'message' => 'El recurso solicitado no existe.'
+                ], 400);
+            }else {
                 return response()->json(
                     ["data"=>[
                     'error' => 'Error en el servidor',
