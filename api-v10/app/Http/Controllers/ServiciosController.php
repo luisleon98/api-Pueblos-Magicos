@@ -985,6 +985,11 @@ class ServiciosController extends Controller
         $data = $data['data'];
         DB::beginTransaction();
         if (isset($data['servicio'])) {
+            if ($servicio->id_estatus == 4 && isset($data['servicio']['id_estatus']) && $data['servicio']['id_estatus'] == 2 ){
+                return response()->json([
+                    "data" => ["error" => 'No se puede actualizar el registro a Aceptado debido a que la publicacion cambio su estado a Inactivo']
+                ], 409);
+            }
             $servicio->update($data['servicio']);
             $this->registrarEnBitacora([
                 'movimiento' => 'UPDATE',
