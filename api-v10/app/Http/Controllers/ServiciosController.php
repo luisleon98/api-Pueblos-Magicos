@@ -353,6 +353,10 @@ class ServiciosController extends Controller
         }
 
         $imagenesIds = $servicio->imagenes->pluck('id')->toArray();
+        $deletedPath = public_path('deleted');
+        if (!file_exists($deletedPath)) {
+            mkdir($deletedPath, 0777, true);
+        }
         foreach ($imagenesIds as $imagenId) {
             // Eliminar el registro de la tabla intermedia
             $servicioImagen = ServiciosImagen::where('id_servicio', $servicio->id)
@@ -372,6 +376,12 @@ class ServiciosController extends Controller
             // Eliminar la imagen
             $imagen = Imagen::find($imagenId);
             if ($imagen) {
+                $oldPath = public_path('uploads/' . $imagen->nombre);
+                $newPath = $deletedPath . '/' . $imagen->nombre;
+                
+                if (file_exists($oldPath)) {
+                    rename($oldPath, $newPath);
+                }
                 $imagen->delete();
                 $this->registrarEnBitacora([
                     'movimiento' => 'DELETE',
@@ -985,7 +995,7 @@ class ServiciosController extends Controller
         $data = $data['data'];
         DB::beginTransaction();
         if (isset($data['servicio'])) {
-            if ($servicio->id_estatus == 4 && isset($data['servicio']['id_estatus']) && $data['servicio']['id_estatus'] == 2 ){
+            if ($servicio->id_estatus == 4 && isset($data['servicio']['id_estatus']) && $data['servicio']['id_estatus'] == 2) {
                 return response()->json([
                     "data" => ["error" => 'No se puede actualizar el registro a Aceptado debido a que la publicacion cambio su estado a Inactivo']
                 ], 409);
