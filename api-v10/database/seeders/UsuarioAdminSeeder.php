@@ -19,6 +19,7 @@ class UsuarioAdminSeeder extends Seeder
             'password'=> Hash::make('Pruebas1'),
             'id_tipo_usuario' => 1,
             'id_estatus'=>7,
+            'id_pueblo'=>12,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
