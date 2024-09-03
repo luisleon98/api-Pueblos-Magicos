@@ -188,7 +188,8 @@ class UserController extends Controller
             'user_name' => $data['user_name'],
             'password' => $data['password'],
             'id_tipo_usuario' => 3,
-            'id_estatus' => 7
+            'id_estatus' => 7,
+            'id_pueblo' => $data['id_pueblo']
         ]);
         $persona = Personas::create([
             'nombre' => $data['nombre'],
