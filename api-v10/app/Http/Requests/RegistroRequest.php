@@ -29,7 +29,7 @@ class RegistroRequest extends FormRequest
             'data.apellido_pat'=>['required','string'],
             'data.apellido_mat'=>['sometimes','required','string'],
             'data.password' => ['required', 'string', 'confirmed', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*\d).+$/'],
-            
+            'data.id_pueblo'=>['required','exists:pueblos_magicos,id'],
         ];
     }
     public function messages()

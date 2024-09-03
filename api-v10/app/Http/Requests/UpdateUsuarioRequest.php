@@ -33,6 +33,7 @@ class UpdateUsuarioRequest extends FormRequest
             'data.user.password'=>['sometimes','required','string','confirmed'],
             'data.user.id_tipo_usuario'=>['sometimes','required','numeric','exists:tipos_usuarios,id'],
             'data.user.id_estatus'=>['sometimes','required','numeric','exists:estatus,id'],
+            'data.user.id_pueblo'=>['sometimes','required','exists:pueblos_magicos,id'],
         ];
     }
     public function messages()
