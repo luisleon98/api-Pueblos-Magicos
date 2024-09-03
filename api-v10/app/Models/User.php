@@ -77,7 +77,8 @@ class User extends Authenticatable
         'user_name',
         'password',
         'id_tipo_usuario',
-         'id_estatus'
+        'id_estatus',
+        'id_pueblo',
     ];
 
     /**
@@ -128,5 +129,9 @@ class User extends Authenticatable
     public function routeNotificationForMail($notification)
     {
         return $this->user_name;
+    }
+    public function pueblo()
+    {
+        return $this->belongsTo(PueblosMagicos::class, 'id_pueblo');
     }
 }
