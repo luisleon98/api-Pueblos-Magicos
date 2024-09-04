@@ -46,7 +46,7 @@ class RegistroServicioRequest extends FormRequest
             'data.id_estado' => ['required','exists:estados,id'],
             'data.id_usuario' => ['required','exists:usuarios,id'],
             'data.id_pueblo' => ['required','exists:pueblos_magicos,id'],
-            'data.pagina_web' => ['sometimes','required','url'],
+            'data.pagina_web' => ['sometimes','required'],
             'data.telefono' => ['required'],
             'data.fecha_inicio' => ['sometimes','required',],
             'data.fecha_fin' => ['sometimes','required',],
