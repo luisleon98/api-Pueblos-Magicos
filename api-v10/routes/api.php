@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::get('servicios', [ServiciosController::class, 'getAllPreview']);
     Route::get('/servicios/{id}', [ServiciosController::class, 'show']);
+    Route::get('/servicios/buscador/publicaciones', [ServiciosController::class, 'buscarPublicacion']);
     Route::get('servicios/filtrar/estatus/{id_estatus}', [ServiciosController::class, 'getServiciosByEstatus']);
     Route::get('servicios/filtrar/pueblo/magico/{id_pueblo}', [ServiciosController::class, 'getServiciosByPueblo']);
     Route::get('servicios/filtrar/categoria/{id_categoria}', [ServiciosController::class, 'getServiciosByCategoria']);

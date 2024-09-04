@@ -1180,4 +1180,130 @@ class ServiciosController extends Controller
 
         return response()->json(['data' => $conteo]);
     }
+
+    /**
+ * Busca publicaciones de servicios.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ *
+ * @OA\Get(
+ *     path="/api/servicios/buscador",
+ *     summary="Busca publicaciones de servicios",
+ *     tags={"Servicios"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="buscar",
+ *         in="query",
+ *         description="Texto para buscar en el título del servicio",
+ *         required=false,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Parameter(
+ *         name="tipoServicio",
+ *         in="query",
+ *         description="ID del tipo de servicio para filtrar",
+ *         required=false,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="servicios",
+ *                     type="object",
+ *                     @OA\Property(property="current_page", type="integer"),
+ *                     @OA\Property(property="data", type="array",
+ *                         @OA\Items(
+ *                             type="object",
+ *                             @OA\Property(property="id", type="integer"),
+ *                             @OA\Property(property="pueblo", type="object",
+ *                                 @OA\Property(property="id", type="integer"),
+ *                                 @OA\Property(property="nombre", type="string")
+ *                             ),
+ *                             @OA\Property(property="detalleServicio", type="object",
+ *                                 @OA\Property(property="id", type="integer"),
+ *                                 @OA\Property(property="titulo", type="string"),
+ *                                 @OA\Property(property="descripcion", type="string"),
+ *                                 @OA\Property(property="id_servicio", type="integer")
+ *                             ),
+ *                             @OA\Property(property="imagenes", type="array",
+ *                                 @OA\Items(
+ *                                     type="object",
+ *                                     @OA\Property(property="id", type="integer"),
+ *                                     @OA\Property(property="nombre", type="string"),
+ *                                     @OA\Property(property="file", type="string")
+ *                                 )
+ *                             ),
+ *                             @OA\Property(property="estatus", type="object",
+ *                                 @OA\Property(property="id", type="integer"),
+ *                                 @OA\Property(property="estado", type="string")
+ *                             ),
+ *                             @OA\Property(property="tipoServicio", type="object",
+ *                                 @OA\Property(property="id", type="integer"),
+ *                                 @OA\Property(property="servicio", type="string")
+ *                             )
+ *                         )
+ *                     ),
+ *                     @OA\Property(property="first_page_url", type="string"),
+ *                     @OA\Property(property="from", type="integer"),
+ *                     @OA\Property(property="last_page", type="integer"),
+ *                     @OA\Property(property="last_page_url", type="string"),
+ *                     @OA\Property(property="next_page_url", type="string"),
+ *                     @OA\Property(property="path", type="string"),
+ *                     @OA\Property(property="per_page", type="integer"),
+ *                     @OA\Property(property="prev_page_url", type="string"),
+ *                     @OA\Property(property="to", type="integer"),
+ *                     @OA\Property(property="total", type="integer")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autenticado"
+ *     )
+ * )
+ */
+    public function buscarPublicacion(Request $request){
+        $user = $request->user();
+        $buscar = $request->input('buscar');
+        $tipoServicio = $request->input('tipoServicio');
+        $query = Servicios::whereHas('detalleServicio', function ($query) use ($buscar) {
+            $query->where('titulo', 'like', '%' . $buscar . '%');
+        })->with([
+            'pueblo' => function ($query) {
+                $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
+            },
+            'detalleServicio' => function ($query) {
+                $query->select('servicio_detalles.id', 'servicio_detalles.titulo', 'servicio_detalles.descripcion', 'servicio_detalles.id_servicio');
+            },
+            'imagenes' => function ($query) {
+                $query->select('imagenes.id', 'imagenes.nombre');
+            },
+            'estatus' => function ($query) {
+                $query->select('id', 'estado');
+            },
+            'tipoServicio' => function ($query) {
+                $query->select('id', 'servicio');
+            }
+        ]);
+        if($user->id_tipo_usuario == 3){
+            $query->where('id_pueblo',$user->id_pueblo);
+        }
+        if ($tipoServicio != null) {
+            $query->where('id_tipo_servicio', $tipoServicio);
+        }
+        $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
+        // $servicios->getCollection()->transform(function ($servicio) {
+        //     return $this->addFileToImages([$servicio])[0];
+        // });
+        return response()->json([
+            "data" => ["servicios" => $servicios]
+        ]);
+    }
 }
