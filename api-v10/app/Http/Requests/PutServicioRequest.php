@@ -26,7 +26,7 @@ class PutServicioRequest extends FormRequest
     {
         return [
             'data.servicio.id_tipo_servicio' => ['sometimes', 'required', 'exists:tipos_servicios,id'],
-            'data.servicio.id_usuario' => ['sometimes', 'required', 'exists:usuarios,id'],
+            // 'data.servicio.id_usuario' => ['sometimes', 'required', 'exists:usuarios,id'],
             'data.servicio.id_pueblo' => ['sometimes', 'required', 'exists:pueblos_magicos,id'],
             'data.servicio.id_estatus' => ['sometimes', 'required', 'exists:estatus,id'],
             'data.servicio_detalles.dias_servicio' => ['sometimes', 'required', 'min:5', 'max:20'],
