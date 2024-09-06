@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Imagen;
+use App\Models\Estatus;
 use App\Models\Horarios;
 use App\Models\Servicios;
 use App\Models\Coordenadas;
@@ -1273,6 +1274,7 @@ class ServiciosController extends Controller
         $user = $request->user();
         $buscar = $request->input('buscar');
         $tipoServicio = $request->input('tipoServicio');
+        $estado = $request->input('estado');
         $query = Servicios::whereHas('detalleServicio', function ($query) use ($buscar) {
             $query->where('titulo', 'like', '%' . $buscar . '%');
         })->with([
@@ -1297,6 +1299,9 @@ class ServiciosController extends Controller
         }
         if ($tipoServicio != null) {
             $query->where('id_tipo_servicio', $tipoServicio);
+        }
+        if ($estado != null & Estatus::where('id',$estado)->exists()){
+            $query->where('id_estatus', $estado);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         // $servicios->getCollection()->transform(function ($servicio) {
