@@ -1304,9 +1304,9 @@ class ServiciosController extends Controller
             $query->where('id_estatus', $estado);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
-        // $servicios->getCollection()->transform(function ($servicio) {
-        //     return $this->addFileToImages([$servicio])[0];
-        // });
+        $servicios->getCollection()->transform(function ($servicio) {
+            return $this->addFileToImages([$servicio])[0];
+        });
         return response()->json([
             "data" => ["servicios" => $servicios]
         ]);
