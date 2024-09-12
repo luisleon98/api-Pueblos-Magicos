@@ -14,6 +14,7 @@ use App\Models\ServicioDetalle;
 use App\Models\ServiciosImagen;
 use App\Traits\RegistraBitacora;
 use App\Models\PueblosSolicitudes;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
@@ -1311,7 +1312,66 @@ class ServiciosController extends Controller
             "data" => ["servicios" => $servicios]
         ]);
     }
+    /**
+ * Obtiene los títulos de servicios agrupados por pueblo.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ *
+ * @OA\Get(
+ *     path="/api/servicios/buscador/titulos",
+ *     summary="Obtiene los títulos de servicios agrupados por pueblo",
+ *     tags={"Servicios"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Operación exitosa",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="opciones",
+ *                     type="array",
+ *                     @OA\Items(
+ *                         type="object",
+ *                         @OA\Property(
+ *                             property="pueblo",
+ *                             type="string",
+ *                             description="Nombre del pueblo mágico"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="titulos",
+ *                             type="array",
+ *                             @OA\Items(type="string"),
+ *                             description="Lista de títulos de servicios en este pueblo"
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="No autenticado"
+ *     )
+ * )
+ */
     public function titulosBuscador(Request $request){
-        
+        $servicios = Servicios::with(['detalleServicio', 'pueblo'])
+            ->get()
+            ->groupBy('pueblo.nombre')
+            ->map(function (Collection $group, $puebloNombre) {
+                return [
+                    'pueblo' => $puebloNombre,
+                    'titulos' => $group->pluck('detalleServicio.titulo')->all()
+                ];
+            })
+            ->values();
+
+            return response()->json([
+                "data" => ["opciones" => $servicios]
+            ]);
+
     }
 }
