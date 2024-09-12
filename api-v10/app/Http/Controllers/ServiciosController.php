@@ -1276,7 +1276,7 @@ class ServiciosController extends Controller
         $tipoServicio = $request->input('tipoServicio');
         $estado = $request->input('estado');
         $query = Servicios::whereHas('detalleServicio', function ($query) use ($buscar) {
-            $query->where('titulo', 'like', '%' . $buscar . '%');
+            $query->whereRaw('LOWER(titulo) LIKE ?', ['%' . strtolower($buscar) . '%']);
         })->with([
             'pueblo' => function ($query) {
                 $query->select('pueblos_magicos.id', 'pueblos_magicos.nombre');
@@ -1310,5 +1310,8 @@ class ServiciosController extends Controller
         return response()->json([
             "data" => ["servicios" => $servicios]
         ]);
+    }
+    public function titulosBuscador(Request $request){
+        
     }
 }

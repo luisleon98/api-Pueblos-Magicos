@@ -812,9 +812,9 @@ class UserController extends Controller
             $fStatus = $request->input('estatusUser');
             $fTipoUsuer = $request->input('tipoUser');
             $query = User::whereHas('persona', function ($query) use ($buscar) {
-                $query->where('nombre', 'like', '%' . $buscar . '%')
-                    ->orWhere('apellido_pat', 'like', '%' . $buscar . '%')
-                    ->orWhere('apellido_mat', 'like', '%' . $buscar . '%');
+                $query->whereRaw('LOWER(nombre) LIKE ?', ['%' . strtolower($buscar) . '%'])
+                ->orWhereRaw('LOWER(apellido_pat) LIKE ?', ['%' . strtolower($buscar) . '%'])
+                ->orWhereRaw('LOWER(apellido_mat) LIKE ?', ['%' . strtolower($buscar) . '%']);
             })->with([
                 'tipo' => function ($query) {
                     $query->select('id', 'tipo_usuario');
