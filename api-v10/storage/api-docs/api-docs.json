@@ -1313,6 +1313,62 @@
                 ]
             }
         },
+        "/api/servicios/buscador/titulos": {
+            "get": {
+                "tags": [
+                    "Servicios"
+                ],
+                "summary": "Obtiene los títulos de servicios agrupados por pueblo",
+                "description": "Obtiene los títulos de servicios agrupados por pueblo.",
+                "operationId": "2b2880ed120c6550deec2fb160782ffb",
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "opciones": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "pueblo": {
+                                                                "description": "Nombre del pueblo mágico",
+                                                                "type": "string"
+                                                            },
+                                                            "titulos": {
+                                                                "description": "Lista de títulos de servicios en este pueblo",
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users": {
             "get": {
                 "tags": [
