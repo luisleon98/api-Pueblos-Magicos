@@ -1190,7 +1190,7 @@ class ServiciosController extends Controller
  * @return \Illuminate\Http\JsonResponse
  *
  * @OA\Get(
- *     path="/api/servicios/buscador",
+ *     path="/api/servicios/buscador/publicaciones",
  *     summary="Busca publicaciones de servicios",
  *     tags={"Servicios"},
  *     security={{"bearerAuth":{}}},
