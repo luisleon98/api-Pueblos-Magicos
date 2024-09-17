@@ -496,7 +496,7 @@ class ServiciosController extends Controller
             }
         ]);
         if (in_array($user->id_tipo_usuario, [3,])) {
-            $query->where('id_usuario', $user->id);
+            $query->where('id_pueblo', $user->id_pueblo);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -588,7 +588,7 @@ class ServiciosController extends Controller
             }
         ]);
         if (in_array($user->id_tipo_usuario, [3,])) {
-            $query->where('id_usuario', $user->id);
+            $query->where('id_pueblo', $user->id_pueblo);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -663,7 +663,7 @@ class ServiciosController extends Controller
             }
         ]);
         if (in_array($user->id_tipo_usuario, [3,])) {
-            $query->where('id_usuario', $user->id);
+            $query->where('id_pueblo', $user->id_pueblo);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -738,7 +738,7 @@ class ServiciosController extends Controller
             }
         ]);
         if (in_array($user->id_tipo_usuario, [3,])) {
-            $query->where('id_usuario', $user->id);
+            $query->where('id_pueblo', $user->id_pueblo);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -831,7 +831,7 @@ class ServiciosController extends Controller
             }
         ]);
         if (in_array($user->id_tipo_usuario, [3,])) {
-            $query->where('id_usuario', $user->id);
+            $query->where('id_pueblo', $user->id_pueblo);
         }
         $servicios = $query->orderBy('id')->paginate(env('PAGINATION_LIMIT', 5));
         $servicios->getCollection()->transform(function ($servicio) {
@@ -1170,7 +1170,7 @@ class ServiciosController extends Controller
         $baseQuery = Servicios::query();
 
         if ($user->id_tipo_usuario == 3) {
-            $baseQuery->where('id_usuario', $user->id);
+            $baseQuery->where('id_pueblo', $user->id_pueblo);
         }
 
         $conteo = [
@@ -1358,20 +1358,27 @@ class ServiciosController extends Controller
  * )
  */
     public function titulosBuscador(Request $request){
-        $servicios = Servicios::with(['detalleServicio', 'pueblo'])
-            ->get()
-            ->groupBy('pueblo.nombre')
-            ->map(function (Collection $group, $puebloNombre) {
-                return [
-                    'pueblo' => $puebloNombre,
-                    'titulos' => $group->pluck('detalleServicio.titulo')->all()
-                ];
-            })
-            ->values();
+        $user = $request->user();
+    
+    $query = Servicios::with(['detalleServicio', 'pueblo']);
+    
+    
+    if ($user->id_tipo_usuario == 3) {
+        $query->where('id_pueblo', $user->id_pueblo);
+    }
+    
+    $servicios = $query->get()
+        ->groupBy('pueblo.nombre')
+        ->map(function (Collection $group, $puebloNombre) {
+            return [
+                'pueblo' => $puebloNombre,
+                'titulos' => $group->pluck('detalleServicio.titulo')->all()
+            ];
+        })
+        ->values();
 
-            return response()->json([
-                "data" => ["opciones" => $servicios]
-            ]);
-
+    return response()->json([
+        "data" => ["opciones" => $servicios]
+    ]);
     }
 }
