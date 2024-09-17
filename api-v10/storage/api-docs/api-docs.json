@@ -1140,14 +1140,14 @@
                 ]
             }
         },
-        "/api/servicios/buscador": {
+        "/api/servicios/buscador/publicaciones": {
             "get": {
                 "tags": [
                     "Servicios"
                 ],
                 "summary": "Busca publicaciones de servicios",
                 "description": "Busca publicaciones de servicios.",
-                "operationId": "37b29ab35dbc427c554783972a5b852c",
+                "operationId": "677115dd5819c782c694283a8961b8f8",
                 "parameters": [
                     {
                         "name": "buscar",
