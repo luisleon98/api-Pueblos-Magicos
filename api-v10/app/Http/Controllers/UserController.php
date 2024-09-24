@@ -189,7 +189,7 @@ class UserController extends Controller
             'password' => $data['password'],
             'id_tipo_usuario' => 3,
             'id_estatus' => 7,
-            'id_pueblo' => $data['id_pueblo']
+            'id_pueblo' => null
         ]);
         $persona = Personas::create([
             'nombre' => $data['nombre'],
