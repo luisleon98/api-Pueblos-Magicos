@@ -824,6 +824,9 @@ class UserController extends Controller
                 },
                 'estatus' => function ($query) {
                     $query->select('id', 'estado');
+                },
+                'pueblo' =>function($query){
+                    $query->select('id','nombre');
                 }
             ]);
             if ($fTurista == null && $fTipoUsuer == null) {
