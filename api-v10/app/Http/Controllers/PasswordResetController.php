@@ -51,7 +51,12 @@ class PasswordResetController extends Controller
      */
     public function forgot(Request $request)
     {
-        $request->validate(['data.user_name' => 'required|email|exists:usuarios,user_name']);
+        $request->validate(['data.user_name' => 'required|email|exists:usuarios,user_name'],
+        [
+            'data.user_name.required' => 'El campo de correo electrónico es obligatorio.',
+            'data.user_name.email' => 'El correo electrónico debe ser una dirección válida.',
+            'data.user_name.exists' => 'El correo electrónico ingresado no está registrado. Por favor, ingrese un correo electrónico válido'
+        ]);
         $status = Password::sendResetLink(
             ['user_name' => $request->input('data')['user_name']]
         );
