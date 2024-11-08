@@ -8,12 +8,13 @@ use App\Models\Personas;
 use Illuminate\Http\Request;
 use App\Traits\RegistraBitacora;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegistroRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -423,14 +424,24 @@ class UserController extends Controller
     public function Login(Request $request)
     {
         $data = $request->data;
+    
+        if (RateLimiter::tooManyAttempts('login_attempts_' . $request->input('data.email'), 5)) {
+            $seconds = RateLimiter::availableIn('login_attempts_' . $request->input('data.email'));
+            return response()->json([
+                'error' => 'Demasiados intentos de inicio de sesión. Por favor, intente de nuevo en ' . $seconds . ' segundos.',
+            ], 429);
+        }
+    
         if (Auth::attempt($data)) {
             $user = Auth::user();
             if ($user->id_estatus == 4) {
+                RateLimiter::hit('login_attempts_' . $request->input('data.email'));
                 return response()->json(['error' => 'Cuenta desactivada'], 403);
             } else {
+                RateLimiter::clear('login_attempts_' . $request->input('data.email'));
                 $tokenResult = $user->createToken('authToken', ['*'], Carbon::now()->addHour());
                 $token = $tokenResult->plainTextToken;
-
+    
                 return response()->json([
                     'access_token' => $token,
                     'token_type' => 'bearer',
@@ -443,6 +454,7 @@ class UserController extends Controller
                 ]);
             }
         } else {
+            RateLimiter::hit('login_attempts_' . $request->input('data.email'),300);
             return response()->json(['error' => 'Credenciales incorrectas'], 401);
         }
     }
