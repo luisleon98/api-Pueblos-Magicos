@@ -30,7 +30,7 @@ class RegistroRequest extends FormRequest
             'data.apellido_mat'=>['sometimes','required','string'],
             'data.password' => ['required', 'string', 'confirmed', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*\d).+$/'],
             'data.id_tipo_usuario'=>['required','exists:tipos_usuarios,id'],
-            
+            'data.id_pueblo'=>['required','exists:pueblos_magicos,id']
         ];
     }
     public function messages()
@@ -51,6 +51,8 @@ class RegistroRequest extends FormRequest
         'data.password.regex' => 'La contraseña debe contener al menos una mayúscula y un número',
         'data.id_tipo_usuario.required' => 'El tipo de usuario es obligatorio',
         'data.id_tipo_usuario.exists' => 'El tipo de usuario seleccionado no es válido',
+        'data.id_pueblo.required' => 'El pueblo mágico es obligatorio',
+        'data.id_pueblo.exists' => 'El pueblo mágico seleccionado no es válido'
     ];
 }
     protected function failedValidation(Validator $validator) {
