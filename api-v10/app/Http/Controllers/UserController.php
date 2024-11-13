@@ -15,6 +15,7 @@ use App\Http\Requests\RegistroRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Auth\AuthenticationException;
+use App\Http\Requests\RegistroUserAdminRequest;
 
 class UserController extends Controller
 {
@@ -320,7 +321,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function adminCreate(RegistroRequest $request)
+    public function adminCreate(RegistroUserAdminRequest $request)
     {
         if (!in_array($request->user()->id_tipo_usuario, [1,])) {
             return response()->json([
